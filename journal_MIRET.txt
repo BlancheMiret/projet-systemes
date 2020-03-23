@@ -1,0 +1,46 @@
+HISTORIQUE RECHERCHES BLANCHE
+
+lundi 23 mars 
+
+MODIFICATION DES I-NOEUDS
+
+https://www.howtogeek.com/465350/everything-you-ever-wanted-to-know-about-inodes-on-linux/
+
+Et autres liens enregistrés dans des signets
+
+TESTS
+
+$ln old hardlink
+créé un hardlink --> MÊMES NUMÉRO D'I-NOEUD
+MAIS en modifiant old, il change de numéro d'i-noeud.
+DÈS QU'UN FICHIER EST MODIFIÉ, CHANGE DE NUMÉRO D'I-NOEUD
+Et perd ses liens physiques !
+
+($cp old copie --> pas le même numéro d'i-noeud, fait une copie sur disque des données alors ?)
+
+$ln -s old symbolic_link 
+
+
+LS INFOS 
+
+$ls -i
+numéros d'i-noeud
+$ls -l
+droits + nb liens physiques + propriétaire + groupe propriétaire + taille en octets + dates de modification 
+
+$ls -a : affiche . et .. aussi
+$ls -s
+affiche le nombre de file system blocks effectivement utilisé par chaque fichier (chez moi en unités de 512 octets)
+
+RECHERCHES SYSTÈME GÉNÉRAL 
+
+- appels systèmes stat et fstat pour obtenir informations sur un i-noeud : copient les champs de la structure dans l'i-noeud dans une structure struct stat.
+
+SYSTEM FACTS
+Cf Poly Programmation Système de Julius Chroboczek
+https://www.irif.fr/~jch/enseignement/programmation-systeme.pdf
+
+- Unix ne permet pas d'accéder directement à un i-noeud en mémoire.
+
+- TOUCHE PAS AUX STRUCTURES DES TABLES 
+L'utilisateur ne peut pas se référer directement aux structures correspondant aux entrées dans la table des descripteur (/processus) ou dans les tables des ouvertures et i-noeuds mémoire. Ces structures vivent dans la mémoire du noyau. L'utilisateur se réfère aux entrées dans la table des descripteurs par des entiers qui sont l'indice de ces entrées dans la table.
