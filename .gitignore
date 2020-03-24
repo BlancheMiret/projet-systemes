@@ -1,1 +1,5 @@
 *.DS_Store
+*.dSYM
+
+# exécutables
+inode_test
