@@ -1,0 +1,6 @@
+HISTORIQUE RECHERCHES ASMAA
+
+
+
+
+-Proposition d'utilisation de base de données (installation delibsqlite3-dev libbsd-dev requises), afin de stocker les tags, noms de fichiers
