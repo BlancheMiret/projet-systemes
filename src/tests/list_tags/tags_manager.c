@@ -35,7 +35,6 @@ void print_tree(struct tag_t *tag, char* shift);
 
 
 int main() {
-
 	/*
 	printf("ADDING COULEUR\n");
 	add_tag(NULL, "Couleur");
@@ -49,8 +48,9 @@ int main() {
 	add_tag("Genre", "Western");
 	printf("ADDING DRAME\n");
 	add_tag("Genre", "Drame");
-	*/ 
-
+	printf("ADDING JAUNE FLUO\n");
+	add_tag("Jaune", "Jaune fluo");
+	*/
 	
 	build_tree();
 	print_tree(tree, "");
