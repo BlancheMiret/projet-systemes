@@ -3,12 +3,15 @@ CFLAGS = -Wall -g -std=c11
 LDLIBS = -lm
 PKGCONFIG = `pkg-config --cflags --libs glib-2.0`
 PTHREAD = -lpthread
-EXE = tagman
+EXE = tagman tagmanager
 
 all : $(EXE)
 
-tagman : tags_manager.c
-	$(CC) $(CFLAGS) tags_manager.c $(PKGCONFIG) -o tagman
+tagman : tagman.c
+	$(CC) $(CFLAGS) tagman.c $(PKGCONFIG) -o tagman
+
+tagmanager : tags_manager.c
+	$(CC) $(CFLAGS) tags_manager.c $(PKGCONFIG) -o tagmanager
 
 
 cleanall:
