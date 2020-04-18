@@ -25,6 +25,9 @@ struct tag_t {
 
 #define TAGSIZE sizeof(struct tag_t)
 
+GHashTable *point_table = NULL;
+struct tag_t *tree = NULL;
+
 int add_tag(char *father, char *tag_name);
 void print_tag(struct tag_t *tag);
 void *build_tree();
@@ -32,16 +35,24 @@ void print_tree(struct tag_t *tag, char* shift);
 
 
 int main() {
-	
-	
+
+	/*
+	printf("ADDING COULEUR\n");
+	add_tag(NULL, "Couleur");
+	printf("ADDING ROUGE\n");
+	add_tag("Couleur", "Rouge");
+	printf("ADDING JAUNE\n");
+	add_tag("Couleur", "Jaune"); 
 	printf("ADDING GENRE\n");
 	add_tag(NULL, "Genre");
 	printf("ADDING WESTER\n");
 	add_tag("Genre", "Western");
 	printf("ADDING DRAME\n");
-	add_tag("Genre", "Drame"); 
+	add_tag("Genre", "Drame");
+	*/ 
+
 	
-	struct tag_t *tree = build_tree();
+	build_tree();
 	print_tree(tree, "");
 
 }
@@ -61,11 +72,11 @@ int add_tag(char *father, char *tag_name) {
 	int fd = open("tag_hierarchy", O_RDWR);
 	int father_exists = FALSE; // défini dans glib library
 
-	char buf[TAGSIZE];
+	char *buf = malloc(TAGSIZE);
 	struct tag_t *tag;
 	while(read(fd, buf, TAGSIZE) != 0) {
 		tag = (struct tag_t *)buf;
-		print_tag(tag);
+		//print_tag(tag);
 		if (strcmp(tag->name, tag_name) == 0) {
 			perror("This tag-name already exists.");
 			exit(1);
@@ -97,10 +108,11 @@ void *build_tree() {
 
 	// ---------------------------- INITIALISATION -------------------------
 
-	GHashTable *point_table = g_hash_table_new(g_str_hash, g_str_equal);
+	point_table = g_hash_table_new(g_str_hash, g_str_equal);
 	// insert root;
 
-	struct tag_t *tag = malloc(TAGSIZE);
+	tree = malloc(TAGSIZE);
+	struct tag_t *tag = tree;
 	memset(tag, 0, TAGSIZE);
 	memcpy(tag->name, "root", strlen("root") + 1);
 
@@ -159,7 +171,6 @@ void print_tree(struct tag_t *tag, char * shift) {
 
 }
 
-
 void print_tag(struct tag_t *tag) {
 	printf("--PRINTING TAG--\n");
 	printf("Father = %s\n", tag->father);
@@ -167,4 +178,5 @@ void print_tag(struct tag_t *tag) {
 	printf("Brother = %p\n", tag->brother);
 	printf("Child = %p\n", tag->children);
 }
+
 
