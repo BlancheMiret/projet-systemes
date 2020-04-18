@@ -59,6 +59,12 @@ int main() {
 	
 
 	/*
+	printf("ADDING COULEUR\n");
+	add_tag(NULL, "Couleur");
+	printf("ADDING ROUGE\n");
+	add_tag("Couleur", "Rouge");
+	printf("ADDING JAUNE\n");
+	add_tag("Couleur", "Jaune"); 
 	printf("ADDING GENRE\n");
 	add_tag(NULL, "Genre");
 	printf("ADDING WESTER\n");
