@@ -3,6 +3,9 @@
 
 # exécutables
 inode_test
+*_exe
+
+#fichiersecrits
 src/tests/list_tags/tagl
 src/tests/list_tags/tag_hierarchy
 src/tests/list_tags/tagh
