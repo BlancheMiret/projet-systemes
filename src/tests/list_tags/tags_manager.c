@@ -13,7 +13,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 
-#define TAGNAME 20
+#define TAGNAME 20 // TAILLE EFFECTIVE : 18 À CAUSE DU CARACTÈRE DE DÉLIMITATION AJOUTÉ. ESPACE NÉCESSAIRE.
 
 struct tag_t {
 	char			father[TAGNAME];
@@ -21,7 +21,6 @@ struct tag_t {
 	struct tag_t	*brother;
 	struct tag_t	*children;
 };
-
 
 #define TAGSIZE sizeof(struct tag_t)
 
@@ -50,8 +49,10 @@ int main() {
 	add_tag("Genre", "Drame");
 	printf("ADDING JAUNE FLUO\n");
 	add_tag("Jaune", "Jaune fluo");
+
+	add_tag(NULL, "123456789012345678");
 	*/
-	
+
 	build_tree();
 	print_tree(tree, "");
 
@@ -65,7 +66,12 @@ Si father est différent de NULL et que le nom n'est pas trouvé, une erreur est
 **/
 int add_tag(char *father, char *tag_name) {
 
-	// ------------------- VÉRIFICATION PAS CARACTÈRE SPÉCIAL ---------------------------
+	// ------------------- VÉRIFICATION LONGUEUR DU NOM DU TAG ---------------------------
+
+	if(strlen(tag_name) > 18) {
+		perror("This tag-name is too long. Try something with 18 letters or less.\n");
+		exit(1);
+	}
 
 	// ------------------- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --------------------
 
@@ -95,9 +101,11 @@ int add_tag(char *father, char *tag_name) {
 
 	memset(tag, 0, TAGSIZE);
 	memcpy(tag->name, tag_name, strlen(tag_name) + 1);
+	tag->name[TAGNAME - 1] = '%';
 
 	if (father == NULL) memcpy(tag->father, "root", strlen("root") + 1);
 	else memcpy(tag->father, father, strlen(father) + 1);
+	tag->father[TAGNAME-1] = '-';
 	write(fd, tag, TAGSIZE);
 	close(fd);
 
