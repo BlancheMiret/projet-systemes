@@ -31,6 +31,8 @@ int add_tag(char *father, char *tag_name);
 void print_tag(struct tag_t *tag);
 void *build_tree();
 void print_tree(struct tag_t *tag, char* shift);
+int delete_tag(char *tag_name);
+void print_tree_children(struct tag_t *tag, char *shift);
 
 
 int main() {
@@ -50,12 +52,65 @@ int main() {
 	printf("ADDING JAUNE FLUO\n");
 	add_tag("Jaune", "Jaune fluo");
 
-	add_tag(NULL, "123456789012345678");
+	add_tag("Couleur", "Lila");
 	*/
-
 	build_tree();
 	print_tree(tree, "");
+	delete_tag("Jaune");
 
+}
+
+void write_tree(struct tag_t *tag, int fd) { 
+	while(tag != NULL) {
+		struct tag_t tag_bis = *tag;
+		tag_bis.children = NULL;
+		tag_bis.brother = NULL;
+		write(fd, &tag_bis, TAGSIZE);
+		if(tag->children != NULL) write_tree(tag->children, fd);
+		tag = tag->brother;
+	}
+}
+
+int delete_tag(char *tag_name) {
+
+	// ------------------- CONSTRUCTION ARBRE ET HASHMAP ---------------------------
+
+	build_tree(); 
+
+	// ------------- DEMANDER CONFIRMATION SUPPRESSION ARBORESCENCE ----------------
+
+	// 1. Avec la hashmap, trouver l'adresse du tag dans l'arbre
+	struct tag_t *tag_to_delete = g_hash_table_lookup(point_table, tag_name);
+
+	if (tag_to_delete == NULL) {
+		perror("The tag you want to delete does not exist.\n");
+		exit(1);
+	}
+
+	printf("Vous allez supprimer toute cette arborescence de tag.\n");
+	print_tree_children(tag_to_delete, "");
+
+	// On considère que oui
+
+	// ------------------- SUPPRIMER DE L'ARBORESCENCE -------------------------
+
+	// 2. Trouver l'adresse du père
+	struct tag_t *father = g_hash_table_lookup(point_table, tag_to_delete->father);
+	struct tag_t **precedent = &(father->children);
+
+	// 3. Introduire les frères de tag_to_delete en tête de liste des enfants du père
+	while((*precedent)->brother != tag_to_delete) (*precedent) = (*precedent)->brother;
+	(*precedent) -> brother = tag_to_delete->brother;
+
+	printf("A-t-il été supprimé ?\n");
+	print_tree(tree, "");
+
+	// ------------------- RÉ-ÉCRIRE SUR LE FICHIER -------------------------
+
+	int fd = open("tag_hierarchy", O_WRONLY| O_TRUNC);
+	write_tree(tree->children, fd); // PS : on ne veut pas écrire root
+
+	return 0;
 }
 
 /*
@@ -126,7 +181,6 @@ void *build_tree() {
 
 	g_hash_table_insert(point_table, tag->name, tag);
 
-
 	// ---------------------------- VARIABLES DE PARCOURS -------------------------
 
 	int fd = open("tag_hierarchy", O_RDONLY);
@@ -159,10 +213,23 @@ void *build_tree() {
 
 	close(fd);
 	return g_hash_table_lookup(point_table, "root");
-
 }
 
-void print_tree(struct tag_t *tag, char * shift) {
+
+void print_tree_children(struct tag_t *tag, char *shift) {
+	printf("%s%s\n", shift, tag->name);
+	if(tag->children != NULL) {
+		char *new_shift = malloc(strlen(shift) + 1);
+		memset(new_shift, 0, strlen(shift) + 1);
+		new_shift[0] = ' ';
+		new_shift[1] = ' ';
+		strcat(new_shift, shift);
+		print_tree(tag->children, new_shift);
+	}
+}
+
+
+void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser
 
 	while(tag != NULL) {
 		printf("%s%s\n", shift, tag->name);
@@ -176,8 +243,8 @@ void print_tree(struct tag_t *tag, char * shift) {
 		}
 		tag = tag->brother;
 	}
-
 }
+
 
 void print_tag(struct tag_t *tag) {
 	printf("--PRINTING TAG--\n");
@@ -186,5 +253,3 @@ void print_tag(struct tag_t *tag) {
 	printf("Brother = %p\n", tag->brother);
 	printf("Child = %p\n", tag->children);
 }
-
-
