@@ -285,11 +285,8 @@ void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser
 	while(tag != NULL) {
 		printf("%s%s\n", shift, tag->name);
 		if(tag->children != NULL) {
-			char *new_shift = malloc(strlen(shift) + 1);
-			memset(new_shift, 0, strlen(shift) + 1);
-			new_shift[0] = ' ';
-			new_shift[1] = ' ';
-			strcat(new_shift, shift);
+			char *new_shift = shift;
+			asprintf(&new_shift, "  %s", shift);
 			print_tree(tag->children, new_shift);
 		}
 		tag = tag->brother;
