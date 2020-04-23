@@ -1,5 +1,16 @@
 HISTORIQUE RECHERCHES BLANCHE
 
+jeudi 23 avril
+
+Fait : ajout, suppression tags, affichage hiérarchie
+
+ATTENTION TO DO
+- Gestion des erreurs / sorties dans tag_manager ?
+- Valgrind ?
+
+Questions :
+- fichier tag_hierarchy : quels droits pour l'utilisateur ? À ne pas pouvoir modifier sauf via application...
+
 lundi 23 mars 
 
 MODIFICATION DES I-NOEUDS
