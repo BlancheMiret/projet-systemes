@@ -11,8 +11,8 @@ tagman : tagman.c
 	$(CC) $(CFLAGS) tagman.c $(PKGCONFIG) -o tagman_exe
 
 
-test : tag_manager_test.c tag_manager_test.h test.c
-	$(CC) $(CFLAGS) test.c tag_manager_test.c $(PKGCONFIG) -o test_list_tag_exe
+test : tag_manager_test.c tag_manager_test.h test_list_tag.c
+	$(CC) $(CFLAGS) test_list_tag.c tag_manager_test.c $(PKGCONFIG) -o test_list_tag_exe
 
 
 cleanall:
