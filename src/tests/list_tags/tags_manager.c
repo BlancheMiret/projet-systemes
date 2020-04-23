@@ -245,11 +245,8 @@ void *build_tree() {
 void print_tree_children(struct tag_t *tag, char *shift) {
 	printf("%s%s\n", shift, tag->name);
 	if(tag->children != NULL) {
-		char *new_shift = malloc(strlen(shift) + 1);
-		memset(new_shift, 0, strlen(shift) + 1);
-		new_shift[0] = ' ';
-		new_shift[1] = ' ';
-		strcat(new_shift, shift);
+		char *new_shift = shift;
+		asprintf(&new_shift, "  %s", shift);
 		print_tree(tag->children, new_shift);
 	}
 }
@@ -258,26 +255,6 @@ void print_hierarchy() {
 	struct hierarchy *h = build_tree();
 	print_tree(h->tree, "");
 }
-
-/*
-	struct proc p = proctab[pid];
-	char *newshift = shift;
-	printf("%s", shift);
-	if (p.sibling != NULL) printf("  \\");
-	else {
-		asprintf(&newshift, "%s |", shift);
-		printf(" |");
-	}
-	if (p.child != NULL) printf("-+=");
-	else printf("--=");
-	printf("%s (%d, %s)\n", p.hdr->cmd, pid, p.hdr->user);
-
-	struct proc *child = p.child;
-	while(child != NULL) {
-		print2(child->hdr->pid, newshift);
-		child = child->sibling;
-	}
-*/
 
 
 void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser
