@@ -22,42 +22,65 @@ struct tag_t {
 	struct tag_t	*children;
 };
 
+struct hierarchy {
+	GHashTable 		*point_table;
+	struct tag_t 	*tree;
+};
+
 #define TAGSIZE sizeof(struct tag_t)
 
-GHashTable *point_table = NULL;
-struct tag_t *tree = NULL;
+//GHashTable *point_table = NULL;
+//struct tag_t *tree = NULL;
 
 int add_tag(char *father, char *tag_name);
 void print_tag(struct tag_t *tag);
 void *build_tree();
+void print_hierarchy();
 void print_tree(struct tag_t *tag, char* shift);
 int delete_tag(char *tag_name);
 void print_tree_children(struct tag_t *tag, char *shift);
+void clean_hierarchy();
 
 
 int main() {
-	/*
-	printf("ADDING COULEUR\n");
-	add_tag(NULL, "Couleur");
-	printf("ADDING ROUGE\n");
-	add_tag("Couleur", "Rouge");
-	printf("ADDING JAUNE\n");
-	add_tag("Couleur", "Jaune"); 
-	printf("ADDING GENRE\n");
-	add_tag(NULL, "Genre");
-	printf("ADDING WESTER\n");
-	add_tag("Genre", "Western");
-	printf("ADDING DRAME\n");
-	add_tag("Genre", "Drame");
-	printf("ADDING JAUNE FLUO\n");
-	add_tag("Jaune", "Jaune fluo");
 
+	//clean_hierarchy();
+
+	
+	
+	printf("----- ADDING COULEUR -----\n");
+	add_tag(NULL, "Couleur");
+	printf("----- ADDING ROUGE -----\n");
+	add_tag("Couleur", "Rouge");
+	printf("----- ADDING JAUNE -----\n");
+	add_tag("Couleur", "Jaune"); 
+	printf("----- ADDING GENRE -----\n");
+	add_tag(NULL, "Genre");
+	printf("----- ADDING WESTERN -----\n");
+	add_tag("Genre", "Western");
+	printf("----- ADDING DRAME -----\n");
+	add_tag("Genre", "Drame");
+	printf("----- ADDING JAUNE FLUO -----\n");
+	add_tag("Jaune", "Jaune fluo");
+	printf("----- ADDING LILA -----\n");
 	add_tag("Couleur", "Lila");
-	*/
-	build_tree();
-	print_tree(tree, "");
+
+	printf("----- PRINT TREE -----\n");
+	print_hierarchy(); // <------------------- À insérer dans fonction suivante ?
+
+	printf("----- DELETE TAG JAUNE -----\n");
 	delete_tag("Jaune");
 
+	printf("----- PRINT TREE -----\n");
+	print_hierarchy();
+
+	
+
+}
+
+void clean_hierarchy() {
+	FILE *f = fopen("tag_hierarchy", "w");
+	fclose(f);
 }
 
 void write_tree(struct tag_t *tag, int fd) { 
@@ -75,7 +98,9 @@ int delete_tag(char *tag_name) {
 
 	// ------------------- CONSTRUCTION ARBRE ET HASHMAP ---------------------------
 
-	build_tree(); 
+	struct hierarchy *h = build_tree(); 
+	GHashTable *point_table = h->point_table;
+	struct tag_t *tree = h->tree;
 
 	// ------------- DEMANDER CONFIRMATION SUPPRESSION ARBORESCENCE ----------------
 
@@ -101,9 +126,6 @@ int delete_tag(char *tag_name) {
 	// 3. Introduire les frères de tag_to_delete en tête de liste des enfants du père
 	while((*precedent)->brother != tag_to_delete) (*precedent) = (*precedent)->brother;
 	(*precedent) -> brother = tag_to_delete->brother;
-
-	printf("A-t-il été supprimé ?\n");
-	print_tree(tree, "");
 
 	// ------------------- RÉ-ÉCRIRE SUR LE FICHIER -------------------------
 
@@ -133,10 +155,9 @@ int add_tag(char *father, char *tag_name) {
 	int fd = open("tag_hierarchy", O_RDWR);
 	int father_exists = FALSE; // défini dans glib library
 
-	char *buf = malloc(TAGSIZE);
-	struct tag_t *tag;
-	while(read(fd, buf, TAGSIZE) != 0) {
-		tag = (struct tag_t *)buf;
+	struct tag_t *tag = malloc(TAGSIZE);
+
+	while(read(fd, tag, TAGSIZE) != 0) {
 		//print_tag(tag);
 		if (strcmp(tag->name, tag_name) == 0) {
 			perror("This tag-name already exists.");
@@ -150,8 +171,6 @@ int add_tag(char *father, char *tag_name) {
 		exit(1); 
 	}
 	
-	// ---------------------------- AJOUT DU TAG DANS LA LISTE ---------------------------
-	
 	// -------------------------- ÉCRITURE DU TAG DANS LA HIERARCHY -------------------------
 
 	memset(tag, 0, TAGSIZE);
@@ -163,6 +182,7 @@ int add_tag(char *father, char *tag_name) {
 	tag->father[TAGNAME-1] = '-';
 	write(fd, tag, TAGSIZE);
 	close(fd);
+	free(tag);
 
 	return 0;
 }
@@ -171,10 +191,10 @@ void *build_tree() {
 
 	// ---------------------------- INITIALISATION -------------------------
 
-	point_table = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable *point_table = g_hash_table_new(g_str_hash, g_str_equal);
 	// insert root;
 
-	tree = malloc(TAGSIZE);
+	struct tag_t *tree = malloc(TAGSIZE);
 	struct tag_t *tag = tree;
 	memset(tag, 0, TAGSIZE);
 	memcpy(tag->name, "root", strlen("root") + 1);
@@ -212,7 +232,13 @@ void *build_tree() {
 	}
 
 	close(fd);
-	return g_hash_table_lookup(point_table, "root");
+
+	struct hierarchy *h = malloc(sizeof(struct hierarchy));
+	memset(h, 0, sizeof(struct hierarchy));
+	h->point_table = point_table;
+	h->tree = g_hash_table_lookup(point_table, "root");
+	//return g_hash_table_lookup(point_table, "root");
+	return h;
 }
 
 
@@ -227,6 +253,31 @@ void print_tree_children(struct tag_t *tag, char *shift) {
 		print_tree(tag->children, new_shift);
 	}
 }
+
+void print_hierarchy() {
+	struct hierarchy *h = build_tree();
+	print_tree(h->tree, "");
+}
+
+/*
+	struct proc p = proctab[pid];
+	char *newshift = shift;
+	printf("%s", shift);
+	if (p.sibling != NULL) printf("  \\");
+	else {
+		asprintf(&newshift, "%s |", shift);
+		printf(" |");
+	}
+	if (p.child != NULL) printf("-+=");
+	else printf("--=");
+	printf("%s (%d, %s)\n", p.hdr->cmd, pid, p.hdr->user);
+
+	struct proc *child = p.child;
+	while(child != NULL) {
+		print2(child->hdr->pid, newshift);
+		child = child->sibling;
+	}
+*/
 
 
 void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser
