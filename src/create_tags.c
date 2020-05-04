@@ -100,20 +100,6 @@ int add_path(char * filename){
     fclose(file);
 
 
-/**
-   int i;
-   char * line ="This is line\n";
-   // open the file for writing
-   int fp = open ("paths.txt",O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR);
- 
-   // write 10 lines of text into the file stream
-   for(i = 0; i < 10;i++){
-       write (fp, line,strlen(line));
-   }
- 
-   // close the file  
-   close (fp);**/
-
 
 }
 
@@ -213,7 +199,8 @@ int main(int argc, char *argv[])
 {
      char *buffer;
     //commande: tag filename tag_name sous_tag1 sous_tag2 sous_tag3 ...etc
-     //if(argc > 2) link_tag_to_file(argv[1], argv,argc);
+     //Exemple : ./create_tags test.txt couleur bleu bleu_ciel
+     if(argc > 2) link_tag_to_file(argv[1], argv,argc);
 
 
       //find_path("paths.txt","test10.txt");
