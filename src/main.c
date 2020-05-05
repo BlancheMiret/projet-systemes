@@ -1,0 +1,147 @@
+#include "tag_manager.h"
+
+/* Utilisation ? 
+
+------ Dans la liste / hiérarchie
+- a(dd) : Ajouter un tag dans la liste / hiérarchie de tags avec un père optionnel
+$ tag -a couleur // <-- associe à root par défaut
+$ tag -a bleu couleur
+
+- p(rint) : Afficher la hiérarchie
+$ tag -p
+
+- d(eleteà : Supprimer un tag de la liste / hiérarchie
+$ tag -d couleur
+
+------- Tag / fichiers
+- l(ink) : Lier un tag à un fichier // <-- vérifie que tag existe dans la hiérarchie avant de link
+$ tag -l <nomfichier> <nomtag>
+
+- u(nlink) : Suppression tag lié à un fichier
+$ tag -u <nomfichier> <nomtag>
+
+------- Recherche
+- s(earch) : RECHERCHE DE FICHIERS LIÉS À UN TAG !!!
+1. Parser la combinaison de tags donnée en ligne de commande
+2. Chercher dans la hiérarchie les enfants qui sont liées
+3. À l'aide
+
++ IMPLÉMENTER SUIVI DE MOUVEMENT ET SUPPRESSION DES FICHIERS...!!!
+
+*/
+
+void print_error_message() {
+	printf("Wrong use of option or arguments. Enter 'tag' to see manuel page.\n");
+}
+
+void print_command_use() {
+	printf("Welcome to TAGGER, manager of your tagging file system.\n");
+	printf("usage: tag -option [<args>]\n");
+	printf("Options are:\n");
+	printf("    -a tag_name [father_name] : create a tag named tag_name, having father_name as father in the hierarchy.\n"
+		   "                                father_name should already exist in the hierarchy.\n"
+		   "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
+	printf("    -p :                        display the existing tag hierarchy.\n");
+	printf("    -d tag_name :               ask to delete the tag tag_name. If the tag has children, they will be deleted as well.\n");
+	printf("    -l file_path tag_name :     link tag_name to the file designated by file_path.\n"
+		   "                                tag_name should already exist in the hierarchy.\n");
+	printf("    -u file_path tag_name :     unlink tag_name from the designated file.\n");
+	printf("    -s <tag_combinaison> :      return path of file corresponding to the research.\n"
+		   "                                See below for tag combinaison syntax.\n");
+	printf("    -r :                        reset tag-system definitively and delete all tags associated with files.\n");
+}
+
+int main (int argc, char **argv) {
+
+	if (argc == 1) {
+		print_command_use();
+		return 0;
+	}
+
+	if (strlen(argv[1]) != 2 ||
+		argv[1][0] != '-' ||
+		(argv[1][1] != 'a' &&
+		argv[1][1] != 'p' &&
+		argv[1][1] != 'd' &&
+		argv[1][1] != 'l' &&
+		argv[1][1] != 'u' &&
+		argv[1][1] != 's' &&
+		argv[1][1] != 'r')) {
+		print_error_message();
+		return 0;
+	}
+
+	switch(argv[1][1]) {
+		case 'a':
+			if (argc != 3 && argc != 4) {
+				print_error_message();
+				return -1;
+			}
+			if (argc == 3) add_tag(NULL, argv[2]);
+			else if (argc == 4) add_tag(argv[3], argv[2]);
+			break;
+
+		case 'p':
+			if (argc != 2) {
+				print_error_message();
+				return -1;
+			}
+			print_hierarchy();
+			break;
+
+		case 'd':
+			if (argc != 3) {
+				print_error_message();
+				return -1;
+			}
+			delete_tag(argv[2]);
+			break;
+
+		case 'l':
+			if (argc != 4) {
+				print_error_message();
+				return -1;
+			}
+			// <---- vérifier que le fichier donné en paramètre existe
+			if (!tag_exists(argv[3])) {
+				printf("The tag you want to link does not exist in your system yet. Please add it first with `tag -a`\n");
+				return -1;
+			}
+			printf("Linking\n");
+			break;
+
+		case 'u':
+			if (argc != 4) {
+				print_error_message();
+				return -1;
+			}
+			// <---- vérifier que fichier donné en paramètre existe
+			printf("Unlinking\n");
+			break;
+
+		case 's':
+			printf("Searching\n");
+			break;
+
+		case 'r':
+			if (argc != 2) {
+				print_error_message();
+				return -1;
+			}
+			// <---- attention, nécessaire de supprimer tous les tags de tous les fichiers !!
+			clean_hierarchy();
+			break;
+
+		default:
+			printf("Error occured\n");
+			exit(1);
+			break;
+	}
+	return 0;
+}
+
+
+
+
+
+
