@@ -24,7 +24,9 @@ void print_tree(struct tag_t *tag, char * shift); //
 void print_tree_children(struct tag_t *tag, char *shift); //
 void print_tag(struct tag_t *tag); //
 
-
+/*
+Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur.
+*/
 void clean_hierarchy() {
 
 	printf("La supression de la hiérarchie est définitive, voulez-vous supprimer ? Entrez Y(es) ou N(o)\n");
@@ -55,7 +57,9 @@ void clean_hierarchy() {
 // ----------------------------------------------------------------------------------------------
 // ------------------------------ EXISTENCE TAG DANS LA HIÉRARCHIE ------------------------------
 
-
+/* 
+Renvoie 1 si tag_name existe dans la liste et hiérarchie stockées, 0 sinon.
+*/
 int tag_exists(char *tag_name) {
 
 	int fd = open("tag_hierarchy", O_RDWR);
@@ -80,7 +84,7 @@ int tag_exists(char *tag_name) {
 Ajoute un tag dans le système de tags.
 Si "father" est NULL, le tag prend "root" comme père.
 Si tag_name existe déjà dans la liste des tags, 
-Si father est différent de NULL et que le nom n'est pas trouvé, une erreur est renvoyée
+ou si father est différent de NULL et que le nom n'est pas trouvé, une erreur est renvoyée
 **/
 int add_tag(char *father, char *tag_name) {
 
@@ -132,7 +136,11 @@ int add_tag(char *father, char *tag_name) {
 // ----------------------------------------------------------------------------------------------
 // -------------------------------------- SUPPRIMER UN TAG --------------------------------------
 
-
+/*
+Supprime tag_name de la liste et la hiérarchie stockée.
+Si tag_name a des enfants dans la hiérarchie, ils sont automatiquement supprimée.
+L'arborescence en demande de suppression est affichée dans le terminal avant de demander confirmation à l'utilisateur.
+*/
 int delete_tag(char *tag_name) {
 
 	// --- CONSTRUCTION ARBRE ET HASHMAP ---
@@ -195,7 +203,9 @@ int delete_tag(char *tag_name) {
 	return 0;
 }
 
-
+/*
+Prend un arbre de structures tag_t et écrit chaque structure dans le fichier précédemment ouvert avec le descripteur fd.
+*/
 void write_tree(struct tag_t *tag, int fd) { 
 	while(tag != NULL) {
 		struct tag_t tag_bis = *tag;
@@ -211,7 +221,11 @@ void write_tree(struct tag_t *tag, int fd) {
 // ----------------------------------------------------------------------------------------------
 // ------------------------ CONSTRUCTION HIERARCHIE PAR LECTURE FICHIER -------------------------
 
-
+/*
+Ouvre le fichier stockant la liste et la hiérarchie des tags 
+et l'interprète pour construire sa représentation par un arbre de structures tag_t.
+Construit en même temps la HashMap qui associe un nom de tag l'adresse de la structure tag_t le représentant dans l'arbre.
+*/
 void *build_tree() {
 
 	// --- INITIALISATION ---
@@ -270,7 +284,9 @@ void *build_tree() {
 // ----------------------------------------------------------------------------------------------
 // ----------------------------------- FONCTIONS D'AFFICHAGES -----------------------------------
 
-
+/*
+Construit l'arbre de la hiérarchie des tags et l'affiche intégralement en utilisant print_tree()
+*/
 void print_hierarchy() {
 	struct hierarchy *h = build_tree();
 	print_tree(h->tree, "");
@@ -278,7 +294,10 @@ void print_hierarchy() {
 	free(h);
 }
 
-
+/*
+Prend l'adresse d'une structure tag_t, un décalage d'affichage, 
+affiche de façon récursive toute l'arborescence à partir de cette structure en prenant en compte ses frères.
+*/
 void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser ?
 	while(tag != NULL) {
 		printf("%s%s\n", shift, tag->name);
@@ -293,6 +312,10 @@ void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser ?
 }
 
 
+/*
+Prend l'adresse d'une structure tag_t dans l'arbre de la hiérarchie préalablement construit,
+affiche l'arborescende à partire de cette structure sans prendre en compte ses frères.
+*/
 void print_tree_children(struct tag_t *tag, char *shift) {
 	printf("%s%s\n", shift, tag->name);
 	if(tag->children != NULL) {
@@ -303,7 +326,9 @@ void print_tree_children(struct tag_t *tag, char *shift) {
 	}
 }
 
-
+/*
+Prend l'adresse d'une structure tag_t et la présente de manière lisible sur le terminal.
+*/
 void print_tag(struct tag_t *tag) {
 	printf("--PRINTING TAG--\n");
 	printf("Father = %s\n", tag->father);
