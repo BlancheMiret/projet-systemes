@@ -1,4 +1,4 @@
-#include "tag_manager_test.h"
+#include "tag_manager.h"
 
 #define TAGNAME 20 // TAILLE EFFECTIVE : 18 À CAUSE DU CARACTÈRE DE DÉLIMITATION AJOUTÉ. ESPACE NÉCESSAIRE.
 
@@ -91,7 +91,7 @@ int add_tag(char *father, char *tag_name) {
 	// --- VÉRIFICATION LONGUEUR DU NOM DU TAG ---
 
 	if(strlen(tag_name) > 18) {
-		perror("This tag-name is too long. Try something with 18 letters or less.\n");
+		printf("This tag-name is too long. Try something with 18 letters or less.\n");
 		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
 	}
 
@@ -105,14 +105,14 @@ int add_tag(char *father, char *tag_name) {
 	while(read(fd, tag, TAGSIZE) != 0) {
 		//print_tag(tag);
 		if (strcmp(tag->name, tag_name) == 0) {
-			perror("This tag-name already exists.");
+			printf("This tag-name already exists.\n");
 			exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
 		}
 		if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
 	}
 
 	if (father != NULL && !father_exists) {
-		perror("The specified father does not already exist. ");
+		printf("The specified father does not exist in the tag hierarchy. ");
 		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
 	}
 	
@@ -188,8 +188,12 @@ int delete_tag(char *tag_name) {
 	struct tag_t **precedent = &(father->children);
 
 	// 3. Introduire les frères de tag_to_delete en tête de liste des enfants du père
-	while((*precedent)->brother != tag_to_delete) (*precedent) = (*precedent)->brother;
-	(*precedent) -> brother = tag_to_delete->brother;
+	if (*precedent == tag_to_delete) {
+		*precedent = tag_to_delete->brother;
+	} else {
+		while((*precedent)->brother != tag_to_delete) (*precedent) = (*precedent)->brother;
+		(*precedent) -> brother = tag_to_delete->brother;
+	}
 
 	// --- RÉ-ÉCRIRE SUR LE FICHIER ---
 
