@@ -1,13 +1,4 @@
-#include <malloc.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/xattr.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
+#include <create_tags.h>
 
 
 //Associer un tag à un fichier grâce à xattr
@@ -193,18 +184,4 @@ void link_tag_to_file( char * filename,  char *tagname[], int argc){
 
 
 
-/**************** TEST ****************/
 
-int main(int argc, char *argv[])
-{
-     char *buffer;
-    //commande: tag filename tag_name sous_tag1 sous_tag2 sous_tag3 ...etc
-     //Exemple : ./create_tags test.txt couleur bleu bleu_ciel
-     if(argc > 2) link_tag_to_file(argv[1], argv,argc);
-
-
-      //find_path("paths.txt","test10.txt");
-
-	return 0;
-}
- 
