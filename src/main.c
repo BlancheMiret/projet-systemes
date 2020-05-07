@@ -77,8 +77,8 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			if (argc == 3) add_tag(NULL, argv[2]);
-			else if (argc == 4) add_tag(argv[3], argv[2]);
+			if (argc == 3) add_tag(NULL, argv[2]); // <-- ajoute le tag avec root comme père, en vérifiant qu'un tag du même nom n'existe pas déjà 
+			else if (argc == 4) add_tag(argv[3], argv[2]); // <--- ajoute le tag avec le père spécifié, en vérifiant l'existence du père ou qu'un tag du même nom n'existe pas déjà
 			break;
 
 		case 'p':
@@ -86,7 +86,7 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			print_hierarchy();
+			print_hierarchy(); // <-- affiche la hiérarchie des tags créés 
 			break;
 
 		case 'd':
@@ -94,7 +94,7 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			delete_tag(argv[2]);
+			delete_tag(argv[2]); // <-- supprime le tag et ses enfants de la hiérarchie des tags, en demandant confirmation à l'utilisateur
 			break;
 
 		case 'l':
@@ -103,11 +103,14 @@ int main (int argc, char **argv) {
 				return -1;
 			}
 			// <---- vérifier que le fichier donné en paramètre existe
-			if (!tag_exists(argv[3])) {
+			if (!tag_exists(argv[3])) { // <-- ici vérifie que le tag existe dans la hiérarchie
 				printf("The tag you want to link does not exist in your system yet. Please add it first with `tag -a`\n");
 				return -1;
 			}
 			printf("Linking\n");
+			// Attention besoin de connaître le nom du père du tag : fonction à fournir par tag_manager !!
+			// <----- ajouter le tag aux attributs de l'inode du fichier
+			// + si le fichier n'avait pas encore de tag, l'ajouter à la liste des fichiers taggés
 			break;
 
 		case 'u':
@@ -115,12 +118,17 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			// <---- vérifier que fichier donné en paramètre existe
 			printf("Unlinking\n");
+			// <---- vérifier que fichier donné en paramètre existe dans la liste des fichiers taggés
+			// + délier le tag 
+			// + si nombre de tag du fichier = 0 alors supprimer le fichier de la liste des fichiers taggés
 			break;
 
 		case 's':
 			printf("Searching\n");
+			// <---- parser la commbinaison de tags
+			// + obtenir la liste de tous les tags (éventuellement enfants, donc recherche dans la hiérarchie)
+			// + analyser chaque fichier présent dans la liste des fichiers taggés pour voir s'il contient les tags recherchés
 			break;
 
 		case 'r':
@@ -129,7 +137,8 @@ int main (int argc, char **argv) {
 				return -1;
 			}
 			// <---- attention, nécessaire de supprimer tous les tags de tous les fichiers !!
-			clean_hierarchy();
+			// + effacer (qu'il existe, mais qu'il soit vide) le fichier contenant la liste des fichiers taggés
+			clean_hierarchy(); // <-- ceci ne fait que effacer le fichier contenant la hiérarchie
 			break;
 
 		default:
