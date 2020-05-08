@@ -103,12 +103,17 @@ fclose(file);
 
 }
 
-//A TESTER
-//prendre un tableau de tags
-//dans le cas user.root = film on a link_tag(test.txt, root, tab[1] )
-//dans le cas user.couleur = bleu/rouge/jaune
 
-//fonction qui lie des tags à un fichier grâce à xattr, renvoie 0 si les tags ont bien été ajouté, sinon 1
+//fonction qui lie des tags à un fichier grâce à xattr
+
+/* *
+ * @param filename = nom du fichier
+ * @param maintag = nom du tag
+ * @param subtags[] = tableau qui contient tous les sous-tags de maintag
+ * @param subtags_size = taille de subtags
+ * @return renvoie 0 si les tags ont bien été ajouté, sinon 1
+ * */
+
 int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size){
 
   char buff_tag[1024];
