@@ -119,7 +119,7 @@ fclose(file);
 //prendre un tableau de tags
 //dans le cas user.root = film on a link_tag(test.txt, root, tab[1] )
 //dans le cas user.couleur = bleu/rouge/jaune
-int link_tag(char *filename, char * maintag, char * subtags, size_t subtags_size){
+int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size){
 
   char buff_tag[1024];
   memset(buff_tag,'\0',1024);
@@ -140,23 +140,28 @@ int link_tag(char *filename, char * maintag, char * subtags, size_t subtags_size
     //Si on a un seul élément dans le tableau subtags
   if(subtags_size == 1){
 
-    memcpy(all_subtags,&subtags[0],strlen(&subtags[0]));
+    memcpy(all_subtags,subtags[0],strlen(subtags[0]));
 
   } 
+
 
   if(subtags_size > 1){
 
     for(int i=0; i<subtags_size; i++){
 
-      asprintf(&all_subtags, " / %s", subtags[i]);
+      strcat(all_subtags,subtags[i]); 
+      strcat(all_subtags,"/"); 
 
+
+      strcat(all_subtags,"\0"); 
     }
   }
+  
 
 
   
 
-    //printf("%s\n",arr);
+  printf("ALL SUBTAGS %s\n",all_subtags);
    // printf("%d",(int) strlen(arr));
   int fd = open(filename, O_RDWR);
 
@@ -189,7 +194,7 @@ int link_tag(char *filename, char * maintag, char * subtags, size_t subtags_size
 
     //Si les tags existent déjà, on les remplace
 
-  if(strcmp(buff_tag, arr) == 0){
+  if(strcmp(buff_tag, all_subtags) == 0){
 
    if(fsetxattr(fd,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
 
@@ -289,11 +294,18 @@ void link_tag( char * filename,  char *tagname[], int argc){
 **/
 
 
-int main(int argc, char const *argv[])
-{
 
+/**int main(int argc, char const *argv[])
+{ char *subtags[3];
+  
+  subtags[0]="rouge";
+  subtags[1]="bleu";
+  subtags[2]="jaune";
+
+ //printf("%s\n", subtags[0]);
+ link_tag("test12.txt", "couleur", subtags, 3);
   return 0;
-}
+}**/
 
 
 
