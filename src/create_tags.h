@@ -12,4 +12,4 @@
 
 int find_path(char * file_paths, char * file_to_tag );
 int add_path(char * filename);
-void link_tag_to_file( char * filename,  char *tagname[], int argc);
+int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size);
