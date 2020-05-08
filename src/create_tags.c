@@ -1,16 +1,4 @@
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE 1
-#endif
-
-#include <malloc.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/xattr.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "create_tags.h"
 
 
 //Associer un tag à un fichier grâce à xattr
@@ -119,6 +107,8 @@ fclose(file);
 //prendre un tableau de tags
 //dans le cas user.root = film on a link_tag(test.txt, root, tab[1] )
 //dans le cas user.couleur = bleu/rouge/jaune
+
+//fonction qui lie des tags à un fichier grâce à xattr, renvoie 0 si les tags ont bien été ajouté, sinon 1
 int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size){
 
   char buff_tag[1024];
@@ -183,6 +173,7 @@ int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_si
 
     else {
       perror("error set: ");
+      return 1;
     }
 
   }
@@ -205,93 +196,14 @@ int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_si
    
    else {
     perror("error set: ");
+    return 1;
   }
 
 }
 
-
+return 0;
 }
-/**
-void link_tag( char * filename,  char *tagname[], int argc){
 
-    char buff_tag[1024];
-    memset(buff_tag,'\0',1024);
-
-    //Pour avoir "user.nom_du_tag"
-    char usertag[20];
-    char *user = "user.";
-    memset(usertag, '\0', 20);
-    memcpy(usertag,user,strlen(user));  
-    memcpy(usertag+strlen(user),tagname[2] ,strlen(tagname[2]));
-    //printf("%s\n",usertag);    
-
-   //ajouter "/" à chaque sous-tag
-
-    char *arr=malloc(100*sizeof(char));
-
-    for(int i=2; i<argc-1; i++){
-        strcat(arr,tagname[i+1]); 
-        strcat(arr,"/"); 
- 
-
-        strcat(arr,"\0"); 
-    }
-
-    //printf("%s\n",arr);
-   // printf("%d",(int) strlen(arr));
-    int fd = open(filename, O_RDWR);
-    
-    //buff_tag contient la valeur de l'attributs étendus, 
-    //exemple: on a user.couleur = bleu/bleu_ciel, buff_tag va contenir bleu/bleu_ciel
-
-    if(getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) == -1){
-
-        printf("le tag n'existe pas!!");
-
-        if(fsetxattr(fd,usertag,arr,strlen(arr),XATTR_CREATE) > -1){
-
-          printf("fichier taggé! \n");
-
-          if(find_path == 0){
-            add_path(filename);
-          }
-          
-
-        }   
-   
-        else {
-          perror("error set: ");
-        }
-   
-    }
-
-    else{
-
-        printf("value of tag %s : %s\n", usertag ,buff_tag );
-    }
-    
-    //Si les tags existent déjà, on les remplace
-
-    if(strcmp(buff_tag, arr) == 0){
-         
-         if(fsetxattr(fd,usertag,arr,strlen(arr),XATTR_REPLACE) > -1){
-
-             printf("tag set!\n");
-
-             if(find_path == 0){
-                 add_path(filename);
-             }
-        }   
-   
-        else {
-          perror("error set: ");
-        }
-
-    }
-
-        
-}
-**/
 
 
 
