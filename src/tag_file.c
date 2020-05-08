@@ -211,10 +211,18 @@ return 0;
 
 /* *
  * @param filename = nom du fichier
- * @param tagnale = nom du tag qu'on va supprimer
+ * @param tag = nom du tag
+ * @param subtags[] = tableau qui contient tous les sous-tags de maintag
+ * @param subtags_size = taille de subtags
  * @return renvoie 0 si le tag a bien été supprimé, sinon 1
  * */
 
+
+//Dans le cas où on 
+//user.root = couleur/roman/film
+
+//On cherche si user.couleur existe, si oui on supprime tout
+//user.couleur=bleu/rouge/vert
 
 int unlink_tag(char * filename, char * tagname){
 
@@ -249,54 +257,54 @@ int unlink_tag(char * filename, char * tagname){
 
 
    //concaténation de "user."" avec le nom du père, pour récupérer les fils avec getxattr
- memset(usertag, '\0', 100);
- memcpy(usertag,user,strlen(user));  
- memcpy(usertag+strlen(user), father ,strlen(father));
+   memset(usertag, '\0', 100);
+   memcpy(usertag,user,strlen(user));  
+   memcpy(usertag+strlen(user), father ,strlen(father));
 
- val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) ;
+   val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) ;
 
     //Dans le cas où le tag a des sous-tags
- if(val > 0){
+   if(val > 0){
 
-  int init_size = strlen(buff_tag);
-  char delim[] = "/";
+    int init_size = strlen(buff_tag);
+    char delim[] = "/";
 
-  char *ptr = strtok(buff_tag, delim);
+    char *ptr = strtok(buff_tag, delim);
 
-  while(ptr != NULL)
-  {
-    printf("'%s'\n", ptr);
+    while(ptr != NULL)
+    {
+      printf("'%s'\n", ptr);
 
-    if(strcmp(ptr,tagname) != 0){
+      if(strcmp(ptr,tagname) != 0){
+        
+        strcat(all_subtags,ptr); 
+        strcat(all_subtags,"/"); 
 
-      strcat(all_subtags,ptr); 
-      strcat(all_subtags,"/"); 
-
-    }
+      }
     
 
-    ptr = strtok(NULL, delim);
-  }
-
+      ptr = strtok(NULL, delim);
+    }
+    
     //all_subtags = contient tous les sous-tags sauf tagname
-  strcat(all_subtags,"\0");
+    strcat(all_subtags,"\0");
     //printf("all_subtags  %s\n",all_subtags);
-
+     
     //On attribut les sous-tags sans tagname
-  if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
+    if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
 
-   printf("tag set!\n");
-   add_path(filename);
+     printf("tag set!\n");
+     add_path(filename);
+     
+   }   
+   
+   else {
+    perror("error set: ");
+    return 1;
+  }
+    
 
- }   
-
- else {
-  perror("error set: ");
-  return 1;
-}
-
-
-}
+  }
 
 
 return 0;
