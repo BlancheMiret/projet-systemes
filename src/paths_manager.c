@@ -4,6 +4,8 @@
 
 
 
+
+
 //fonction pour vérifier si le chemin existe déjà
 
 /* *
@@ -48,7 +50,7 @@ int find_path(char * file_paths, char * file_to_tag ){
 
 /* *
  * @param filename = nom du fichier qu'on veut tagger
- * @return renvoie 1 si le chemin existe sinon 0
+ * @return renvoie 1 si le chemin a été ajouté dans le fichier paths.txt sinon 0
  * */
 
 int add_path(char * filename){
@@ -56,7 +58,7 @@ int add_path(char * filename){
     //On récupère le chemin d'accès absolu du fichier
   char *path = realpath(filename, NULL);
 
-  if(path == NULL){
+ if(path == NULL){
    printf("cannot find file with name[%s]\n", filename);
  } 
  else{
@@ -73,7 +75,7 @@ int add_path(char * filename){
  if (file == NULL)
  {
   fprintf(stderr, "cannot open %s for appending\n", filename_paths);
-  return -1;
+  return 0;
 }
 
     //fseek: positionne le "curseur de fichier" à une distance comptée en octets à partir du début, de la fin ou de la position courante 
@@ -87,11 +89,13 @@ if (size == 0) {
   printf("file is empty !\n");
   fprintf(file, "%s", path);
 }
+
 else {
 
   if(find_path("paths.txt", filename) == 1){
 
    printf("Le chemin existe déjà!\n");
+   return 0;
  }
 
  else {
@@ -99,8 +103,10 @@ else {
 }
 
 }
+
 fclose(file);
 
+return 1;
 
 
 }
