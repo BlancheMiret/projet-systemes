@@ -2,8 +2,16 @@
 #include "paths_manager.h"
 
 
- //fonction pour vérifier si le chemin existe déjà
-//renvoie 1 si le chemin existe sinon 0
+
+
+//fonction pour vérifier si le chemin existe déjà
+
+/* *
+ * @param file_paths = nom du fichier qui contient les chemins des fichiers taggés
+ * @param file_to_tag = nom du fichier qu'on veut tagger
+ * @return renvoie 1 si le chemin existe sinon 0
+ * */
+
 int find_path(char * file_paths, char * file_to_tag ){
 
   char *path = realpath(file_to_tag, NULL);
@@ -36,7 +44,13 @@ int find_path(char * file_paths, char * file_to_tag ){
 }
 
 
-//Fonction qui ajoute le chemin du fichier taggé dans un fichier .txt
+//Fonction qui ajoute le chemin du fichier taggé dans un fichier paths.txt
+
+/* *
+ * @param filename = nom du fichier qu'on veut tagger
+ * @return renvoie 1 si le chemin existe sinon 0
+ * */
+
 int add_path(char * filename){
 
     //On récupère le chemin d'accès absolu du fichier
@@ -82,7 +96,7 @@ else {
 
  else {
   fprintf(file, "\n%s", path);
- }
+}
 
 }
 fclose(file);
