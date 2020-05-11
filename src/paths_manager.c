@@ -6,7 +6,6 @@
 
 /* *
  * @param filename = nom du fichier 
- * @param file_to_tag = nom du fichier qu'on veut tagger
  * @return renvoie le chemin absolu du fichier sinon NULL
  * */
 
