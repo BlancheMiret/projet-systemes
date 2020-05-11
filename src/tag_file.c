@@ -1,4 +1,12 @@
-#include "create_tags.h"
+#include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/xattr.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 //Associer un tag à un fichier grâce à xattr
@@ -23,7 +31,7 @@
 // link_tag(char *filename, char * maintag, char * subtags)
 
 
-
+//mettre dans un autre fichier = paths_manager.c (à revoir)
 
  //fonction pour vérifier si le chemin existe déjà
 //renvoie 1 si le chemin existe sinon 0
@@ -96,7 +104,18 @@ if (size == 0) {
   printf("file is empty !\n");
   fprintf(file, "%s", path);
 }
-else fprintf(file, "\n%s", path);
+else {
+
+  if(find_path("paths.txt", filename) == 1){
+
+   printf("Le chemin existe déjà!\n");
+ }
+
+ else {
+  fprintf(file, "\n%s", path);
+ }
+
+}
 fclose(file);
 
 
@@ -104,108 +123,120 @@ fclose(file);
 }
 
 
+
 //fonction qui lie des tags à un fichier grâce à xattr
 
 /* *
  * @param filename = nom du fichier
- * @param maintag = nom du tag
- * @param subtags[] = tableau qui contient tous les sous-tags de maintag
- * @param subtags_size = taille de subtags
- * @return renvoie 0 si les tags ont bien été ajouté, sinon 1
+ * @param tags[] = tableau qui contient tous les tags à ajouter
+ * @param subtags_size = taille de tags
+ * @return renvoie 1 si les tags ont bien été ajouté, sinon 0
  * */
 
-int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size){
+int link_tag(char *filename, char * tags[], size_t tags_size){
 
+  //voir le cas où le tag existe déjà
+  //vérifier si le chemin existe déjà dans paths.txt
+  //si le fichier il a aucun tag 
+
+  int val;
   char *path = realpath(filename, NULL);
   char buff_tag[1024];
   memset(buff_tag,'\0',1024);
 
+  //on déclare all_tags qui va contenir tous les tags concaténés ou non
+  char *all_tags =malloc(1024*sizeof(char));
+  memset(all_tags,'\0',1024);
+
   //Pour avoir "user.nom_du_tag"
-  char usertag[100];
-  char *user = "user.";
-  memset(usertag, '\0', 100);
-  memcpy(usertag,user,strlen(user));  
-  memcpy(usertag+strlen(user),maintag ,strlen(maintag));
-  printf("%s\n",usertag);    
+  char *usertag = "user.tag";
 
+  if(tags_size == 1){
 
-   //on déclare all_subtags qui va contenir tous les sous tags concaténés
-  char *all_subtags =malloc(100*sizeof(char));
-  memset(all_subtags,'\0',100);
+    strcat(all_tags,tags[0]);
+    strcat(all_tags,"/"); 
+  
+  }
 
-    //Si on a un seul élément dans le tableau subtags
-  if(subtags_size == 1){
+  if(tags_size > 1){
 
-    memcpy(all_subtags,subtags[0],strlen(subtags[0]));
+    for(int i=0; i<tags_size; i++){
 
-  } 
+      strcat(all_tags,tags[i]); 
+      strcat(all_tags,"/");
+      strcat(all_tags,"\0"); 
 
-
-  if(subtags_size > 1){
-
-    for(int i=0; i<subtags_size; i++){
-
-      strcat(all_subtags,subtags[i]); 
-      strcat(all_subtags,"/"); 
-
-
-      strcat(all_subtags,"\0"); 
     }
+
   }
   
+  //printf("ALL TAGS %s\n",all_tags);
 
-  printf("ALL SUBTAGS %s\n",all_subtags);
-   // printf("%d",(int) strlen(arr));
   int fd = open(filename, O_RDWR);
 
-    //buff_tag contient la valeur de l'attributs étendus, 
-    //exemple: on a user.couleur = bleu/bleu_ciel, buff_tag va contenir bleu/bleu_ciel
+  //buff_tag contient la valeur de l'attributs étendus, 
+  //exemple: on a user.tag = bleu/bleu_ciel, buff_tag va contenir bleu/bleu_ciel
+  
+  val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
+  
+  //Cas où user.tag n'existe pas ou user.tag ne contient rien
+  if(val == -1 || val == 0){
 
-  if(getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) == -1){
+    printf("user.tag n'existe pas!!");
 
-    printf("le tag n'existe pas!!");
-
-    if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_CREATE) > -1){
+    if(setxattr(path,usertag,all_tags,strlen(all_tags),XATTR_CREATE) > -1){
 
       printf("fichier taggé! \n");
 
+      //Vérifier dans cette fonction si le chemin du fichier existe déjà
       add_path(filename);
+
+      return 1;
       
 
     }   
 
     else {
       perror("error set: ");
-      return 1;
+      return 0;
     }
 
   }
 
-  else{
+  //Cas où on a déjà un ou plusieurs tags, on ajoute le nouveau tag à la fin
+  if(val > 0){
 
-    printf("value of tag %s : %s\n", usertag ,buff_tag );
+    strcat(buff_tag,all_tags);
+    strcat(buff_tag,"\0"); 
+
+    if(setxattr(path,usertag,buff_tag,strlen(buff_tag),XATTR_REPLACE) > -1){
+
+      printf("fichier taggé! \n");
+
+      //Vérifier dans cette fonction si le chemin du fichier existe déjà
+      add_path(filename);
+
+      return 1;
+      
+
+    }   
+
+    else {
+      perror("error set: ");
+      return 0;
+    }
+
   }
 
-    //Si les tags existent déjà, on les remplace
 
-  if(strcmp(buff_tag, all_subtags) == 0){
+  return 0;
 
-   if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
 
-     printf("tag set!\n");
-     add_path(filename);
-     
-   }   
-   
-   else {
-    perror("error set: ");
-    return 1;
-  }
+
 
 }
 
-return 0;
-}
+
 
 //fonction qui supprime un tag du fichier
 
@@ -223,6 +254,17 @@ return 0;
 
 //On cherche si user.couleur existe, si oui on supprime tout
 //user.couleur=bleu/rouge/vert
+/**
+int unlink_tag(char * filename, char * tags[]){
+
+   //si on supprime le dernier tag on supprime le chemin dans 
+  // user.tag = couleur
+
+}
+
+
+**/
+/**
 
 int unlink_tag(char * filename, char * tagname){
 
@@ -257,54 +299,54 @@ int unlink_tag(char * filename, char * tagname){
 
 
    //concaténation de "user."" avec le nom du père, pour récupérer les fils avec getxattr
-   memset(usertag, '\0', 100);
-   memcpy(usertag,user,strlen(user));  
-   memcpy(usertag+strlen(user), father ,strlen(father));
+ memset(usertag, '\0', 100);
+ memcpy(usertag,user,strlen(user));  
+ memcpy(usertag+strlen(user), father ,strlen(father));
 
-   val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) ;
+ val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) ;
 
     //Dans le cas où le tag a des sous-tags
-   if(val > 0){
+ if(val > 0){
 
-    int init_size = strlen(buff_tag);
-    char delim[] = "/";
+  int init_size = strlen(buff_tag);
+  char delim[] = "/";
 
-    char *ptr = strtok(buff_tag, delim);
+  char *ptr = strtok(buff_tag, delim);
 
-    while(ptr != NULL)
-    {
-      printf("'%s'\n", ptr);
+  while(ptr != NULL)
+  {
+    printf("'%s'\n", ptr);
 
-      if(strcmp(ptr,tagname) != 0){
-        
-        strcat(all_subtags,ptr); 
-        strcat(all_subtags,"/"); 
+    if(strcmp(ptr,tagname) != 0){
 
-      }
-    
+      strcat(all_subtags,ptr); 
+      strcat(all_subtags,"/"); 
 
-      ptr = strtok(NULL, delim);
     }
     
+
+    ptr = strtok(NULL, delim);
+  }
+
     //all_subtags = contient tous les sous-tags sauf tagname
-    strcat(all_subtags,"\0");
+  strcat(all_subtags,"\0");
     //printf("all_subtags  %s\n",all_subtags);
-     
+
     //On attribut les sous-tags sans tagname
-    if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
+  if(setxattr(path,usertag,all_subtags,strlen(all_subtags),XATTR_REPLACE) > -1){
 
-     printf("tag set!\n");
-     add_path(filename);
-     
-   }   
-   
-   else {
-    perror("error set: ");
-    return 1;
-  }
-    
+   printf("tag set!\n");
+   add_path(filename);
 
-  }
+ }   
+
+ else {
+  perror("error set: ");
+  return 1;
+}
+
+
+}
 
 
 return 0;
@@ -313,20 +355,20 @@ return 0;
 
 }
 
-/**
+**/
 int main(int argc, char const *argv[])
 { char *subtags[3];
 
-  subtags[0]="rouge";
-  subtags[1]="bleu";
-  subtags[2]="jaune";
+  subtags[0]="film";
+
 
  //printf("%s\n", subtags[0]);
-  //link_tag("test12.txt", "couleur", subtags, 3);
-  unlink_tag("test12.txt", "bleu");
+  link_tag("test1.txt", subtags, 1);
+
+  //unlink_tag("test12.txt", "bleu");
   return 0;
 }
-**/
+
 
 
 
