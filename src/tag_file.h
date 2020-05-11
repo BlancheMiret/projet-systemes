@@ -12,5 +12,5 @@
 
 int find_path(char * file_paths, char * file_to_tag );
 int add_path(char * filename);
-int link_tag(char *filename, char * maintag, char * subtags[], size_t subtags_size);
+int link_tag(char *filename, char * tags[], size_t tags_size);
 int unlink_tag(char * filename, char * tagname);
