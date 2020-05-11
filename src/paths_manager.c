@@ -2,8 +2,30 @@
 #include "paths_manager.h"
 
 
+//fonction qui renvoie le chemin abosolu d'un fichier
 
+/* *
+ * @param filename = nom du fichier 
+ * @param file_to_tag = nom du fichier qu'on veut tagger
+ * @return renvoie le chemin absolu du fichier sinon NULL
+ * */
 
+char * absolute_path(char * filename){
+
+  char *path = realpath(filename, NULL);
+
+  if(path == NULL){
+   printf("real path error: %s\n", strerror(errno));
+   return NULL;
+   // printf("cannot find file with name[%s]\n", filename);
+ } 
+
+ else{
+   printf("path --> %s \n", path);
+   return path;
+ }
+
+}
 
 
 //fonction pour vérifier si le chemin existe déjà
@@ -58,7 +80,7 @@ int add_path(char * filename){
     //On récupère le chemin d'accès absolu du fichier
   char *path = realpath(filename, NULL);
 
- if(path == NULL){
+  if(path == NULL){
    printf("cannot find file with name[%s]\n", filename);
  } 
  else{
