@@ -63,12 +63,12 @@ int research(int argc, char **argv) {
 
 	// 3. Filtrer la liste de documents taggés
 
-	// ouvir le fichier
+	// ouvir le fichier de la liste des paths des fichiers taggés
 	// le parcourir 
 
 	/*
 
-	pour chaque fichier {
+	pour chaque path {
 
 		pour chaque liste de tab {
 	
