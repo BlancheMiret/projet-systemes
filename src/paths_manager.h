@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int find_path(char * file_paths, char * file_to_tag );
 
+char * absolute_path(char * filename);
+int find_path(char * file_paths, char * file_to_tag );
 int add_path(char * filename);
