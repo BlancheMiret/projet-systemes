@@ -16,11 +16,22 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 
+#define TAGNAME 20 // TAILLE EFFECTIVE : 18 À CAUSE DU CARACTÈRE DE DÉLIMITATION AJOUTÉ. ESPACE NÉCESSAIRE.
+
+struct tag_node {
+	char				name[TAGNAME];
+	struct tag_node		*next;
+};
+
+// Renvoie un pointeur vers un tag_node, liste chainée d'enfants de tag_name
+void *get_tag_children(char *tag_name);
+
 // Efface le fichier contenant la hiérarchie en demandant confirmation à l'utilisateur
 void clean_hierarchy();
 
 // Affiche la hiérarchie des tags créés
 void print_hierarchy();
+void print_list(struct tag_node *tag_list); // à SUPPRIMER ?
 
 // Renvoie 1 si le tag de nom "tag_name" existe dans la hiérarchie, 0 sinon
 int tag_exists(char *tag_name);

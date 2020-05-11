@@ -1,7 +1,5 @@
 #include "tag_manager.h"
 
-#define TAGNAME 20 // TAILLE EFFECTIVE : 18 À CAUSE DU CARACTÈRE DE DÉLIMITATION AJOUTÉ. ESPACE NÉCESSAIRE.
-
 struct tag_t {
 	char			father[TAGNAME];
 	char			name[TAGNAME];
@@ -51,6 +49,63 @@ void clean_hierarchy() {
 
 	FILE *f = fopen("tag_hierarchy", "w");
 	fclose(f);
+}
+
+// ----------------------------------------------------------------------------------------------
+// -------------------------------- OBTENIR LES ENFANTS D'UN TAG --------------------------------
+
+void print_list(struct tag_node *tag_list) {
+	struct tag_node *tag = tag_list;
+	while(tag != NULL) {
+		printf("%s\n", tag->name);
+		tag = tag->next;
+	}
+}
+
+
+void write_tag_list(struct tag_t *tag, struct tag_node **list) {
+	while(tag != NULL) {
+		struct tag_node *temp = *list; // temp est la liste
+		*list = malloc(sizeof(struct tag_node));
+		memcpy((*list)->name, tag->name, TAGNAME);
+		(*list)->next = temp;
+
+		if(tag->children != NULL) write_tag_list(tag->children, list);
+
+		tag = tag->brother;
+	}
+}
+
+void *get_tag_children(char *tag_name) {
+
+	// --- CONSTRUCTION ARBRE ET HASHMAP ---
+
+	struct hierarchy *h = build_tree(); 
+	GHashTable *point_table = h->point_table;
+
+	// 1. Avec la hashmap, trouver l'adresse du tag dans l'arbre
+	struct tag_t *tag = g_hash_table_lookup(point_table, tag_name);
+
+	if (tag == NULL) {
+		perror("The tag you want the children from does not exist.\n");  // <---- OK VERIFICATION EXISTENCE TAG
+		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+	}
+
+	// -- PARCOURIR L'ARBRE POUR CONSTRUIRE LISTE CHAÎNÉE
+
+	if (tag->children == NULL) return NULL;
+	tag = tag->children;
+	struct tag_node *list = NULL;
+
+	write_tag_list(tag, &list);
+
+	// -- LIBÉRER MÉMOIRE
+
+	g_hash_table_destroy(point_table);
+	free(h);
+
+	// -- RENVOYER LA LISTE
+	return list;
 }
 
 
@@ -112,7 +167,7 @@ int add_tag(char *father, char *tag_name) {
 	}
 
 	if (father != NULL && !father_exists) {
-		printf("The specified father does not exist in the tag hierarchy. ");
+		printf("The specified father does not exist in the tag hierarchy.\n");
 		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
 	}
 	
