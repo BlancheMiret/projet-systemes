@@ -195,20 +195,20 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 	char *ptr = NULL;
 	int count=0;
 
-
+/**
 	struct tag_node *tag =(struct tag_node *) malloc(sizeof(struct tag_node));
 	memcpy(tag->name, "jaune", strlen("jaune"));
 	tag->next = (struct tag_node *) malloc(sizeof(struct tag_node));
 	memcpy(tag->next->name, "rouge", strlen("rouge"));
 	tag->next->next = (struct tag_node *) malloc(sizeof(struct tag_node));
 	memcpy(tag->next->next->name, "bleu", strlen("bleu"));
-	tag->next->next->next = NULL;
+	tag->next->next->next = NULL; **/
 
 
 	for (int i=0; i<tags_size;i++){
 
-	  //children_list=get_tag_children(tags[i]);
-		children_list=tag;
+	  children_list=get_tag_children(tags[i]);
+		//children_list=tag;
 		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag)) ;
 		buff_tag[val] = '\0';
 		printf("FIRST buff_tag %s\n ", buff_tag);
@@ -408,7 +408,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 
 
 
-
+/**
 int main(int argc, char const *argv[])
 { char *tags[1];
 
@@ -422,6 +422,8 @@ int main(int argc, char const *argv[])
 	//unlink_tag("test1.txt", tags,1);
 	return 0;
 }
+
+**/
 
 
 
