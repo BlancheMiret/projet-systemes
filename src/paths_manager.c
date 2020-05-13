@@ -15,12 +15,11 @@ int check_file_existence(char * filename){
 
 	if( access( filename, F_OK ) == -1 ) {
 
-	  printf("le fichier n'existe pas!!!\n");
 		printf("access error: %s\n", strerror(errno));
 		return 0;
 	}  
 
-		printf("le fichier existe!!!\n");
+		//printf("le fichier existe!!!\n");
 		return 1;
 	
 
@@ -101,6 +100,12 @@ int find_path(char * file_paths, char * file_to_tag ){
  * */
 
 int add_path(char * filename){
+
+	if(check_file_existence(filename) == 0){
+	
+		printf("le fichier n'existe pas !\n");
+		return 0;
+	}
 
 		//On récupère le chemin d'accès absolu du fichier
 	char *path = realpath(filename, NULL);
