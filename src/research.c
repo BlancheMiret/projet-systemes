@@ -1,7 +1,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "tag_manager.h"
+#include "tag_hierarchy.h"
 
 struct tag_l {
 	int 			must_be; // <-- à 1 si oui (dans ce cas disjonction), 0 sinon (dans ce cas conjonction)

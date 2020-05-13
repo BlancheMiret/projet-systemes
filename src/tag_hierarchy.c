@@ -1,4 +1,4 @@
-#include "tag_manager.h"
+#include "tag_hierarchy.h"
 
 struct tag_t {
 	char			father[TAGNAME];
