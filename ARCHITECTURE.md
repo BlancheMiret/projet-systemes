@@ -9,7 +9,7 @@ données et les algorithmes implémentés).
 #### Architecture globale
 Dépendances des modules
 - `main.c.` centralise les actions des différents modules selon l'option et les arguments entrée par l'utilisateur
-- `tag_manager.c` gère le stockage, la lecture et l'écriture de la hiérarchie des tags
+- `tag_hierarchy.c` gère le stockage, la lecture et l'écriture de la hiérarchie des tags
 - `tag_file.c` gère l'attribution des tags aux fichiers avec `xattr`
 - `path_mangager.c`gère le fichier contenant la liste des fichiers taggés
 - `research.c`fournit la fonction de recherche répondant à celle d'un utilisateur
