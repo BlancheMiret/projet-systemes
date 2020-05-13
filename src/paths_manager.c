@@ -162,3 +162,70 @@ return 1;
 
 
 }
+
+
+//fonction qui supprime un chemin absolu d'un fichier
+
+/* *
+* @param filename = nom du fichier
+* @return renvoie 1 si le chemin a bien été supprimé, sinon 0
+* */
+
+int delete_path(char * filename){
+
+  
+  if(check_file_existence(filename) == 0){
+	
+		printf("le fichier n'existe pas !\n");
+		return 0;
+	}
+
+  if(find_path("paths.txt",filename)==0){
+
+     	printf("Le chemin n'existe pas dans paths.txt!\n");
+     	return 0;
+   }
+
+  char *path = absolute_path(filename);
+  
+  char *line_buf = NULL;
+  size_t line_buf_size = 0;
+  ssize_t line_size;
+  int line_count = 0;
+  char *paths_file ="paths.txt";
+  char *temp_file = "temp.txt";
+  FILE *file = fopen(paths_file, "r");
+  FILE *file2 = fopen(temp_file, "ab+");
+  //retourne le nombre de caractères de la première ligne
+  line_size = getline(&line_buf, &line_buf_size, file);
+  
+  while (line_size>= 0) {
+
+    //printf("LINE %s",line_buf );
+    
+    if (strncmp(path, line_buf,strlen(line_buf)-1) != 0) {
+   
+        fprintf(file2, "%s", line_buf);
+   }
+
+   //ligne suivante:
+   line_size = getline(&line_buf, &line_buf_size, file);
+ }
+
+   
+
+ 	fclose(file);
+ 	fclose(file2);
+ 	remove(paths_file);
+ 	rename(temp_file, paths_file); 
+ 	file = fopen(paths_file, "r+");
+
+    fseeko(file,-1,SEEK_END);
+    off_t position = ftello(file);
+    ftruncate(fileno(file), position);
+    fclose(file);
+    
+
+ return 1;
+  
+}
