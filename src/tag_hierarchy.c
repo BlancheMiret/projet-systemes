@@ -246,7 +246,7 @@ int delete_tag(char *tag_name) {
 	if (*precedent == tag_to_delete) {
 		*precedent = tag_to_delete->brother;
 	} else {
-		while((*precedent)->brother != tag_to_delete) (*precedent) = (*precedent)->brother;
+		while((*precedent)->brother != tag_to_delete) precedent = &(*precedent)->brother;
 		(*precedent) -> brother = tag_to_delete->brother;
 	}
 
