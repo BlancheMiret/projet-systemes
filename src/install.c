@@ -21,7 +21,8 @@ void erreur(char *msg)
 }
 int main(int argc, char const *argv[])
 {
-	
+
+    execlp("sudo","sudo", "apt-get", "install", "xattr", NULL);	
     const char *HOME = getenv("HOME");
     if (HOME == NULL)
         erreur("ERREUR getenv\n");
