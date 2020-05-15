@@ -1,3 +1,16 @@
+#include <fcntl.h> 
+#include <unistd.h> 
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h> 
+
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+
+#include <glib.h>
+#include <glib/gprintf.h>
+
 #include "tag_hierarchy.h"
 
 struct tag_t {
@@ -22,8 +35,8 @@ void print_tree(struct tag_t *tag, char * shift); //
 void print_tree_children(struct tag_t *tag, char *shift); //
 void print_tag(struct tag_t *tag); //
 
-/*
-Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur.
+/* 
+Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur. 
 */
 void clean_hierarchy() {
 
@@ -40,7 +53,7 @@ void clean_hierarchy() {
 		case 'n':
 		case 'N':
 			printf("Suppression annulée.\n");
-			exit(0); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+			exit(0);
 		default :
 			printf("Veuillez entrez Y ou y pour valider la suppression, N ou n pour l'annuler.\n");
 			while(answer != '\n') scanf("%c", &answer);
@@ -54,6 +67,9 @@ void clean_hierarchy() {
 // ----------------------------------------------------------------------------------------------
 // -------------------------------- OBTENIR LES ENFANTS D'UN TAG --------------------------------
 
+/*
+Affiche une liste chaînée de tag_node
+*/
 void print_list(struct tag_node *tag_list) {
 	struct tag_node *tag = tag_list;
 	while(tag != NULL) {
@@ -62,7 +78,9 @@ void print_list(struct tag_node *tag_list) {
 	}
 }
 
-
+/*
+Construit la liste chaînée de struct tag_node avec une tête de lecture
+*/
 void write_tag_list(struct tag_t *tag, struct tag_node **list) {
 	while(tag != NULL) {
 		struct tag_node *temp = *list; // temp est la liste
@@ -76,6 +94,9 @@ void write_tag_list(struct tag_t *tag, struct tag_node **list) {
 	}
 }
 
+/* 
+Renvoie une liste chaînée de struct tag_node des enfants de tag_name 
+*/
 void *get_tag_children(char *tag_name) {
 
 	// --- CONSTRUCTION ARBRE ET HASHMAP ---
@@ -87,8 +108,8 @@ void *get_tag_children(char *tag_name) {
 	struct tag_t *tag = g_hash_table_lookup(point_table, tag_name);
 
 	if (tag == NULL) {
-		perror("The tag you want the children from does not exist.\n");  // <---- OK VERIFICATION EXISTENCE TAG
-		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+		perror("The tag you want the children from does not exist.\n");
+		exit(1);
 	}
 
 	// -- PARCOURIR L'ARBRE POUR CONSTRUIRE LISTE CHAÎNÉE
@@ -105,6 +126,7 @@ void *get_tag_children(char *tag_name) {
 	free(h);
 
 	// -- RENVOYER LA LISTE
+
 	return list;
 }
 
@@ -147,28 +169,27 @@ int add_tag(char *father, char *tag_name) {
 
 	if(strlen(tag_name) > 18) {
 		printf("This tag-name is too long. Try something with 18 letters or less.\n");
-		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+		exit(1);
 	}
 
-	// --- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --- // <-- n'utilise pas la fonction de recherche puisque cherche père en même temps...
+	// --- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --- 
 
 	int fd = open("tag_hierarchy", O_RDWR);
-	int father_exists = FALSE; // défini dans glib library
+	int father_exists = FALSE;
 
 	struct tag_t *tag = malloc(TAGSIZE);
 
 	while(read(fd, tag, TAGSIZE) != 0) {
-		//print_tag(tag);
 		if (strcmp(tag->name, tag_name) == 0) {
 			printf("This tag-name already exists.\n");
-			exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+			exit(1);
 		}
 		if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
 	}
 
 	if (father != NULL && !father_exists) {
 		printf("The specified father does not exist in the tag hierarchy.\n");
-		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+		exit(1);
 	}
 	
 	// --- ÉCRITURE DU TAG DANS LA HIERARCHIE ---
@@ -210,8 +231,8 @@ int delete_tag(char *tag_name) {
 	struct tag_t *tag_to_delete = g_hash_table_lookup(point_table, tag_name);
 
 	if (tag_to_delete == NULL) {
-		perror("The tag you want to delete does not exist.\n");  // <---- OK VERIFICATION EXISTENCE TAG
-		exit(1); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+		perror("The tag you want to delete does not exist.\n");
+		exit(1); 
 	}
 
 	printf("Vous allez supprimer cette arborescence de tag :\n");
@@ -229,7 +250,7 @@ int delete_tag(char *tag_name) {
 		case 'n':
 		case 'N':
 			printf("Suppression annulée.\n");
-			exit(0); //<------------------------------- ATTENTION RETOUR / GESTION D'ERREUR À PRÉCISER
+			exit(0);
 		default :
 			printf("Veuillez entrez Y ou y pour valider la suppression, N ou n pour l'annuler.\n");
 			while(answer != '\n') scanf("%c", &answer);
@@ -253,7 +274,7 @@ int delete_tag(char *tag_name) {
 	// --- RÉ-ÉCRIRE SUR LE FICHIER ---
 
 	int fd = open("tag_hierarchy", O_WRONLY| O_TRUNC);
-	write_tree(tree->children, fd); // PS : on ne veut pas écrire root
+	write_tree(tree->children, fd);
 	close(fd);
 
 	g_hash_table_destroy (point_table);
@@ -297,8 +318,7 @@ void *build_tree() {
 	memset(tag, 0, TAGSIZE);
 	memcpy(tag->name, "root", strlen("root") + 1);
 
-	g_hash_table_insert(point_table, tag->name, tag); // <--- les VALUES SONT DES POINTEURS --> TO FREE WITH FREE();
-														// <---- les KEYS SONT DES STRING EXISTANT DANS LE TAG ! DONC NO NEED TO FREE
+	g_hash_table_insert(point_table, tag->name, tag);
 
 	// ---- VARIABLES DE PARCOURS ----
 
@@ -318,11 +338,9 @@ void *build_tree() {
 		// 1. Trouver l'adresse du père
 		struct tag_t *inter = g_hash_table_lookup(point_table, tag->father);
 		struct tag_t **father = &inter;
-		// On obtient un pointeur vers l'adresse du père
 
 		// 2. Lier père à son fils (introduire entre père et fils)
 		tag->brother = (*father)->children;
-		//print_tag(tag);
 		(*father)->children = tag;
 
 		// 3. Pour la prochaine itération
@@ -349,15 +367,16 @@ Construit l'arbre de la hiérarchie des tags et l'affiche intégralement en util
 void print_hierarchy() {
 	struct hierarchy *h = build_tree();
 	print_tree(h->tree, "");
-	g_hash_table_destroy(h->point_table); // <--- free tous les éléments de tree aussi !
+	g_hash_table_destroy(h->point_table); 
 	free(h);
 }
+
 
 /*
 Prend l'adresse d'une structure tag_t, un décalage d'affichage, 
 affiche de façon récursive toute l'arborescence à partir de cette structure en prenant en compte ses frères.
 */
-void print_tree(struct tag_t *tag, char * shift) { // <---- Code à factoriser ?
+void print_tree(struct tag_t *tag, char * shift) { 
 	while(tag != NULL) {
 		printf("%s%s\n", shift, tag->name);
 		if(tag->children != NULL) {
@@ -384,6 +403,7 @@ void print_tree_children(struct tag_t *tag, char *shift) {
 		free(new_shift);
 	}
 }
+
 
 /*
 Prend l'adresse d'une structure tag_t et la présente de manière lisible sur le terminal.
