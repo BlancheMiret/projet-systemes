@@ -1,6 +1,5 @@
 CC = gcc
 CFLAGS = -Wall -g -std=c11
-LDLIBS = -lm
 PKGCONFIG = `pkg-config --cflags --libs glib-2.0`
 EXEC = main_exe
 
