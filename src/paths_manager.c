@@ -101,26 +101,31 @@ int find_path(char * file_paths, char * file_to_tag ){
 
 int add_path(char * filename){
 
+
 	if(check_file_existence(filename) == 0){
 
 		printf("le fichier n'existe pas !\n");
 		return 0;
 	}
-
 //On récupère le chemin d'accès absolu du fichier
 	char *path = realpath(filename, NULL);
 
 	if(path == NULL){
 		printf("cannot find file with name[%s]\n", filename);
-	} 
+	}
+
 	else{
 		printf("path --> %s \n", path);
 //free(path);
 	}
+	char *path_to_add = malloc(strlen(path) + strlen("\n") + 1); // +1 for the null-terminator
+	// in real code you would check for errors in malloc here
+	strcpy(path_to_add, path);
+	strcat(path_to_add, "\n");
 
 	FILE  *file;
 
-//fichier où on va stocker les chemins des fichiers taggés
+	//fichier où on va stocker les chemins des fichiers taggés
 	const char *filename_paths = "paths.txt";
 	file = fopen(filename_paths, "a");
 
@@ -130,29 +135,16 @@ int add_path(char * filename){
 		return 0;
 	}
 
-//fseek: positionne le "curseur de fichier" à une distance comptée en octets à partir du début, de la fin ou de la position courante 
-//on positionne ici à la fin du fichier
-	fseek (file, 0, SEEK_END);
 
-//ftell renvoie la position courante du « curseur de fichier », 
-	int size = ftell(file);
+	if(find_path("paths.txt", filename) == 1){
 
-	if (size == 0) {
-		printf("file is empty !\n");
-		fprintf(file, "%s", path);
+		printf("Le chemin existe déjà!\n");
+		return 0;
 	}
 
 	else {
 
-		if(find_path("paths.txt", filename) == 1){
-
-			printf("Le chemin existe déjà!\n");
-			return 0;
-		}
-
-		else {
-			fprintf(file, "\n%s", path);
-		}
+		fprintf(file, "%s", path_to_add);
 
 	}
 
@@ -173,7 +165,7 @@ int add_path(char * filename){
 
 int delete_path(char * filename){
 
-
+  
 	if(check_file_existence(filename) == 0){
 
 		printf("le fichier n'existe pas !\n");
@@ -195,7 +187,7 @@ int delete_path(char * filename){
 	char *paths_file ="paths.txt";
 	char *temp_file = "temp.txt";
 	FILE *file = fopen(paths_file, "r");
-	FILE *file2 = fopen(temp_file, "ab+");
+	FILE *file2 = fopen(temp_file, "a+");
 //retourne le nombre de caractères de la première ligne
 	line_size = getline(&line_buf, &line_buf_size, file);
 
@@ -217,15 +209,9 @@ int delete_path(char * filename){
 	fclose(file);
 	fclose(file2);
 	remove(paths_file);
-	rename(temp_file, paths_file); 
-	file = fopen(paths_file, "r+");
-
-	fseeko(file,-1,SEEK_END);
-	off_t position = ftello(file);
-	ftruncate(fileno(file), position);
-	fclose(file);
+	rename(temp_file, paths_file);
 
 
 	return 1;
-
+  
 }
