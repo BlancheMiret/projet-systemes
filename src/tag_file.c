@@ -131,7 +131,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 	char *usertag = "user.tags";
 
-	val = listxattr(filename, NULL, 0);
+	val = listxattr(path, NULL, 0);
 
 	if (val == -1) {
 		perror("listxattr error");
@@ -157,7 +157,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 		//exemple: on a user.tags = bleu/bleu_ciel, buff_tag va contenir bleu/bleu_ciel
 
 		//On appelle getxattr que dans le cas où user.tags existe déjà
-		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
+		val = getxattr(path,usertag, &buff_tag, sizeof(buff_tag));
 		
 		if(val == -1 ){
 			perror("getxattr error: ");
