@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
     strcat(path, "/.bashrc");
     strcat(dir, "/.tag");
     strcat(pathfile1, "/.tag/tag_hierarchy");
-    strcat(pathfile2, "/.tag/tag_list");	
+    strcat(pathfile2, "/.tag/paths.txt");	
 	
 	int fd3 = open(path, O_APPEND | O_WRONLY, 0600);
     if (fd3 < 0)
@@ -54,6 +54,8 @@ int main(int argc, char const *argv[])
     if (fd < 0 || fd2 < 0)
         erreur("ERREUR open\n");  
     execlp("mv", "mv", "exe", dir, NULL);
+    execlp("mv", "mv", "upd", dir, NULL);
+    execlp("upd", "upd", NULL);
 
     close(fd2);close(fd);
     
