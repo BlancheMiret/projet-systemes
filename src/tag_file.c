@@ -493,51 +493,6 @@ return 1;
 
 
 
-int main(int argc, char const *argv[])
-{ char *tags[6];
-
-	tags[0]="couleur";
-	tags[1]="bleu";
-	tags[2]="rouge";
-	tags[3]="jaune";
-	tags[4]="roman";
-	tags[5]="voiture";
-	//tags[3]="bleu";
-
-
-
-//find_path("paths.txt", "test44.txt");
-
-//unlink_tag("test1.txt", tags,1);
-
-//printf("%s\n", subtags[0]);
-link_tag("test1.txt", tags, 6);
-
-//unlink_tag("test12.txt", "bleu");
-	//unlink_tag("test1.txt", tags,1);
-/**	add_path("test1.txt");
-    add_path("testddd1.txt");
-	add_path("../../test2.txt");
-	add_path("../../test3.txt");
-	add_path("../../test4.txt");
-	delete_path("../../test4.txt");
-	add_path("../../test4.txt");
-	delete_path("../../test4.txt");
-	add_path("../../test4.txt");
-	delete_path("../../test3.txt");**/
-	//delete_path("test1.txt");
-   /** delete_path("../../test4.txt");
-    delete_path("../../test4.txt");
-    //delete_path("../../test2.txt");
-    delete_path("../../test2.txt");
-    add_path("../../test4.txt");
-    add_path("../../test2.txt");
-**/
-
-    //Attention gérer le cas où le fichier n'existe pas dans le chemin donné!!!!
-	return 0;
-}
-
 
 
 

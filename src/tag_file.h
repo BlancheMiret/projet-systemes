@@ -7,10 +7,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 
 
-int find_path(char * file_paths, char * file_to_tag );
-int add_path(char * filename);
 int link_tag(char *filename, char * tags[], size_t tags_size);
-int unlink_tag(char * filename, char * tagname);
+int unlink_tag(char * filename, char * tags[], size_t tags_size);
