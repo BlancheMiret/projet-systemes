@@ -131,9 +131,14 @@ int main (int argc, char **argv) {
 
 		case 's':
 			printf("Searching\n");
+			if (argc < 3) {
+				print_error_message();
+				return -1;
+			}
 			// <---- parser la commbinaison de tags
 			// + obtenir la liste de tous les tags (éventuellement enfants, donc recherche dans la hiérarchie)
 			// + analyser chaque fichier présent dans la liste des fichiers taggés pour voir s'il contient les tags recherchés
+			research(argc, argv);
 			break;
 
 		case 'r':
