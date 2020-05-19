@@ -66,6 +66,46 @@ int research(int argc, char **argv) {
 	// ouvir le fichier de la liste des paths des fichiers taggés
 	// le parcourir 
 
+
+    char *path = realpath(file_to_tag, NULL);
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+	ssize_t line_size;
+	FILE *file = fopen("paths.txt", "r");
+
+    //Pour chaque chemin 
+
+    //retourne le nombre de caractères de la première ligne
+	line_size = getline(&line_buf, &line_buf_size, file);
+
+	while (line_size>= 0) {
+
+		//printf("LINE %s",line_buf );
+
+    //Vérifier que la ligne n'est pas vide
+    if (strlen(line_buf) != 1) {
+       
+    	for(int i=0; i<c; i++){
+			if(tab[c].must_be == 1){
+
+				
+				
+			}
+
+    	}
+
+
+    }
+      //ligne suivante:
+		line_size = getline(&line_buf, &line_buf_size, file);
+	}
+
+  //printf("nb of lines equal to path = %d\n",line_count);
+
+	if(line_count == 0) return 0;
+
+
+
 	/*
 
 	pour chaque path {
