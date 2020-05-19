@@ -13,3 +13,4 @@
 
 int link_tag(char *filename, char * tags[], size_t tags_size);
 int unlink_tag(char * filename, char * tags[], size_t tags_size);
+void * get_file_tag_list(char * path);

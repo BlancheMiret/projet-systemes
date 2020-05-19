@@ -445,3 +445,40 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 
 }
 
+
+void * get_file_tag_list(char * path){
+
+	int val;
+	char buff_tag[1024];
+	memset(buff_tag,'\0',1024);
+	struct tag_node *tag_list = NULL;
+	val = getxattr(path,"user.tags", &buff_tag, sizeof(buff_tag));
+
+	if(val == -1 ){
+		perror("getxattr error: ");
+		return 0;
+	} 
+
+	if(val > 0){
+
+		char delim[] = "/";
+
+		char * tag = strtok(buff_tag, delim);
+
+		while(tag != NULL) {
+
+
+
+			struct tag_node *temp = tag_list; 
+			tag_list = malloc(sizeof(struct tag_node));
+			memcpy(tag_list->name, tag, strlen(tag));
+			tag_list->next = temp;
+
+			tag = strtok(NULL, delim);
+		}
+
+	}
+
+	return tag_list;
+
+}
