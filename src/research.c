@@ -58,12 +58,14 @@ int research(int argc, char **argv) {
 	for (int i = 2; i < argc; i++) {
 		int must_be = 1;
 
-		if(strcmp(argv[i], "-not")) {
+		if(strcmp(argv[i], "-not") == 0) {
 			must_be = 0;
 			i++;
 		}
 
-		if (i >= argc) { 
+		if (i >= argc) {
+			printf("argc %d\n",argc);
+			printf("i %d\n",i);
 			perror("Wrong argumentation\n");
 			exit(1);
 		}
