@@ -1,8 +1,9 @@
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "tag_hierarchy.h"
+#include "paths_manager.h"
+#include "tag_file.h"
 
 struct tag_l {
 	int 			must_be; // <-- à 1 si oui (dans ce cas disjonction), 0 sinon (dans ce cas conjonction)
@@ -71,26 +72,27 @@ int research(int argc, char **argv) {
 		c++;
 	}
 
-	/*
+	
+	void * get_file_tag_list(char * path);
 
 	// 3. Filtrer la liste de documents taggés
-	FILE *path_file = init_path_iterator();
-	while(char *path = next_path(path_file)) { // parcours de path
+	FILE *path_file = init_iterator();
+	char *path = next_path(path_file);
+	while(path != NULL) { // parcours de path
 
 		for(int i = 0; i < c; i++) { // parcours de liste
 
-			int nb_tags;
-			char **tag_tab = get_file_tag_list(&nb_tags, path);
+			struct tag_node *tag = get_file_tag_list(path);
 
-			for(int j = 0; j < nb_tags; j++) {
-
-				int belong = belong_to_list(tag_tab[j], tab[i]);
+			while(tag != NULL) {
+				int belong = belong_to_list(tag->name, tab[i]);
 				if(tab[i].must_be) {
 					if (belong) goto next_list;
 				} else {
 					if (belong) goto next_file;
 				}
-			} 
+				tag = tag->next;
+			}
 
 			next_list :
 			;
@@ -99,10 +101,9 @@ int research(int argc, char **argv) {
 		printf("%s\n", path);
 
 		next_file :
-		;
+		path = next_path(path_file);
 	}
 
-	*/
 
 	/*
 
