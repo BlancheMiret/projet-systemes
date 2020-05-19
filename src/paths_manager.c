@@ -244,6 +244,7 @@ void * next_path(FILE * file){
     //retourne le nombre de caractères de la première ligne
     //getline : return -1 on failure to read a line (including end-of-file condition).
 	line_size = getline(&line_buf, &line_buf_size, file);
+	if(line_size < 0) return NULL;
 	//printf("line size %d\n",(int)line_size);
 	return line_buf;
 
