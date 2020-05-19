@@ -1,5 +1,14 @@
+#include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/xattr.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
 
-#include "paths_manager.h"
 
 
 
@@ -214,4 +223,26 @@ int delete_path(char * filename){
 
 	return 1;
   
+}
+
+
+void * init_iterator(){
+
+	FILE *file = fopen("paths.txt", "r");
+	return file;
+}
+
+
+void * next_path(FILE * file){
+
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+	ssize_t line_size;
+	
+    //retourne le nombre de caractères de la première ligne
+    //getline : return -1 on failure to read a line (including end-of-file condition).
+	line_size = getline(&line_buf, &line_buf_size, file);
+	//printf("line size %d\n",(int)line_size);
+	return line_buf;
+
 }
