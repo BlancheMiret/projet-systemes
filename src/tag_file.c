@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 //#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -275,7 +277,6 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 	char *all_tags =malloc(1024*sizeof(char));
 	memset(all_tags,'\0',1024);
 	char *ptr = NULL;
-	int count=0;
 	int j = 0;
 
     
@@ -468,7 +469,7 @@ void * get_file_tag_list(char * path){
 	val = getxattr(path,"user.tags", &buff_tag, sizeof(buff_tag));
 
 	if(val == -1 ){
-		perror("getxattr error: ");
+		perror("get_file_tag_list getxattr error: ");
 		return 0;
 	} 
 
@@ -479,8 +480,6 @@ void * get_file_tag_list(char * path){
 		char * tag = strtok(buff_tag, delim);
 
 		while(tag != NULL) {
-
-
 
 			struct tag_node *temp = tag_list; 
 			tag_list = malloc(sizeof(struct tag_node));

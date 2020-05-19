@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 //#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "paths_manager.h"
 
@@ -129,10 +131,10 @@ int add_path(char * filename){
 		//printf("path --> %s \n", path);
 		//free(path);
 	}
-	char *path_to_add = malloc(strlen(path) + strlen("\n") + 1); // +1 for the null-terminator
+	//char *path_to_add = malloc(strlen(path) + strlen("\n") + 1); // +1 for the null-terminator
 	// in real code you would check for errors in malloc here
-	strcpy(path_to_add, path);
-	strcat(path_to_add, "\n");
+   //strcpy(path_to_add, path);
+	//strcat(path_to_add, "\n");
 
 	FILE  *file;
 
@@ -155,7 +157,7 @@ int add_path(char * filename){
 
 	else {
 
-		fprintf(file, "%s", path_to_add);
+		fprintf(file, "%s\n", path);
 
 	}
 
@@ -194,7 +196,6 @@ int delete_path(char * filename){
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
-	int line_count = 0;
 	char *paths_file ="paths.txt";
 	char *temp_file = "temp.txt";
 	FILE *file = fopen(paths_file, "r");
@@ -244,6 +245,8 @@ void * next_path(FILE * file){
     //retourne le nombre de caractères de la première ligne
     //getline : return -1 on failure to read a line (including end-of-file condition).
 	line_size = getline(&line_buf, &line_buf_size, file);
+
+	printf("next_path %s",line_buf);
 	if(line_size < 0) return NULL;
 	//printf("line size %d\n",(int)line_size);
 	return line_buf;
