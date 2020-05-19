@@ -241,14 +241,17 @@ void * next_path(FILE * file){
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
-	
+    size_t ln;
     //retourne le nombre de caractères de la première ligne
     //getline : return -1 on failure to read a line (including end-of-file condition).
 	line_size = getline(&line_buf, &line_buf_size, file);
-
-	printf("next_path %s",line_buf);
+    ln = line_size-1;
+    
+    if(line_buf[ln] == '\n') line_buf[ln] = '\0';
+	
+	//printf("next_path %s",line_buf);
+	
 	if(line_size < 0) return NULL;
-	//printf("line size %d\n",(int)line_size);
 	return line_buf;
 
 }
