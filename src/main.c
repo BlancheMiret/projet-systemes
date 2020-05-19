@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "tag_hierarchy.h"
+#include "research.h"
 
 /* Utilisation ? 
 

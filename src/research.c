@@ -1,5 +1,6 @@
 
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "tag_hierarchy.h"
 
@@ -27,6 +28,15 @@ struct tag_l build_list(char *tag_name, int must_be) {
 	return tag_list;
 }
 
+int belong_to_list(char *tag_name, struct tag_l tag_list) {
+	struct tag_node *tag = tag_list.list;
+	while(tag != NULL) {
+		if(strcmp(tag_name, tag->name) == 0) return 1;
+		tag = tag->next;
+	}
+	return 0;
+}
+
 
 /*
 Construit le tableau de listes 
@@ -45,10 +55,10 @@ int research(int argc, char **argv) {
 	// 2. Parcourir les termes 1 par 1 et créer une liste par terme.
 	c = 0;
 	for (int i = 2; i < argc; i++) {
-		int must_be = TRUE;
+		int must_be = 1;
 
 		if(strcmp(argv[i], "-not")) {
-			must_be = FALSE;
+			must_be = 0;
 			i++;
 		}
 
@@ -61,50 +71,38 @@ int research(int argc, char **argv) {
 		c++;
 	}
 
+	/*
+
 	// 3. Filtrer la liste de documents taggés
+	FILE *path_file = init_path_iterator();
+	while(char *path = next_path(path_file)) { // parcours de path
 
-	// ouvir le fichier de la liste des paths des fichiers taggés
-	// le parcourir 
+		for(int i = 0; i < c; i++) { // parcours de liste
 
+			int nb_tags;
+			char **tag_tab = get_file_tag_list(&nb_tags, path);
 
-    char *path = realpath(file_to_tag, NULL);
-	char *line_buf = NULL;
-	size_t line_buf_size = 0;
-	ssize_t line_size;
-	FILE *file = fopen("paths.txt", "r");
+			for(int j = 0; j < nb_tags; j++) {
 
-    //Pour chaque chemin 
+				int belong = belong_to_list(tag_tab[j], tab[i]);
+				if(tab[i].must_be) {
+					if (belong) goto next_list;
+				} else {
+					if (belong) goto next_file;
+				}
+			} 
 
-    //retourne le nombre de caractères de la première ligne
-	line_size = getline(&line_buf, &line_buf_size, file);
+			next_list :
+			;
+		}
 
-	while (line_size>= 0) {
+		printf("%s\n", path);
 
-		//printf("LINE %s",line_buf );
-
-    //Vérifier que la ligne n'est pas vide
-    if (strlen(line_buf) != 1) {
-       
-    	for(int i=0; i<c; i++){
-			if(tab[c].must_be == 1){
-
-				
-				
-			}
-
-    	}
-
-
-    }
-      //ligne suivante:
-		line_size = getline(&line_buf, &line_buf_size, file);
+		next_file :
+		;
 	}
 
-  //printf("nb of lines equal to path = %d\n",line_count);
-
-	if(line_count == 0) return 0;
-
-
+	*/
 
 	/*
 
