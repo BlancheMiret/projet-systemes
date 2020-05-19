@@ -45,7 +45,7 @@ char * absolute_path(char * filename){
 	} 
 
 	else{
-		printf("path --> %s \n", path);
+		//printf("path --> %s \n", path);
 		return path;
 	}
 
@@ -74,7 +74,7 @@ int find_path(char * file_paths, char * file_to_tag ){
 
 	while (line_size>= 0) {
 
-		printf("LINE %s",line_buf );
+		//printf("LINE %s",line_buf );
 
 		if (strncmp(path, line_buf,strlen(line_buf)-1) == 0) {
 			line_count++;
@@ -115,8 +115,8 @@ int add_path(char * filename){
 	}
 
 	else{
-		printf("path --> %s \n", path);
-//free(path);
+		//printf("path --> %s \n", path);
+		//free(path);
 	}
 	char *path_to_add = malloc(strlen(path) + strlen("\n") + 1); // +1 for the null-terminator
 	// in real code you would check for errors in malloc here
