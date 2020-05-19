@@ -1,5 +1,5 @@
-#ifndef TAG_MANAGER_H
-#define TAG_MANAGER_H 
+#ifndef __TAG_MANAGER_H_
+#define __TAG_MANAGER_H_
 
 #define TAGNAME 20 // TAILLE EFFECTIVE : 18 
 

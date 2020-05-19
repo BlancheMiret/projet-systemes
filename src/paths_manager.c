@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "paths_manager.c"
+#include "paths_manager.h"
 
 
 
