@@ -4,6 +4,7 @@
 
 #include "tag_hierarchy.h"
 #include "research.h"
+#include "tag_file.h"
 
 /* Utilisation ? 
 
@@ -113,6 +114,10 @@ int main (int argc, char **argv) {
 				return -1;
 			}
 			printf("Linking\n");
+
+            //tag -l fichier couleur jaune rouge
+
+			link_tag(argv[2], argv+3, argc - 3);
 			// Attention besoin de connaître le nom du père du tag : fonction à fournir par tag_manager !!
 			// <----- ajouter le tag aux attributs de l'inode du fichier
 			// + si le fichier n'avait pas encore de tag, l'ajouter à la liste des fichiers taggés
@@ -127,6 +132,7 @@ int main (int argc, char **argv) {
 			// <---- vérifier que fichier donné en paramètre existe dans la liste des fichiers taggés
 			// + délier le tag 
 			// + si nombre de tag du fichier = 0 alors supprimer le fichier de la liste des fichiers taggés
+			unlink_tag(argv[2], argv+3, argc - 3);
 			break;
 
 		case 's':
