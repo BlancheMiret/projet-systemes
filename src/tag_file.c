@@ -310,50 +310,27 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 			return 0;
 		}
 
-		//Suppression de tags[i] 
-
-		char delim[] = "/";
-
-		ptr = strtok(buff_tag, delim);
-
-		while(ptr != NULL)
-		{
-			printf("'%s'\n", ptr);
-
-			if(strcmp(ptr,tags[i]) != 0){
-
-				strcat(all_tags,ptr); 
-				strcat(all_tags,"/"); 
-
-			}
-
-			ptr = strtok(NULL, delim);
-		}
-
-		//all_tags = contient tous les tags sauf tags[i]
-		strcat(all_tags,"\0");
-		//printf("all_tags  %s\n",all_tags);
-
-		//On attribut les sous-tags sans tags[i]
-		val = set_tag(path, usertag, all_tags,1);
-		if(val == 0) return 0;	
-
-	    children_list=get_tag_children(tags[i]);
-		
-        
 		buff_tag[val] = '\0';
 		//printf("VAL  %d\n ",(int) val);
 		//printf("FIRST buff_tag %s\n ", buff_tag);
 
+	
+
+	    children_list=get_tag_children(tags[i]);
+
+	    if(children_list == NULL) goto delete_one_tag;
+       
+	    //print_list(children_list);
+
         //Si le tag a des enfants dans la hierarchie
 		if(children_list != NULL){
-   
+  
             //On vérifie si un ou plusieurs tags de children_list sont liés au fichier
             //On ajoute les tags de children_list qui sont liés dans subtags
 			while(children_list != NULL) {
 
 				if(check_tag_existence(buff_tag,  children_list->name) == 1){
-				
+					
 					subtags[j] = children_list->name;
 					j++;
 				
@@ -361,17 +338,9 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 				
 				children_list = children_list->next;
 			}
-
+			
 			if(j == 0){
-
-				memset(buff_tag,'\0',1024);
-				val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
-	
-				if(val == 0){
-					printf("Le fichier ne contient plus de tags!, il va être supprimé de paths.txt\n");
-					delete_path(filename);
-				}
-				return 1;
+				goto delete_one_tag;
 
 			} 
 
@@ -436,6 +405,35 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 
 			if(strcmp(reply,"non")==0){
 
+				//Suppression de tags[i] 
+				delete_one_tag: ;
+
+
+				char delim[]= "/";
+				ptr = strtok(buff_tag, delim);
+
+				while(ptr != NULL)
+				{
+
+
+					if(strcmp(ptr,tags[i]) != 0){
+						printf("'%s'\n", ptr);
+						strcat(all_tags,ptr); 
+						strcat(all_tags,"/"); 
+
+					}
+
+					ptr = strtok(NULL, delim);
+				}
+
+				//all_tags = contient tous les tags sauf tags[i]
+				strcat(all_tags,"\0");
+				//printf("all_tags  %s\n",all_tags);
+
+				//On attribut les sous-tags sans tags[i]
+				val = set_tag(path, usertag, all_tags,1);
+				if(val == 0) return 0;	
+
 				printf("Seul le tag %s a été supprimé !\n", tags[i]);
 
 
@@ -449,11 +447,11 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
-		if(val == 0){
-			printf("Le fichier ne contient plus de tags!, il va être supprimé de paths.txt\n");
-			delete_path(filename);
+	if(val == 0){
+		printf("Le fichier ne contient plus de tags, il va être supprimé de paths.txt\n");
+		delete_path(filename);
 
-		}
+	}
 
 	return 1;
 
