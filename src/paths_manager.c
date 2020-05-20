@@ -151,7 +151,7 @@ int add_path(char * filename){
 
 	if(find_path("paths.txt", filename) == 1){
 
-		printf("Le chemin existe déjà!\n");
+		//printf("Le chemin existe déjà!\n");
 		return 0;
 	}
 
