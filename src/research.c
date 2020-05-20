@@ -47,9 +47,9 @@ int research(int argc, char **argv) {
 	// 0. Compter nombre de termes "utiles" ( -> #listes )
 	int c = 0;
 	for (int i = 2; i < argc; i++) { // On commence à 2 puisque que commence par ./tag -s
-		if(!strcmp(argv[i], "-not")) c ++;
+		if(strcmp(argv[i], "-not") != 0) c ++;
 	}
-
+	
 	// 1. construire tableau
 	struct tag_l *tab = malloc(sizeof(struct tag_l) * c);
 
@@ -75,7 +75,7 @@ int research(int argc, char **argv) {
 	}
 
 	
-	void * get_file_tag_list(char * path);
+	
 
 	// 3. Filtrer la liste de documents taggés
 	FILE *path_file = init_iterator();
@@ -89,7 +89,7 @@ int research(int argc, char **argv) {
 			while(tag != NULL) {
 				int belong = belong_to_list(tag->name, tab[i]);
 				if(tab[i].must_be) {
-					if (belong) goto next_list;
+					if (belong) goto  next_list;
 				} else {
 					if (belong) goto next_file;
 				}
