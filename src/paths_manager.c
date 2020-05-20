@@ -231,7 +231,11 @@ int delete_path(char * filename){
 
 void * init_iterator(){
 
-	FILE *file = fopen("paths.txt", "r");
+	FILE *file = fopen("paths.txt", "r"); 
+	if (file == NULL) {
+		perror("fopen");
+		exit(1);
+	}
 	return file;
 }
 
