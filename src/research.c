@@ -85,6 +85,7 @@ int research(int argc, char **argv) {
 		for(int i = 0; i < c; i++) { // parcours de liste
 
 			struct tag_node *tag = get_file_tag_list(path);
+			int tag_found = 0;
 
 			while(tag != NULL) {
 				int belong = belong_to_list(tag->name, tab[i]);
@@ -95,6 +96,8 @@ int research(int argc, char **argv) {
 				}
 				tag = tag->next;
 			}
+
+			if (tab[i].must_be && !tag_found) goto next_file;
 
 			next_list :
 			;
