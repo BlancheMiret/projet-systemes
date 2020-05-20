@@ -1,5 +1,6 @@
 #!/bin/bash
 sudo apt-get install xattr
+sudo apt-get install libglib2.0-dev
 mkdir ~/.tag
 touch ~/.tag/tag_hierarchy
 touch ~/.tag/paths.txt
