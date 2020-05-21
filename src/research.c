@@ -5,6 +5,8 @@
 #include "paths_manager.h"
 #include "tag_file.h"
 
+#define DEBUG 1
+
 struct tag_l {
 	int 			must_be; // <-- à 1 si oui (dans ce cas disjonction), 0 sinon (dans ce cas conjonction)
 	struct tag_node *list;
@@ -82,31 +84,65 @@ int research(int argc, char **argv) {
 	char *path = next_path(path_file);
 	while(path != NULL) { // parcours de path
 
+		if (DEBUG) printf("--------------------\n");
+		if (DEBUG) printf("Examining path %s\n", path);
+
+		struct tag_node *tag_list = get_file_tag_list(path);
+
+		if (DEBUG) printf("The file contains the following tags :\n");
+		if (DEBUG) print_list(tag_list);
+
 		for(int i = 0; i < c; i++) { // parcours de liste
 
-			struct tag_node *tag = get_file_tag_list(path);
+			if (DEBUG) printf("-----\n");
+			if (DEBUG) printf("Examining list :\n");
+			if (DEBUG) printf("Must be ? %d\n", tab[i].must_be);
+			if (DEBUG) print_list(tab[i].list);
+
+			struct tag_node *tag = tag_list;
 			int tag_found = 0;
 
+			if(DEBUG) printf("---\n");
+
 			while(tag != NULL) {
+				if(DEBUG) printf("- Examining tag %s\n", tag->name);
+
 				int belong = belong_to_list(tag->name, tab[i]);
 				if(tab[i].must_be) {
-					if (belong) goto  next_list;
+					if (belong) {
+						if(DEBUG) printf("%s belongs to list, list is checked\n", tag->name);
+						goto  next_list;
+					}
 				} else {
-					if (belong) goto next_file;
+					if (belong) {
+						if(DEBUG) printf("%s belongs to list, file is wrong\n", tag->name);
+						goto next_file;
+					}
 				}
 				tag = tag->next;
 			}
+
+			if(DEBUG) printf("--\n");
 
 			if (tab[i].must_be && !tag_found) goto next_file;
 
 			next_list :
 			;
+
+			if (DEBUG) printf("Passing on to next list\n");
+			if (DEBUG) printf("-----\n");
+
+
 		}
 
-		printf("%s\n", path);
+		if (DEBUG) printf("FILE WINS \n");
+		if (DEBUG) printf("%s\n", path);
 
 		next_file :
 		path = next_path(path_file);
+
+		if (DEBUG) printf("Passing on to next file\n");
+		if (DEBUG) printf("--------------------\n");
 	}
 
 
