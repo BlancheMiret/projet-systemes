@@ -8,13 +8,16 @@ void erreur(char *msg)
 
 int main(int argc, char const *argv[])
 {
-    const char *HOME = getenv("HOME");
+    char *HOME = getenv("HOME");
     if (HOME == NULL)
         erreur("ERREUR getenv\n");
     char pathfile1 [100] = "";
     strcat(pathfile1,HOME);
     strcat(pathfile1, "/.tag/paths.txt");
 
+    if (argc != 3)
+        erreur("ERREUR nombre d'arguments invalide\n");
+    
     char *arg1 = absolute_path(argv[1]);
     char *arg2 = absolute_path(argv[2]);
 
