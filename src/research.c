@@ -5,7 +5,7 @@
 #include "paths_manager.h"
 #include "tag_file.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 struct tag_l {
 	int 			must_be; // <-- à 1 si oui (dans ce cas disjonction), 0 sinon (dans ce cas conjonction)
@@ -136,7 +136,7 @@ int research(int argc, char **argv) {
 		}
 
 		if (DEBUG) printf("FILE WINS \n");
-		if (DEBUG) printf("%s\n", path);
+		printf("%s\n", path);
 
 		next_file :
 		path = next_path(path_file);
