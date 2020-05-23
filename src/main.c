@@ -42,9 +42,9 @@ void print_error_message() {
 
 void print_command_use() {
 	printf("Welcome to TAGGER, manager of your tagging file system.\n");
-	printf("usage: tag -option [<args>]\n");
+	printf("usage: tag [-apdlusr] [<args>]\n");
 	printf("Options are:\n");
-	printf("    -a tag_name [father_name] : create a tag named tag_name, having father_name as father in the hierarchy.\n"
+	printf("    -a father_name tag_name : 	create a tag named tag_name, having father_name as father in the hierarchy.\n"
 		   "                                father_name should already exist in the hierarchy.\n"
 		   "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
 	printf("    -p :                        display the existing tag hierarchy.\n");
