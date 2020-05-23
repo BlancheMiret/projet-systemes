@@ -7,6 +7,7 @@ mkdir ~/.tag
 echo 'création fichiers tag_hierarchy et paths.txt...'
 touch ~/.tag/tag_hierarchy
 touch ~/.tag/paths.txt
+make
 mv tag ~/.tag
 gcc update-mv.c -o mvt
 mv mvt ~/.tag
