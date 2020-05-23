@@ -7,7 +7,7 @@ mkdir ~/.tag
 echo 'création fichiers tag_hierarchy et paths.txt...'
 touch ~/.tag/tag_hierarchy
 touch ~/.tag/paths.txt
-mv main_exe ~/.tag
+mv tag ~/.tag
 gcc update-mv.c -o mvt
 mv mvt ~/.tag
 echo 'export PATH=$PATH:~/.tag' >> ~/.bashrc
