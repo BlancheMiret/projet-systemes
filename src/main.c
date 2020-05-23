@@ -57,6 +57,27 @@ void print_command_use() {
 	printf("    -r :                        reset tag-system definitively and delete all tags associated with files.\n");
 }
 
+void print_manual_page() {
+	printf("NAME\n");
+	printf("	tag - the manager of you tagging-file system.\n");
+	printf("\n");
+	printf("SYNOPSIS\n");
+	printf("	tag <command> [<args>]\n");
+	printf("\n");
+	printf("DESCRIPTION\n");
+	printf("	Tag is a tagging-file system manager...\n");
+	printf("\n");
+	printf("TAG COMMANDS\n");
+	printf("	git create [-n]/[father] <tag1> [tag2] ...\n");
+	printf("	git delete <tag>\n");
+	printf("	git print [filename]\n");
+	printf("	git link <filename> <tag1> [tag2] ...\n");
+	printf("	git unlink <filename> <tag> \n");
+	printf("	git search tag1 [[-not] tag2] ...\n");
+	printf("	git reset [filename]\n");
+	printf("\n");
+}
+
 int main (int argc, char **argv) {
 
 	if (argc == 1) {
