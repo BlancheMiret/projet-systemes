@@ -50,13 +50,22 @@ void exit_with_man_page() {
 }
 
 void exit_with_help_page() {
-	printf("usage : tag <command> [<args>]");
-	printf("These are common Git commands used in various situations:");
-	// - commencer par composer la hiérarchie
-	// - afficher la hiérarchie
-	// - puis ajouter des tags à des fichiers
-	// - afficher tags d'un fichier
-	exit(1);
+    printf("usage : tag [--version] [--help] <command> [--all] [<args>]");
+    printf("These are common Tag commands used in various situations:\n");
+    printf("\n");
+    printf("manage the tagset\n");
+    printf("    create      Add tag to your tagset\n");
+    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n")
+    printf("    print       Display the tagset\n");
+    printf("\n");
+    printf("add tags to file\n");
+    printf("    link        Add tags to a file\n");
+    printf("    unlink      Delete tags from a file\n");
+    printf("\n");
+    printf("find files\n");
+    printf("    search      Display the absolute path of files associated with a tag combination");
+    printf("\n");
+    exit(0);
 }
 
 enum error { CREATE, DELETE, PRINT, LINK, UNLINK, SEARCH, RESET };
@@ -83,6 +92,8 @@ int main(int argc, char **argv) {
 
 
 	if (argc < 2) exit_with_man_page(); // PS : git fait la même chose que git --help. La page de manuel c'est différent
+
+    if (strcmp(argv[1], "--help") == 0) exit_with_help_page();
 
 	char command;
 
