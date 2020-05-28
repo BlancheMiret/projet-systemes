@@ -55,7 +55,7 @@ void exit_with_help_page() {
     printf("\n");
     printf("manage the tagset\n");
     printf("    create      Add tag to your tagset\n");
-    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n")
+    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n");
     printf("    print       Display the tagset\n");
     printf("\n");
     printf("add tags to file\n");
@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
 		case 'r' :
 			if (argc != 2) exit_with_syntax_error(RESET);
 			clean_hierarchy();
-			reset_all_files("paths.txt");
+			reset_all_files();
 			break;
 
 		default :
