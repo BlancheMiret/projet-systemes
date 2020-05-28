@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
 			filename = argv[2];
 			if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
 			if (strcmp(argv[3], "--all") == 0) { 
-				if (argc == 4) printf("Must add call of function reset_all_files()\n"); // <----------reset_all_files()
+				if (argc == 4) delete_all_tags(filename);
 				else exit_with_syntax_error(UNLINK);
 			}
 			else unlink_tag(filename, argv + 3, argc - 3,1);
