@@ -10,7 +10,9 @@ touch ~/.tag/paths.txt
 make
 mv tag ~/.tag
 gcc update-mv.c -o mvt
+gcc update-rm.c -o rmta
 mv mvt ~/.tag
+mv rmta ~/.tag
 echo 'export PATH=$PATH:~/.tag' >> ~/.bashrc
 echo 'relance le terminal...'
 source ~/.bashrc

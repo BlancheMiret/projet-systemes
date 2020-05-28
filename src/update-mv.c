@@ -6,7 +6,7 @@ void erreur(char *msg)
     exit(EXIT_FAILURE);
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     char *HOME = getenv("HOME");
     if (HOME == NULL)
@@ -31,6 +31,6 @@ int main(int argc, char const *argv[])
         printf("chemin remplacé\n");
     }
 
-    execlp("mv", "mv", arg1, arg2, NULL);
+    execlp("mv", "mv", (const char *)arg1, (const char *)arg2, NULL);
     return 0;
 }
