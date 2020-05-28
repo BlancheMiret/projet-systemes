@@ -176,7 +176,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
 
     while(read(fd, tag, TAGSIZE) != 0) {
         for (int i = 0; i < nb_tags; i++) {
-            if(strcmp(tag->name), tags[i] == 0) {
+            if(strcmp(tag->name, tags[i]) == 0) {
                 printf("%s already exists in your hierarchy. Two tags cannot have the same name.\n", tags[i]);
                 exit(1);
             }
