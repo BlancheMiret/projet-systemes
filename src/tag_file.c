@@ -493,6 +493,18 @@ void * get_file_tag_list(char * path){
 
 }
 
+int delete_all_tags(char * filename){
+
+	int val = removexattr(filename, "user.tags");
+
+	if (val == -1){
+		perror("removexattr error: ");
+		return 0;
+	}
+
+	return 1;
+
+}
 
 int reset_all_files(){
 
