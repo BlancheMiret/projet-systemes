@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
 		case 'r' :
 			if (argc != 2) exit_with_syntax_error(RESET);
 			clean_hierarchy();
-			reset_all_files("paths.txt");
+			reset_all_files();
 			break;
 
 		default :
