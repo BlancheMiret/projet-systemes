@@ -494,13 +494,12 @@ void * get_file_tag_list(char * path){
 }
 
 
-int delete_all_tags(char * file_paths){
+int reset_all_files(char * file_paths){
 
 
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
-	int line_count = 0;
 	size_t ln;
 	FILE *file = fopen(file_paths, "r");
 	int val;

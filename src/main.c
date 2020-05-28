@@ -157,7 +157,7 @@ int main(int argc, char **argv) {
 		case 'r' :
 			if (argc != 2) exit_with_syntax_error(RESET);
 			clean_hierarchy();
-			delete_all_tags("paths.txt");
+			reset_all_files("paths.txt");
 			break;
 
 		default :
