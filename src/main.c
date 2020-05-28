@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
 			if (argc != 3) exit_with_syntax_error(DELETE); 
 			char *tag_to_delete = argv[2];
 			struct tag_node *children = get_tag_children(tag_to_delete);
-			// for_all_files_delete(tag_to_delete, children); // <----------------------------------
+			for_all_files_delete(argv+2);
 			delete_tag(tag_to_delete);
 			break;
 
@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
 			else if (argc == 3) {
 				filename = argv[2];
 				if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
-				 struct tag_node *tag_list=get_file_tag_list(filename); // afficher contenu d'un fichier // <-------------------------------------
+				 struct tag_node *tag_list = get_file_tag_list(filename); // afficher contenu d'un fichier // <-------------------------------------
 				 print_list(tag_list);
 			}
 			else exit_with_syntax_error(PRINT); 
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
 				if (argc == 4) printf("Must add call of function reset_all_files()\n"); // <----------reset_all_files()
 				else exit_with_syntax_error(UNLINK);
 			}
-			else unlink_tag(filename, argv + 3, argc - 3);
+			else unlink_tag(filename, argv + 3, argc - 3,1);
 			break;
 
 		case 's' :

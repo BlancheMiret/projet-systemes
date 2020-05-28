@@ -264,7 +264,7 @@ int list_length(struct tag_node *tag_list) {
 * @return renvoie 0 si le ou les tags ont bien été supprimé, sinon 1
 * */
 
-int unlink_tag(char * filename, char * tags[], size_t tags_size){
+int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 	int val;
 	char reply[100];
@@ -344,14 +344,14 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 
 			} 
 
-			if(j == 1){ 
+			if(j == 1 && ask){ 
 				
 				printf("Le fichier concerné possède également le sous-tag suivant hériant de %s :\n", tags[i]);
 				printf("- %s\n", subtags[0]);
 				printf("Souhaitez vous supprimer également ce sous-tag? Répondez par 'oui' ou 'non'\n");
 			}
 
-			if(j > 1){
+			if(j > 1 && ask){
 
 				printf("Le fichier concerné possède également les sous-tags suivant hériant de %s :\n", tags[i]);
 				for(int i=0; i < j; i++) printf("- %s\n", subtags[i]);
@@ -359,14 +359,18 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
 			}
 			
 			//print_list(children_list);
-			while(1){
-				scanf("%s", reply);
-				if(strcmp(reply,"oui") == 0 || strcmp(reply,"non") ==0) break;
-				printf("Répondez par 'oui' ou 'non'\n");
+			if (ask) {
+
+				while(1){
+					scanf("%s", reply);
+					if(strcmp(reply,"oui") == 0 || strcmp(reply,"non") ==0) break;
+					printf("Répondez par 'oui' ou 'non'\n");
+				}
+			
 			}
 			
 
-			if(strcmp(reply,"oui") == 0){
+			if(strcmp(reply,"oui") == 0 || ask == 0){
 
 				printf("vous avez répondu oui\n");
 				//printf("buff_tag  %s\n", buff_tag);
@@ -448,7 +452,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size){
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 	if(val == 0){
-		printf("Le fichier ne contient plus de tags, il va être supprimé de paths.txt\n");
+		printf("Le fichier %s ne contient plus de tags, il va être supprimé de paths.txt\n", filename);
 		delete_path(filename);
 
 	}
@@ -501,10 +505,45 @@ int delete_all_tags(char * filename){
 		perror("removexattr error: ");
 		return 0;
 	}
-	
+
 	delete_path(filename);
 
 	return 1;
+
+}
+
+
+int for_all_files_delete(char * tag[]){
+
+
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+	ssize_t line_size;
+	size_t ln;
+	FILE *file = fopen(file_paths, "r");
+	//int val;
+
+//retourne le nombre de caractères de la première ligne
+	line_size = getline(&line_buf, &line_buf_size, file);
+
+	while (line_size>= 0) {
+		ln = line_size-1;
+		if(line_buf[ln] == '\n') line_buf[ln] = '\0';
+
+		if (strlen(line_buf) != 1) {
+
+			unlink_tag(line_buf,tag, 1, 0);
+		
+		}
+
+
+		line_size = getline(&line_buf, &line_buf_size, file);
+	}
+
+	return 1;
+
+
+
 
 }
 
