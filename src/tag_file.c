@@ -290,7 +290,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	//Cas où user.tags n'existe pas
 	if (val == 0) {
 
-		printf("Le fichier ne contient aucun tag!\n");
+		printf("Le fichier %s ne contient aucun tag!\n", filename);
 		return 0;
 
 	}
@@ -306,7 +306,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 		//Cas où user.tags existe mais ne contient aucun tag
 		if(val == 0){
-			printf("Le fichier ne contient aucun tag!\n");
+			printf("Le fichier %s ne contient aucun tag!\n", filename);
 			return 0;
 		}
 
@@ -468,6 +468,21 @@ void * get_file_tag_list(char * path){
 	char buff_tag[1024];
 	memset(buff_tag,'\0',1024);
 	struct tag_node *tag_list = NULL;
+
+	val = listxattr(path, NULL, 0);
+
+	if (val == -1) {
+		perror("get_file_tag_list listxattr error: ");
+		return 0;
+	}
+
+	//Cas où user.tags n'existe pas
+	if (val == 0) {
+
+		return NULL;
+
+	}
+
 	val = getxattr(path,"user.tags", &buff_tag, sizeof(buff_tag));
 
 	if(val == -1 ){
