@@ -8,53 +8,25 @@
 
 /* Utilisation ? 
 
------- Dans la liste / hiérarchie
-- a(dd) : Ajouter un tag dans la liste / hiérarchie de tags avec un père optionnel
-$ tag -a couleur // <-- associe à root par défaut
-$ tag -a bleu couleur
+NOUVEAU MANUEL
 
-- p(rint) : Afficher la hiérarchie
-$ tag -p
+%tag print                              -> affiche hiérarchie des tags
+%tag print filename                     -> affiche liste tags d'un fichier
 
-- d(eleteà : Supprimer un tag de la liste / hiérarchie
-$ tag -d couleur
+%tag create -n/nompère tag1 tag2 ...    -> crée tag1 tag2... avec pour père nompère si précisé, root si -n
+%tag delete tag                         -> supprime tag + enfants de la hiérarchie - ATTENTION SUPPRIMER CES TAGS DES FICHIERS + éventuellement fichiers de la liste des fichiers
+%tag link filename tag1 tag2 ...        -> ajoute tag1, tag2 ... à filname - ATTENTION doit ajouter filename à la liste fichiers si pas déjà présent
+%tag unlink filename tag1 tag2 ...      -> supprime tag1, tag2 ... à filename - ATTENTION doit supprimer fichier de la liste des fichiers si nbtags tombe à 0
 
-------- Tag / fichiers
-- l(ink) : Lier un tag à un fichier // <-- vérifie que tag existe dans la hiérarchie avant de link
-$ tag -l <nomfichier> <nomtag>
+%tag search tag1 [-not] tag2 ...        -> renvoie chemin absolu des fichiers dont les tags correspondent à la combinaison
 
-- u(nlink) : Suppression tag lié à un fichier
-$ tag -u <nomfichier> <nomtag>
-
-------- Recherche
-- s(earch) : RECHERCHE DE FICHIERS LIÉS À UN TAG !!!
-1. Parser la combinaison de tags donnée en ligne de commande
-2. Chercher dans la hiérarchie les enfants qui sont liées
-3. À l'aide
-
-+ IMPLÉMENTER SUIVI DE MOUVEMENT ET SUPPRESSION DES FICHIERS...!!!
+%tag reset                              -> efface toute la hiérarchie des tags - ATTENTION DOIT SUPPRIMER LES TAGS DE TOUS LES FICHIERS
+%tag reset filename                     -> efface tous les tags d'un fichier
 
 */
 
 void print_error_message() {
 	printf("Wrong use of option or arguments. Enter 'tag' to see manuel page.\n");
-}
-
-void print_command_use() {
-	printf("Welcome to TAGGER, manager of your tagging file system.\n");
-	printf("usage: tag [-apdlusr] [<args>]\n");
-	printf("Options are:\n");
-	printf("    -a father_name tag_name : 	create a tag named tag_name, having father_name as father in the hierarchy.\n"
-		   "                                father_name should already exist in the hierarchy.\n"
-		   "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
-	printf("    -p :                        display the existing tag hierarchy.\n");
-	printf("    -d tag_name :               ask to delete the tag tag_name. If the tag has children, they will be deleted as well.\n");
-	printf("    -l file_path tag_name :     link tag_name to the file designated by file_path.\n"
-		   "                                tag_name should already exist in the hierarchy.\n");
-	printf("    -u file_path tag_name :     unlink tag_name from the designated file.\n");
-	printf("    -s <tag_combinaison> :      return path of file corresponding to the research.\n"
-		   "                                See below for tag combinaison syntax.\n");
-	printf("    -r :                        reset tag-system definitively and delete all tags associated with files.\n");
 }
 
 void print_manual_page() {
@@ -78,6 +50,23 @@ void print_manual_page() {
 	printf("\n");
 }
 
+void print_command_use() {
+    printf("Welcome to TAGGER, manager of your tagging file system.\n");
+    printf("usage: tag [-apdlusr] [<args>]\n");
+    printf("Options are:\n");
+    printf("    -a father_name tag_name :   create a tag named tag_name, having father_name as father in the hierarchy.\n"
+           "                                father_name should already exist in the hierarchy.\n"
+           "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
+    printf("    -p :                        display the existing tag hierarchy.\n");
+    printf("    -d tag_name :               ask to delete the tag tag_name. If the tag has children, they will be deleted as well.\n");
+    printf("    -l file_path tag_name :     link tag_name to the file designated by file_path.\n"
+           "                                tag_name should already exist in the hierarchy.\n");
+    printf("    -u file_path tag_name :     unlink tag_name from the designated file.\n");
+    printf("    -s <tag_combinaison> :      return path of file corresponding to the research.\n"
+           "                                See below for tag combinaison syntax.\n");
+    printf("    -r :                        reset tag-system definitively and delete all tags associated with files.\n");
+}
+
 int main (int argc, char **argv) {
 
 	if (argc == 1) {
@@ -99,7 +88,7 @@ int main (int argc, char **argv) {
 	}
 
 	switch(argv[1][1]) {
-		case 'a':
+		case 'a': // AJOUTER MULTIPLICITÉ ARGUMENTS
 			if (argc != 3 && argc != 4) {
 				print_error_message();
 				return -1;
@@ -108,7 +97,7 @@ int main (int argc, char **argv) {
 			else if (argc == 4) add_tag(argv[3], argv[2]); // <--- ajoute le tag avec le père spécifié, en vérifiant l'existence du père ou qu'un tag du même nom n'existe pas déjà
 			break;
 
-		case 'p':
+		case 'p': // OK
 			if (argc != 2) {
 				print_error_message();
 				return -1;
@@ -116,7 +105,7 @@ int main (int argc, char **argv) {
 			print_hierarchy(); // <-- affiche la hiérarchie des tags créés 
 			break;
 
-		case 'd':
+		case 'd': // OK 
 			if (argc != 3) {
 				print_error_message();
 				return -1;
@@ -129,19 +118,14 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			// <---- vérifier que le fichier donné en paramètre existe
+
 			if (!tag_exists(argv[3])) { // <-- ici vérifie que le tag existe dans la hiérarchie
 				printf("The tag you want to link does not exist in your system yet. Please add it first with `tag -a`\n");
 				return -1;
 			}
 			printf("Linking\n");
-
-            //tag -l fichier couleur jaune rouge
-
 			link_tag(argv[2], argv+3, argc - 3);
-			// Attention besoin de connaître le nom du père du tag : fonction à fournir par tag_manager !!
-			// <----- ajouter le tag aux attributs de l'inode du fichier
-			// + si le fichier n'avait pas encore de tag, l'ajouter à la liste des fichiers taggés
+
 			break;
 
 		case 'u':
@@ -162,9 +146,6 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			// <---- parser la commbinaison de tags
-			// + obtenir la liste de tous les tags (éventuellement enfants, donc recherche dans la hiérarchie)
-			// + analyser chaque fichier présent dans la liste des fichiers taggés pour voir s'il contient les tags recherchés
 			research(argc, argv);
 			break;
 
@@ -173,9 +154,6 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
-			// <---- attention, nécessaire de supprimer tous les tags de tous les fichiers !!
-			// + effacer (qu'il existe, mais qu'il soit vide) le fichier contenant la liste des fichiers taggés
-			clean_hierarchy(); // <-- ceci ne fait que effacer le fichier contenant la hiérarchie
 			break;
 
 		default:
