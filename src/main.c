@@ -5,6 +5,7 @@
 #include "tag_hierarchy.h"
 #include "research.h"
 #include "tag_file.h"
+#include "paths_manager.h"
 
 #define DEBUG 1
 
@@ -77,7 +78,9 @@ void exit_with_syntax_error(enum error e) {
 
 int main(int argc, char **argv) {
 
+	init_file_paths();
 	init_hierarchy();
+
 
 	if (argc < 2) exit_with_man_page(); // PS : git fait la même chose que git --help. La page de manuel c'est différent
 

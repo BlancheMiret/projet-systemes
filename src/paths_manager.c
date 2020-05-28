@@ -16,6 +16,18 @@
 
 
 
+char file_paths[1024];
+
+void init_file_paths() {
+    memset(file_paths, 0, 1024);
+    const char *HOME = getenv("HOME");
+    if (HOME == NULL) exit(1);
+    strcat(file_paths,HOME);
+    strcat(file_paths, "/.tag/paths.txt");
+}
+
+
+
 
 //fonction qui renvoie le chemin abosolu d'un fichier
 
@@ -69,13 +81,13 @@ char * absolute_path(char * filename){
 
 /* *
 * @param file_paths = nom du fichier qui contient les chemins des fichiers taggés
-* @param file_to_tag = nom du fichier qu'on veut tagger
+* @param filename = nom du fichier qu'on veut tagger
 * @return renvoie 1 si le chemin existe sinon 0
 * */
 
-int find_path(char * file_paths, char * file_to_tag ){
+int find_path(char * filename){
 
-	char *path = realpath(file_to_tag, NULL);
+	char *path = realpath(filename, NULL);
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
@@ -139,17 +151,17 @@ int add_path(char * filename){
 	FILE  *file;
 
 	//fichier où on va stocker les chemins des fichiers taggés
-	const char *filename_paths = "paths.txt";
-	file = fopen(filename_paths, "a");
+
+	file = fopen(file_paths, "a");
 
 	if (file == NULL)
 	{
-		fprintf(stderr, "cannot open %s for appending\n", filename_paths);
+		fprintf(stderr, "cannot open %s for appending\n", file_paths);
 		return 0;
 	}
 
 
-	if(find_path("paths.txt", filename) == 1){
+	if(find_path(filename) == 1){
 
 		//printf("Le chemin existe déjà!\n");
 		return 0;
@@ -185,7 +197,7 @@ int delete_path(char * filename){
 		return 0;
 	}
 
-	if(find_path("paths.txt",filename)==0){
+	if(find_path(filename)==0){
 
 		printf("Le chemin n'existe pas dans paths.txt!\n");
 		return 0;
@@ -196,9 +208,8 @@ int delete_path(char * filename){
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
-	char *paths_file ="paths.txt";
 	char *temp_file = "temp.txt";
-	FILE *file = fopen(paths_file, "r");
+	FILE *file = fopen(file_paths, "r");
 	FILE *file2 = fopen(temp_file, "a+");
 //retourne le nombre de caractères de la première ligne
 	line_size = getline(&line_buf, &line_buf_size, file);
@@ -220,8 +231,8 @@ int delete_path(char * filename){
 
 	fclose(file);
 	fclose(file2);
-	remove(paths_file);
-	rename(temp_file, paths_file);
+	remove(file_paths);
+	rename(temp_file, file_paths);
 
 
 	return 1;
@@ -231,7 +242,7 @@ int delete_path(char * filename){
 
 void * init_iterator(){
 
-	FILE *file = fopen("paths.txt", "r"); 
+	FILE *file = fopen(file_paths, "r"); 
 	if (file == NULL) {
 		perror("fopen");
 		exit(1);
