@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "tag_hierarchy.h"
 #include "research.h"
@@ -55,7 +56,7 @@ void exit_with_help_page() {
     printf("\n");
     printf("manage the tagset\n");
     printf("    create      Add tag to your tagset\n");
-    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n")
+    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n");
     printf("    print       Display the tagset\n");
     printf("\n");
     printf("add tags to file\n");
@@ -85,6 +86,17 @@ void exit_with_syntax_error(enum error e) {
 	exit(0);
 }
 
+void exit_with_file_error(enum error e, char *filename) {
+	printf("%s is not a valid file name\n", filename);
+	switch(e) {
+		case PRINT : printf("usage : tag print [filename]\n"); break;
+		case LINK : printf("usage : tag link <filename> <tag1> [tag2] ...\n"); break;
+		case UNLINK : printf("usage : tag unlink <filename> [--all] <tag> [tag]\n"); break;
+		default : ;
+	}
+	exit(-1);
+}
+
 int main(int argc, char **argv) {
 
 	init_file_paths();
@@ -109,6 +121,8 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
+	char* filename;
+
 	switch(command) {
 		case 'c' :
 			if (argc < 4) exit_with_syntax_error(CREATE);
@@ -125,14 +139,19 @@ int main(int argc, char **argv) {
 			break;
 
 		case 'p' :
-
 			if (argc == 2) print_hierarchy();
-			else if (argc == 3) printf("Yop\n"); // afficher contenu d'un fichier // <-------------------------------------
+			else if (argc == 3) {
+				filename = argv[2];
+				if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
+				printf("Yop\n"); // afficher contenu d'un fichier // <-------------------------------------
+			}
 			else exit_with_syntax_error(PRINT); 
 			break;
 
 		case 'l' :
 			if (argc < 4) exit_with_syntax_error(LINK); 
+			filename = argv[2];
+			if (access(filename, F_OK) < 0) exit_with_file_error(LINK, filename);
 			for (int i = 3; i < argc; i++) {
 				if (!tag_exists(argv[i])) {
 					printf("%s does not exist in your tag hierarchy yet. Create it first with tag create\n", argv[i]);
@@ -144,7 +163,8 @@ int main(int argc, char **argv) {
 
 		case 'u' :
 			if (argc < 4) exit_with_syntax_error(UNLINK); 
-			char *filename = argv[2];
+			filename = argv[2];
+			if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
 			if (strcmp(argv[3], "--all") == 0) { 
 				if (argc == 4) printf("Must add call of function reset_all_files()\n"); // <----------reset_all_files()
 				else exit_with_syntax_error(UNLINK);
