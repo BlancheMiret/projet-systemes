@@ -76,6 +76,11 @@ void clean_hierarchy() {
 	}
 
 	FILE *f = fopen(hierarchy_file, "w");
+    if(f == NULL) {
+        perror("fopen");
+        exit(1);
+    }
+    
 	fclose(f);
 }
 
@@ -155,6 +160,11 @@ Renvoie 1 si tag_name existe dans la liste et hiérarchie stockées, 0 sinon.
 int tag_exists(char *tag_name) {
 
 	int fd = open(hierarchy_file, O_RDWR);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
+
 	struct tag_t *tag = malloc(TAGSIZE);
 	while(read(fd, tag, TAGSIZE) != 0) {
 		if (strcmp(tag->name, tag_name) == 0) {
@@ -184,6 +194,11 @@ int create_tag(char *father, char* tags[], int nb_tags) {
 
     // -- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --
     int fd = open(hierarchy_file, O_RDWR);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
+
     int father_exists = FALSE;
 
     struct tag_t *tag = malloc(TAGSIZE);
@@ -241,6 +256,11 @@ int add_tag(char *father, char *tag_name) {
 	// --- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --- 
 
 	int fd = open(hierarchy_file, O_RDWR);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
+
 	int father_exists = FALSE;
 
 	struct tag_t *tag = malloc(TAGSIZE);
@@ -340,6 +360,11 @@ int delete_tag(char *tag_name) {
 	// --- RÉ-ÉCRIRE SUR LE FICHIER ---
 
 	int fd = open(hierarchy_file, O_WRONLY| O_TRUNC);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
+
 	write_tree(tree->children, fd);
 	close(fd);
 
@@ -389,6 +414,10 @@ void *build_tree() {
 	// ---- VARIABLES DE PARCOURS ----
 
 	int fd = open(hierarchy_file, O_RDONLY);
+    if (fd < 0) {
+        perror("open");
+        exit(1);
+    }
 
 	char *buf = malloc(TAGSIZE);
 	memset(buf, 0, TAGSIZE);
