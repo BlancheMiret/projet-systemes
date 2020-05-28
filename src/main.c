@@ -156,6 +156,8 @@ int main (int argc, char **argv) {
 				print_error_message();
 				return -1;
 			}
+			clean_hierarchy();
+			delete_all_tags("paths.txt");
 			break;
 
 		default:
