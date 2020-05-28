@@ -28,6 +28,8 @@ struct hierarchy {
 
 #define TAGSIZE sizeof(struct tag_t)
 
+char hierarchy_file[1024];
+
 
 // DÉCLARATION FONCTIONS INTERNES 
 void write_tree(struct tag_t *tag, int fd); //
@@ -35,6 +37,18 @@ void *build_tree(); //
 void print_tree(struct tag_t *tag, char * shift); //
 void print_tree_children(struct tag_t *tag, char *shift); //
 void print_tag(struct tag_t *tag); //
+
+
+/*
+Initialise variable globale nom du fichier
+*/
+void init_hierarchy() {
+    memset(hierarchy_file, 0, 1024);
+    const char *HOME = getenv("HOME");
+    if (HOME == NULL) exit(1);
+    strcat(hierarchy_file,HOME);
+    strcat(hierarchy_file, "/.tag/tag_hierarchy");
+}
 
 /* 
 Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur. 
@@ -61,7 +75,7 @@ void clean_hierarchy() {
 			goto wait_answer;
 	}
 
-	FILE *f = fopen("tag_hierarchy", "w");
+	FILE *f = fopen(hierarchy_file, "w");
 	fclose(f);
 }
 
@@ -140,7 +154,7 @@ Renvoie 1 si tag_name existe dans la liste et hiérarchie stockées, 0 sinon.
 */
 int tag_exists(char *tag_name) {
 
-	int fd = open("tag_hierarchy", O_RDWR);
+	int fd = open(hierarchy_file, O_RDWR);
 	struct tag_t *tag = malloc(TAGSIZE);
 	while(read(fd, tag, TAGSIZE) != 0) {
 		if (strcmp(tag->name, tag_name) == 0) {
@@ -169,7 +183,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
     }
 
     // -- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --
-    int fd = open("tag_hierarchy", O_RDWR);
+    int fd = open(hierarchy_file, O_RDWR);
     int father_exists = FALSE;
 
     struct tag_t *tag = malloc(TAGSIZE);
@@ -180,11 +194,13 @@ int create_tag(char *father, char* tags[], int nb_tags) {
                 printf("%s already exists in your hierarchy. Two tags cannot have the same name.\n", tags[i]);
                 exit(1);
             }
-            if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
         }
+        printf("Name of tag seen : %s\n", tag->name);
+        if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
     }
 
     if (father != NULL && !father_exists) {
+    	printf("%s\n", father);
         printf("The specified father does not exist in the tag hierarchy.\n");
         exit(1);
     }
@@ -224,7 +240,7 @@ int add_tag(char *father, char *tag_name) {
 
 	// --- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --- 
 
-	int fd = open("tag_hierarchy", O_RDWR);
+	int fd = open(hierarchy_file, O_RDWR);
 	int father_exists = FALSE;
 
 	struct tag_t *tag = malloc(TAGSIZE);
@@ -323,7 +339,7 @@ int delete_tag(char *tag_name) {
 
 	// --- RÉ-ÉCRIRE SUR LE FICHIER ---
 
-	int fd = open("tag_hierarchy", O_WRONLY| O_TRUNC);
+	int fd = open(hierarchy_file, O_WRONLY| O_TRUNC);
 	write_tree(tree->children, fd);
 	close(fd);
 
@@ -372,7 +388,7 @@ void *build_tree() {
 
 	// ---- VARIABLES DE PARCOURS ----
 
-	int fd = open("tag_hierarchy", O_RDONLY);
+	int fd = open(hierarchy_file, O_RDONLY);
 
 	char *buf = malloc(TAGSIZE);
 	memset(buf, 0, TAGSIZE);

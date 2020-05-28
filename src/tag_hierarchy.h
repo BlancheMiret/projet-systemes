@@ -8,6 +8,8 @@ struct tag_node {
 	struct tag_node		*next;
 };
 
+void init_hierarchy();
+
 /* Renvoie un pointeur vers un tag_node, liste chainée d'enfants de tag_name */
 void *get_tag_children(char *tag_name);
 

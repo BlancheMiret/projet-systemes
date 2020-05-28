@@ -69,6 +69,8 @@ void print_command_use() {
 
 int main (int argc, char **argv) {
 
+	init_hierarchy();
+
 	if (argc == 1) {
 		print_command_use();
 		return 0;
