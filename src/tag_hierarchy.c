@@ -157,6 +157,55 @@ int tag_exists(char *tag_name) {
 // ----------------------------------------------------------------------------------------------
 // --------------------------------------- AJOUTER UN TAG ---------------------------------------
 
+/* Version prend plusieurs tags*/
+int create_tag(char *father, char* tags[], int nb_tags) {
+
+    // -- VÉRIFICATION LONGUEURS DES TAGS --
+    for(int i = 0; i < nb_tags; i++) {
+        if(strlen(tags[i]) > 18) {
+            printf("%s is too long for a tag_name. Try a name with 18 caracters or less.\n", tags[i]);
+            exit(1);
+        }
+    }
+
+    // -- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --
+    int fd = open("tag_hierarchy", O_RDWR);
+    int father_exists = FALSE;
+
+    struct tag_t *tag = malloc(TAGSIZE);
+
+    while(read(fd, tag, TAGSIZE) != 0) {
+        for (int i = 0; i < nb_tags; i++) {
+            if(strcmp(tag->name), tags[i] == 0) {
+                printf("%s already exists in your hierarchy. Two tags cannot have the same name.\n", tags[i]);
+                exit(1);
+            }
+            if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
+        }
+    }
+
+    if (father != NULL && !father_exists) {
+        printf("The specified father does not exist in the tag hierarchy.\n");
+        exit(1);
+    }
+
+    for(int i = 0; i < nb_tags; i++) {
+        memset(tag, 0, TAGSIZE);
+        memcpy(tag->name, tags[i], strlen(tags[i]) + 1);
+        tag->name[TAGNAME - 1] = '%';
+
+        if (father == NULL) memcpy(tag->father, "root", strlen("root") + 1);
+        else memcpy(tag->father, father, strlen(father) + 1);
+        tag->father[TAGNAME-1] = '-';
+        write(fd, tag, TAGSIZE);
+    }
+
+
+    close(fd);
+    free(tag);
+
+    return 0;
+}
 
 /*
 Ajoute un tag dans le système de tags.
