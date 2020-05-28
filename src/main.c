@@ -6,30 +6,27 @@
 #include "research.h"
 #include "tag_file.h"
 
+#define DEBUG 1
+
 /* Utilisation ? 
 
 NOUVEAU MANUEL
 
-%tag print                              -> affiche hiérarchie des tags
-%tag print filename                     -> affiche liste tags d'un fichier
+%tag print [filename]                    		-> affiche liste tags de filename si précisé, sinon la hiérarchie des tags
 
-%tag create -n/nompère tag1 tag2 ...    -> crée tag1 tag2... avec pour père nompère si précisé, root si -n
-%tag delete tag                         -> supprime tag + enfants de la hiérarchie - ATTENTION SUPPRIMER CES TAGS DES FICHIERS + éventuellement fichiers de la liste des fichiers
-%tag link filename tag1 tag2 ...        -> ajoute tag1, tag2 ... à filname - ATTENTION doit ajouter filename à la liste fichiers si pas déjà présent
-%tag unlink filename tag1 tag2 ...      -> supprime tag1, tag2 ... à filename - ATTENTION doit supprimer fichier de la liste des fichiers si nbtags tombe à 0
+%tag create -n|<father> <tag1> [tag2] ...   	-> crée tag1 tag2... avec pour père father si précisé, root si -n
+%tag delete <tag>                         		-> supprime tag + enfants de la hiérarchie - ATTENTION SUPPRIMER CES TAGS DES FICHIERS + éventuellement fichiers de la liste des fichiers
 
-%tag search tag1 [-not] tag2 ...        -> renvoie chemin absolu des fichiers dont les tags correspondent à la combinaison
+%tag link <filename> <tag1> [tag2] ...        	-> ajoute tag1, tag2 ... à filname - ATTENTION doit ajouter filename à la liste fichiers si pas déjà présent
+%tag unlink <filename> [--all]<tag1> [tag2] ... -> supprime tag1, tag2 ... de filename. Tous les tags si --all - ATTENTION doit supprimer fichier de la liste des fichiers si nbtags tombe à 0
 
-%tag reset                              -> efface toute la hiérarchie des tags - ATTENTION DOIT SUPPRIMER LES TAGS DE TOUS LES FICHIERS
-%tag reset filename                     -> efface tous les tags d'un fichier
+%tag search tag1 [-not] tag2 ...        		-> renvoie chemin absolu des fichiers dont les tags correspondent à la combinaison
+
+%tag reset                              		-> efface toute la hiérarchie des tags - ATTENTION DOIT SUPPRIMER LES TAGS DE TOUS LES FICHIERS
 
 */
 
-void print_error_message() {
-	printf("Wrong use of option or arguments. Enter 'tag' to see manuel page.\n");
-}
-
-void print_manual_page() {
+void exit_with_man_page() {
 	printf("NAME\n");
 	printf("	tag - the manager of you tagging-file system.\n");
 	printf("\n");
@@ -40,136 +37,120 @@ void print_manual_page() {
 	printf("	Tag is a tagging-file system manager...\n");
 	printf("\n");
 	printf("TAG COMMANDS\n");
-	printf("	git create [-n]/[father] <tag1> [tag2] ...\n");
-	printf("	git delete <tag>\n");
-	printf("	git print [filename]\n");
-	printf("	git link <filename> <tag1> [tag2] ...\n");
-	printf("	git unlink <filename> <tag> \n");
-	printf("	git search tag1 [[-not] tag2] ...\n");
-	printf("	git reset [filename]\n");
+	printf("	tag create -n|<father> <tag1> [tag2] ...\n");
+	printf("	tag delete <tag>\n");
+	printf("	tag print [filename]\n");
+	printf("	tag link <filename> <tag1> [tag2] ...\n");
+	printf("	tag unlink <filename> [--all] <tag> [tag]\n");
+	printf("	tag search tag1 [-not] [tag2] ...\n");
+	printf("	tag reset\n");
 	printf("\n");
+	exit(0);
 }
 
-void print_command_use() {
-    printf("Welcome to TAGGER, manager of your tagging file system.\n");
-    printf("usage: tag [-apdlusr] [<args>]\n");
-    printf("Options are:\n");
-    printf("    -a father_name/-n tag_name :   create a tag named tag_name, having father_name as father in the hierarchy.\n"
-           "                                father_name should already exist in the hierarchy.\n"
-           "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
-    printf("    -p :                        display the existing tag hierarchy.\n");
-    printf("    -d tag_name :               ask to delete the tag tag_name. If the tag has children, they will be deleted as well.\n");
-    printf("    -l file_path tag_name :     link tag_name to the file designated by file_path.\n"
-           "                                tag_name should already exist in the hierarchy.\n");
-    printf("    -u file_path tag_name :     unlink tag_name from the designated file.\n");
-    printf("    -s <tag_combinaison> :      return path of file corresponding to the research.\n"
-           "                                See below for tag combinaison syntax.\n");
-    printf("    -r :                        reset tag-system definitively and delete all tags associated with files.\n");
+void exit_with_help_page() {
+	printf("usage : tag <command> [<args>]");
+	printf("These are common Git commands used in various situations:");
+	// - commencer par composer la hiérarchie
+	// - afficher la hiérarchie
+	// - puis ajouter des tags à des fichiers
+	// - afficher tags d'un fichier
+	exit(1);
 }
 
-int main (int argc, char **argv) {
+enum error { CREATE, DELETE, PRINT, LINK, UNLINK, SEARCH, RESET };
+
+void exit_with_syntax_error(enum error e) {
+	printf("Arguments are missing\n");
+	switch(e) {
+		case CREATE : printf("usage : tag create -n|<father> <tag1> [tag2] ...\n"); break;
+		case DELETE : printf("usage : tag delete <tag>\n"); break;
+		case PRINT : printf("usage : tag print [filename]\n"); break;
+		case LINK : printf("usage : tag link <filename> <tag1> [tag2] ...\n"); break;
+		case UNLINK : printf("usage : tag unlink <filename> [--all] <tag> [tag]\n"); break;
+		case SEARCH : printf("usage : tag search tag1 [-not] [tag2] ...\n"); break;
+		case RESET : printf("usage : tag reset\n"); break;
+	}
+	printf("See --help to get more informations\n");
+	exit(0);
+}
+
+int main(int argc, char **argv) {
 
 	init_hierarchy();
 
-	if (argc == 1) {
-		print_command_use();
-		return 0;
+	if (argc < 2) exit_with_man_page(); // PS : git fait la même chose que git --help. La page de manuel c'est différent
+
+	char command;
+
+	if      (strcmp(argv[1], "create") == 0) command = 'c';
+	else if (strcmp(argv[1], "delete") == 0) command = 'd';
+	else if (strcmp(argv[1], "print") == 0) command = 'p';
+	else if (strcmp(argv[1], "link") == 0) command = 'l';
+	else if (strcmp(argv[1], "unlink") == 0) command = 'u';
+	else if (strcmp(argv[1], "search") == 0) command = 's';
+	else if (strcmp(argv[1], "reset") == 0) command = 'r';
+	else {
+		printf("%s is not a tag command. See --help\n", argv[1]);
+		exit(1);
 	}
 
-	if (strlen(argv[1]) != 2 ||
-		argv[1][0] != '-' ||
-		(argv[1][1] != 'a' &&
-		argv[1][1] != 'p' &&
-		argv[1][1] != 'd' &&
-		argv[1][1] != 'l' &&
-		argv[1][1] != 'u' &&
-		argv[1][1] != 's' &&
-		argv[1][1] != 'r')) {
-		print_error_message();
-		return 0;
-	}
-
-	switch(argv[1][1]) {
-		case 'a': // AJOUTER MULTIPLICITÉ ARGUMENTS
-			if (argc < 4) {
-				print_error_message();
-				return -1;
-			}
-			if (strcmp(argv[2], "-n") == 0) create_tag(NULL, argv + 3, argc -3); // <-- ajoute le tag avec root comme père, en vérifiant qu'un tag du même nom n'existe pas déjà 
-			else create_tag(argv[2], argv + 3, argc - 3); // <--- ajoute le tag avec le père spécifié, en vérifiant l'existence du père ou qu'un tag du même nom n'existe pas déjà
+	switch(command) {
+		case 'c' :
+			if (argc < 4) exit_with_syntax_error(CREATE);
+			char *father = (strcmp(argv[2], "-n") != 0 ) ? argv[2] : NULL;
+			create_tag(father, argv + 3, argc - 3);
 			break;
 
-		case 'p': // OK
-			if (argc != 2) {
-				print_error_message();
-				return -1;
-			}
-			print_hierarchy(); // <-- affiche la hiérarchie des tags créés 
+		case 'd' :
+			if (argc != 3) exit_with_syntax_error(DELETE); 
+			char *tag_to_delete = argv[2];
+			struct tag_node *children = get_tag_children(tag_to_delete);
+			// for_all_files_delete(tag_to_delete, children); // <----------------------------------
+			delete_tag(tag_to_delete);
 			break;
 
-		case 'd': // OK 
-			if (argc != 3) {
-				print_error_message();
-				return -1;
-			}
-			delete_tag(argv[2]); // <-- supprime le tag et ses enfants de la hiérarchie des tags, en demandant confirmation à l'utilisateur
+		case 'p' :
+
+			if (argc == 2) print_hierarchy();
+			else if (argc == 3) printf("Yop\n"); // afficher contenu d'un fichier // <-------------------------------------
+			else exit_with_syntax_error(PRINT); 
 			break;
 
-		case 'l':
-			if (argc != 4) {
-				print_error_message();
-				return -1;
+		case 'l' :
+			if (argc < 4) exit_with_syntax_error(LINK); 
+			for (int i = 3; i < argc; i++) {
+				if (!tag_exists(argv[i])) {
+					printf("%s does not exist in your tag hierarchy yet. Create it first with tag create\n", argv[i]);
+					exit(1);
+				}
 			}
-
-			if (!tag_exists(argv[3])) { // <-- ici vérifie que le tag existe dans la hiérarchie
-				printf("The tag you want to link does not exist in your system yet. Please add it first with `tag -a`\n");
-				return -1;
-			}
-			printf("Linking\n");
-			link_tag(argv[2], argv+3, argc - 3);
-
+			link_tag(argv[2], argv + 3, argc - 3);
 			break;
 
-		case 'u':
-			if (argc != 4) {
-				print_error_message();
-				return -1;
+		case 'u' :
+			if (argc < 4) exit_with_syntax_error(UNLINK); 
+			char *filename = argv[2];
+			if (strcmp(argv[3], "--all") == 0) { 
+				if (argc == 4) printf("Must add call of function reset_all_files()\n"); // <----------reset_all_files()
+				else exit_with_syntax_error(UNLINK);
 			}
-			printf("Unlinking\n");
-			// <---- vérifier que fichier donné en paramètre existe dans la liste des fichiers taggés
-			// + délier le tag 
-			// + si nombre de tag du fichier = 0 alors supprimer le fichier de la liste des fichiers taggés
-			unlink_tag(argv[2], argv+3, argc - 3);
+			else unlink_tag(filename, argv + 3, argc - 3);
 			break;
 
-		case 's':
-			printf("Searching\n");
-			if (argc < 3) {
-				print_error_message();
-				return -1;
-			}
+		case 's' :
+			if (argc < 3) exit_with_syntax_error(SEARCH);
 			research(argc, argv);
 			break;
 
-		case 'r':
-			if (argc != 2) {
-				print_error_message();
-				return -1;
-			}
+		case 'r' :
+			if (argc != 2) exit_with_syntax_error(RESET);
 			clean_hierarchy();
 			delete_all_tags("paths.txt");
 			break;
 
-		default:
-			printf("Error occured\n");
-			exit(1);
-			break;
+		default :
+			fprintf(stderr, "Wrong parsing of arguments.\n");
+			exit(-1);
 	}
-	return 0;
 }
-
-
-
-
-
-
