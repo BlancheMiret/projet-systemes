@@ -54,7 +54,7 @@ void print_command_use() {
     printf("Welcome to TAGGER, manager of your tagging file system.\n");
     printf("usage: tag [-apdlusr] [<args>]\n");
     printf("Options are:\n");
-    printf("    -a father_name tag_name :   create a tag named tag_name, having father_name as father in the hierarchy.\n"
+    printf("    -a father_name/-n tag_name :   create a tag named tag_name, having father_name as father in the hierarchy.\n"
            "                                father_name should already exist in the hierarchy.\n"
            "                                If father_name is not defined, the tag will be added at the root of the tag hierarchy.\n");
     printf("    -p :                        display the existing tag hierarchy.\n");
@@ -89,12 +89,12 @@ int main (int argc, char **argv) {
 
 	switch(argv[1][1]) {
 		case 'a': // AJOUTER MULTIPLICITÉ ARGUMENTS
-			if (argc != 3 && argc != 4) {
+			if (argc < 4) {
 				print_error_message();
 				return -1;
 			}
-			if (argc == 3) add_tag(NULL, argv[2]); // <-- ajoute le tag avec root comme père, en vérifiant qu'un tag du même nom n'existe pas déjà 
-			else if (argc == 4) add_tag(argv[3], argv[2]); // <--- ajoute le tag avec le père spécifié, en vérifiant l'existence du père ou qu'un tag du même nom n'existe pas déjà
+			if (strcmp(argv[2], "-n") == 0) create_tag(NULL, argv + 3, argc -3); // <-- ajoute le tag avec root comme père, en vérifiant qu'un tag du même nom n'existe pas déjà 
+			else create_tag(argv[2], argv + 3, argc - 3); // <--- ajoute le tag avec le père spécifié, en vérifiant l'existence du père ou qu'un tag du même nom n'existe pas déjà
 			break;
 
 		case 'p': // OK
