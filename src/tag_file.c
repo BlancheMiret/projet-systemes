@@ -492,3 +492,46 @@ void * get_file_tag_list(char * path){
 	return tag_list;
 
 }
+
+
+int delete_all_tags(char * file_paths){
+
+
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+	ssize_t line_size;
+	int line_count = 0;
+	size_t ln;
+	FILE *file = fopen(file_paths, "r");
+	int val;
+
+//retourne le nombre de caractères de la première ligne
+	line_size = getline(&line_buf, &line_buf_size, file);
+
+	while (line_size>= 0) {
+		ln = line_size-1;
+		if(line_buf[ln] == '\n') line_buf[ln] = '\0';
+
+		if (strlen(line_buf) != 1) {
+
+			val=removexattr(line_buf, "user.tags");
+			printf("VAL %d", val);
+			if (val == -1 ){
+				perror("removexattr error: ");
+				return 0;
+			}
+			if(delete_path(line_buf) == 0){
+				printf("Le chemin ci-dessous n'a pas pu être supprimé:\n");
+				printf("%s\n",line_buf);
+				return 0;
+			}
+		}
+
+
+		line_size = getline(&line_buf, &line_buf_size, file);
+	}
+
+	return 1;
+
+
+}

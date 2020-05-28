@@ -5,5 +5,6 @@
 int link_tag(char *filename, char * tags[], size_t tags_size);
 int unlink_tag(char * filename, char * tags[], size_t tags_size);
 void * get_file_tag_list(char * path);
+int delete_all_tags(char * file_paths);
 
 #endif
