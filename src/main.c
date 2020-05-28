@@ -143,7 +143,8 @@ int main(int argc, char **argv) {
 			else if (argc == 3) {
 				filename = argv[2];
 				if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
-				printf("Yop\n"); // afficher contenu d'un fichier // <-------------------------------------
+				 struct tag_node *tag_list=get_file_tag_list(filename); // afficher contenu d'un fichier // <-------------------------------------
+				 print_list(tag_list);
 			}
 			else exit_with_syntax_error(PRINT); 
 			break;
