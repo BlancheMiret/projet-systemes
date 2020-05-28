@@ -501,6 +501,8 @@ int delete_all_tags(char * filename){
 		perror("removexattr error: ");
 		return 0;
 	}
+	
+	delete_path(filename);
 
 	return 1;
 
