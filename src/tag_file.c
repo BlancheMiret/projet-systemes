@@ -39,7 +39,7 @@ ou user.couleur = bleu & user.bleu = bleu_ciel ?
 // link_tag(char *filename, char * maintag, char * subtags)
 
 
-
+extern char file_paths[1024];
 
 //retourne 1 si new_tag existe dans tags, sinon 0
 
@@ -494,7 +494,7 @@ void * get_file_tag_list(char * path){
 }
 
 
-int reset_all_files(char * file_paths){
+int reset_all_files(){
 
 
 	char *line_buf = NULL;
