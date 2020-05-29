@@ -8,13 +8,6 @@ void erreur(char *msg)
 
 int main(int argc, char *argv[])
 {
-    char *HOME = getenv("HOME");
-    if (HOME == NULL)
-        erreur("ERREUR getenv\n");
-    char pathfile[100] = "";
-    strcat(pathfile, HOME);
-    strcat(pathfile, "/.tag/paths.txt");
-    printf("%s\n", pathfile);
     if (argc != 2)
         erreur("ERREUR nombre d'arguments invalide\n");
     
@@ -22,7 +15,7 @@ int main(int argc, char *argv[])
     if (arg == NULL)
         erreur("ERREUR argument invalide\n");
     
-    if (find_path(pathfile, arg) == 1)
+    if (find_path(arg) == 1)
         delete_path(arg);
     execlp("rm", "rm", (const char *)arg, NULL);
     
