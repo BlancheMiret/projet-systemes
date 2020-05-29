@@ -105,6 +105,7 @@ void write_tag_list(struct tag_t *tag, struct tag_node **list) {
 	while(tag != NULL) {
 		struct tag_node *temp = *list; // temp est la liste
 		*list = malloc(sizeof(struct tag_node));
+		memset(*list, 0, sizeof(struct tag_node));
 		memcpy((*list)->name, tag->name, TAGNAME);
 		(*list)->next = temp;
 

@@ -500,7 +500,8 @@ void * get_file_tag_list(char * path){
 
 			struct tag_node *temp = tag_list; 
 			tag_list = malloc(sizeof(struct tag_node));
-			memcpy(tag_list->name, tag, strlen(tag));
+			memset(tag_list, 0, sizeof(struct tag_node));
+			memcpy(tag_list->name, tag, TAGNAME);
 			tag_list->next = temp;
 
 			tag = strtok(NULL, delim);
