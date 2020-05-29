@@ -245,7 +245,11 @@ int main(int argc, char **argv) {
 
 		case 's' :
 			if (argc < 3) exit_with_syntax_error(SEARCH);
-			research(argc, argv);
+			int opt = strcmp(argv[2], "-a");
+			int ABS = opt == 0 ? 1 : 0;
+			if (ABS && argc < 4) exit_with_syntax_error(SEARCH);
+			int place = opt == 0 ? 3 : 2;
+			research(ABS, argv + place, argc - place);
 			break;
 
 		case 'r' :

@@ -40,16 +40,21 @@ int belong_to_list(char *tag_name, struct tag_l tag_list) {
 	return 0;
 }
 
+void print_filename(char *path, int ABS) {
+	if(ABS) printf("%s\n", path);
+	else printf("%s\n", strrchr(path, '/') + 1);
+}
+
 
 /*
 Construit le tableau de listes 
 */
-int research(int argc, char **argv) {
+int research(int ABS, char **terms, int nb_terms) {
 
 	// 0. Compter nombre de termes "utiles" ( -> #listes )
 	int c = 0;
-	for (int i = 2; i < argc; i++) { // On commence à 2 puisque que commence par ./tag -s
-		if(strcmp(argv[i], "-not") != 0) c ++;
+	for (int i = 0; i < nb_terms; i++) { // On commence à 2 puisque que commence par ./tag -s
+		if(strcmp(terms[i], "-not") != 0) c ++;
 	}
 	
 	// 1. construire tableau
@@ -57,22 +62,20 @@ int research(int argc, char **argv) {
 
 	// 2. Parcourir les termes 1 par 1 et créer une liste par terme.
 	c = 0;
-	for (int i = 2; i < argc; i++) {
+	for (int i = 0; i < nb_terms; i++) {
 		int must_be = 1;
 
-		if(strcmp(argv[i], "-not") == 0) {
+		if(strcmp(terms[i], "-not") == 0) {
 			must_be = 0;
 			i++;
 		}
 
-		if (i >= argc) {
-			printf("argc %d\n",argc);
-			printf("i %d\n",i);
-			perror("Wrong argumentation\n");
+		if (i >= nb_terms) {
+			perror("Tagname missing after -not\n");
 			exit(1);
 		}
 
-		tab[c] = build_list(argv[i], must_be);
+		tab[c] = build_list(terms[i], must_be);
 		c++;
 	}
 
@@ -136,7 +139,7 @@ int research(int argc, char **argv) {
 		}
 
 		if (DEBUG) printf("FILE WINS \n");
-		printf("%s\n", path);
+		print_filename(path, ABS);
 
 		next_file :
 		path = next_path(path_file);
