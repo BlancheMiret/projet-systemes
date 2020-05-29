@@ -210,7 +210,6 @@ int create_tag(char *father, char* tags[], int nb_tags) {
                 exit(1);
             }
         }
-        printf("Name of tag seen : %s\n", tag->name);
         if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
     }
 
