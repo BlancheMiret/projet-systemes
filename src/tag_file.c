@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 
-//#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -159,7 +158,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 		res = set_tag(path, usertag, new_tags,0);
 
 		if(res){
-			printf("fichier taggé! \n");
+			printf("The file was tagged.\n");
 			return 1;
 		} 
 
@@ -188,7 +187,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 			if(res){
 
-				printf("fichier taggé! \n");
+				printf("The file was tagged.\n");
 				return 1;
 			} 
 
@@ -229,7 +228,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 			if(res){
 
-				printf("fichier taggé! \n");
+				printf("The file was tagged.\n");
 				return 1;
 			} 
 
@@ -345,17 +344,19 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			} 
 
 			if(j == 1 && ask){ 
-				
-				printf("Le fichier concerné possède également le sous-tag suivant hériant de %s :\n", tags[i]);
+				printf("The file %s has also the following subtag inherited from %s", filename, tags[i]);
+				//printf("Le fichier concerné possède également le sous-tag suivant hériant de %s :\n", tags[i]);
 				printf("- %s\n", subtags[0]);
-				printf("Souhaitez vous supprimer également ce sous-tag? Répondez par 'oui' ou 'non'\n");
+				printf("Do you want to delete this subtag? [yes/no]\n");
+				//printf("Souhaitez vous supprimer également ce sous-tag? Répondez par 'oui' ou 'non'\n");
 			}
 
 			if(j > 1 && ask){
 
-				printf("Le fichier concerné possède également les sous-tags suivant hériant de %s :\n", tags[i]);
+				printf("The file %s has also the following subtags inherited from %s", filename, tags[i]);
 				for(int i=0; i < j; i++) printf("- %s\n", subtags[i]);
-				printf("Souhaitez vous supprimer également ces sous-tags? Répondez par 'oui' ou 'non'\n");
+				printf("Do you want to delete these subtags? [yes/no]\n");
+				//printf("Souhaitez vous supprimer également ces sous-tags? Répondez par 'oui' ou 'non'\n");
 			}
 			
 			//print_list(children_list);
@@ -363,16 +364,16 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 				while(1){
 					scanf("%s", reply);
-					if(strcmp(reply,"oui") == 0 || strcmp(reply,"non") ==0) break;
-					printf("Répondez par 'oui' ou 'non'\n");
+					if(strcmp(reply,"yes") == 0 || strcmp(reply,"no") ==0) break;
+					printf("Reply with 'yes' or 'no'\n");
 				}
 			
 			}
 			
 
-			if(strcmp(reply,"oui") == 0 || ask == 0){
+			if(strcmp(reply,"yes") == 0 || ask == 0){
 
-				printf("vous avez répondu oui\n");
+				printf("You replied yes.\n");
 				//printf("buff_tag  %s\n", buff_tag);
 
 				concatenate_tags(subtags_concat, subtags, j);
@@ -402,12 +403,13 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 				val = set_tag(path, usertag, all_tags, 1);
 
 				if(val == 0) return 0;
-				printf("Le tag %s ainsi que ses sous-tags ont été supprimé !\n", tags[i]);
+				//printf("Le tag %s ainsi que ses sous-tags ont été supprimé !\n", tags[i]);
+				printf("The tag %s and its subtags have been deleted !\n", tags[i]);
 
 		
 			}
 
-			if(strcmp(reply,"non")==0){
+			if(strcmp(reply,"no")==0){
 
 				//Suppression de tags[i] 
 				delete_one_tag: ;
@@ -438,7 +440,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 				val = set_tag(path, usertag, all_tags,1);
 				if(val == 0) return 0;	
 
-				printf("Seul le tag %s a été supprimé !\n", tags[i]);
+				printf("Only the tag %s has been deleted !\n", tags[i]);
 
 
 			}
@@ -452,7 +454,8 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 	if(val == 0){
-		printf("Le fichier %s ne contient plus de tags, il va être supprimé de paths.txt\n", filename);
+		//printf("Le fichier %s ne contient plus de tags, il va être supprimé de paths.txt\n", filename);
+		printf("The file %s doesn't contain any tags, it will be deleted from paths.txt\n", filename);
 		delete_path(filename);
 
 	}
@@ -589,7 +592,7 @@ int reset_all_files(){
 				return 0;
 			}
 			if(delete_path(line_buf) == 0){
-				printf("Le chemin ci-dessous n'a pas pu être supprimé:\n");
+				printf("The following path wasn't deleted:\n");
 				printf("%s\n",line_buf);
 				return 0;
 			}
