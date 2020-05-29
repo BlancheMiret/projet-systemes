@@ -290,7 +290,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	//Cas où user.tags n'existe pas
 	if (val == 0) {
 
-		printf("Le fichier %s ne contient aucun tag!\n", filename);
+		printf("The file %s doesn't contain any tags.\n", filename);
 		return 0;
 
 	}
@@ -306,7 +306,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 		//Cas où user.tags existe mais ne contient aucun tag
 		if(val == 0){
-			printf("Le fichier %s ne contient aucun tag!\n", filename);
+			printf("The file %s doesn't contain any tags.\n", filename);
 			return 0;
 		}
 
@@ -581,8 +581,8 @@ int reset_all_files(){
 
 		if (strlen(line_buf) != 1) {
 
-			val=removexattr(line_buf, "user.tags");
-			printf("VAL %d", val);
+			val = removexattr(line_buf, "user.tags");
+			
 			if (val == -1 ){
 				perror("removexattr error: ");
 				return 0;
