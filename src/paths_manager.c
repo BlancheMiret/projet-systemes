@@ -141,7 +141,7 @@ int add_path(char * filename){
 	char *path = realpath(filename, NULL);
 
 	if(path == NULL){
-		printf("cannot find file with name[%s]\n", filename);
+		printf("cannot find file with name [%s]\n", filename);
 	}
 
 	else{
@@ -167,13 +167,13 @@ int add_path(char * filename){
 
 
 	if(find_path(filename) == 1){
-		printf("NOOOOOOOOOOOOOOOOOO\n");
+		
 		//printf("Le chemin existe déjà!\n");
 		return 0;
 	}
 
 	else {
-		printf("HEY HEY HEY\n");
+		
 		fprintf(file, "%s\n", path);
 
 	}
@@ -204,7 +204,7 @@ int delete_path(char * filename){
 
 	if(find_path(filename)==0){
 
-		printf("Le chemin n'existe pas dans paths.txt!\n");
+		printf("This path doesn't existe in paths.txt!\n");
 		return 0;
 	}
 
