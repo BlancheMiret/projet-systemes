@@ -55,7 +55,8 @@ Supprime toute la liste et hiérarchie de tags existante en demandant confirmati
 */
 void clean_hierarchy() {
 
-	printf("La supression de la hiérarchie est définitive, voulez-vous supprimer ? Entrez Y(es) ou N(o)\n");
+	printf("You're going to suppress all tags from all tagged files and completely reset your tagset."
+        "This reset operation cannot be undone. Do you want to reset ? Enter Y(es) or N(o)\n");
 	char answer;
 
 	wait_answer:
@@ -63,14 +64,14 @@ void clean_hierarchy() {
 	switch(answer) {
 		case 'y':
 		case 'Y':
-			printf("Ok pour suppression.\n");
+			printf("Reset operation validated.\n");
 			break;
 		case 'n':
 		case 'N':
-			printf("Suppression annulée.\n");
+			printf("Reset operation canceled.\n");
 			exit(0);
 		default :
-			printf("Veuillez entrez Y ou y pour valider la suppression, N ou n pour l'annuler.\n");
+			printf("Please enter Y or y to validate the reset operation, N or n to cancel it.\n");
 			while(answer != '\n') scanf("%c", &answer);
 			goto wait_answer;
 	}
@@ -216,7 +217,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
 
     if (father != NULL && !father_exists) {
     	printf("%s\n", father);
-        printf("The specified father does not exist in the tag hierarchy.\n");
+        printf("The specified father does not exist in the tag hierarchy. See --help\n");
         exit(1);
     }
 
@@ -317,13 +318,13 @@ int delete_tag(char *tag_name) {
 	struct tag_t *tag_to_delete = g_hash_table_lookup(point_table, tag_name);
 
 	if (tag_to_delete == NULL) {
-		perror("The tag you want to delete does not exist.\n");
+		perror("The tag you want to delete does not exist in your tagset.\n");
 		exit(1); 
 	}
 
-	printf("Vous allez supprimer cette arborescence de tag :\n");
+	printf("You're going to delete all this tag hierarchy from your tagset and from the files tagged with them :\n");
 	print_tree_children(tag_to_delete, "");
-	printf("La supression sera définitive, voulez-vous supprimer ? Entrez Y(es) ou N(o)\n");
+	printf("The removal cannot be undone, do you want to proceed ? Enter Y(es) or N(o)\n");
 	char answer;
 
 	wait_answer:
@@ -331,14 +332,14 @@ int delete_tag(char *tag_name) {
 	switch(answer) {
 		case 'y':
 		case 'Y':
-			printf("Ok pour suppression.\n");
+			printf("Delete operation validated.\n");
 			break;
 		case 'n':
 		case 'N':
-			printf("Suppression annulée.\n");
+			printf("Delete operation canceled.\n");
 			exit(0);
 		default :
-			printf("Veuillez entrez Y ou y pour valider la suppression, N ou n pour l'annuler.\n");
+			printf("Plesae enter Y or y to validate the delete operaton, N or n to cancel it.\n");
 			while(answer != '\n') scanf("%c", &answer);
 			goto wait_answer;
 	}
