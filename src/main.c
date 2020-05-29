@@ -65,13 +65,14 @@ void exit_with_man_page() {
 	"	tag unlink <filename> [--all] <tag> [tag]\n"
 	"		Disassociate tags from a file. The --all option allows to delete all tags at once.\n"
 	"\n"
-	"	tag search tag [-not] [tag] ...\n"
+	"	tag search [-s] tag [-not] [tag] ...\n"
 	"		Print the absolute paths of the files corresponding to the given combinaison.\n"
 	"		A tag combinaison enumerates valid tagnames preceded by an optional -not,\n"
 	"		dividing tagnames in two groups : included or excluded.\n"
 	"		To pass the combination test, a file must be tagged by all the included tagnames,\n"
 	"		or any of their children, but must not be tagged by any of the excluded tagnames,\n"
 	"		or any of their children.\n" 
+	"		With the -s option, print only the names of the file, not the absolute path.\n"
 	"\n"
 	"	tag reset\n"
 	"		Reset all the tag-system in deleting all tags from all files and resetting the tagset.\n"
@@ -138,12 +139,12 @@ enum error { CREATE, DELETE, PRINT, LINK, UNLINK, SEARCH, RESET };
 void exit_with_syntax_error(enum error e) {
 	printf("Arguments are missing\n");
 	switch(e) {
-		case CREATE : printf("usage : tag create -n|<father> <tag1> [tag2] ...\n"); break;
+		case CREATE : printf("usage : tag create [-f <tag>] <tagname> [tagname] ...\n"); break;
 		case DELETE : printf("usage : tag delete <tag>\n"); break;
-		case PRINT : printf("usage : tag print [filename]\n"); break;
-		case LINK : printf("usage : tag link <filename> <tag1> [tag2] ...\n"); break;
-		case UNLINK : printf("usage : tag unlink <filename> [--all] <tag> [tag]\n"); break;
-		case SEARCH : printf("usage : tag search tag1 [-not] [tag2] ...\n"); break;
+		case PRINT : printf("usage : tag print [file]\n"); break;
+		case LINK : printf("usage : tag link <file> <tag> [tag] ...\n"); break;
+		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag]\n"); break;
+		case SEARCH : printf("usage : tag search [-s] tag [-not] [tag] ...\n"); break;
 		case RESET : printf("usage : tag reset\n"); break;
 	}
 	printf("See --help to get more informations\n");
@@ -153,9 +154,9 @@ void exit_with_syntax_error(enum error e) {
 void exit_with_file_error(enum error e, char *filename) {
 	printf("%s is not a valid file name\n", filename);
 	switch(e) {
-		case PRINT : printf("usage : tag print [filename]\n"); break;
-		case LINK : printf("usage : tag link <filename> <tag1> [tag2] ...\n"); break;
-		case UNLINK : printf("usage : tag unlink <filename> [--all] <tag> [tag]\n"); break;
+		case PRINT : printf("usage : tag print [file]\n"); break;
+		case LINK : printf("usage : tag link <file> <tag> [tag] ...\n"); break;
+		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag]\n"); break;
 		default : ;
 	}
 	exit(-1);
@@ -245,9 +246,9 @@ int main(int argc, char **argv) {
 
 		case 's' :
 			if (argc < 3) exit_with_syntax_error(SEARCH);
-			int opt = strcmp(argv[2], "-a");
-			int ABS = opt == 0 ? 1 : 0;
-			if (ABS && argc < 4) exit_with_syntax_error(SEARCH);
+			int opt = strcmp(argv[2], "-s");
+			int ABS = opt == 0 ? 0 : 1;
+			if (!ABS && argc < 4) exit_with_syntax_error(SEARCH);
 			int place = opt == 0 ? 3 : 2;
 			research(ABS, argv + place, argc - place);
 			break;
