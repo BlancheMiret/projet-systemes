@@ -51,7 +51,7 @@ void exit_with_man_page() {
 }
 
 void exit_with_help_page() {
-    printf("usage : tag [--version] [--help] <command> [--all] [<args>]");
+    printf("usage : tag [--version] [--help] <command> [--all] [<args>]\n");
     printf("These are common Tag commands used in various situations:\n");
     printf("\n");
     printf("manage the tagset\n");
