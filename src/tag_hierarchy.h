@@ -20,7 +20,6 @@ void reset_hierarchy();
 int tag_exists(char *tag_name);
 
 /* Ajoute le tag "tag_name" à la hiérarchie comme enfant de "father" */
-int add_tag(char *father, char *tag_name);
 int create_tag(char *father, char *tags[], int nb_tags);
 
 /* Supprime le tag de nom "tag_name" de la hiérarchie en demandant confirmation à l'utilisateur */
