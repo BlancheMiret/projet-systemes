@@ -204,7 +204,7 @@ int delete_path(char * filename){
 
 	if(find_path(filename)==0){
 
-		printf("This path doesn't existe in paths.txt!\n");
+		printf("This path doesn't exist in paths.txt!\n");
 		return 0;
 	}
 
