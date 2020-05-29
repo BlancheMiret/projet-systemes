@@ -93,15 +93,20 @@ int find_path(char * filename){
 	ssize_t line_size;
 	int line_count = 0;
 	FILE *file = fopen(file_paths, "r");
+	char lol[100];
+	memset(lol,0, 100); 
 
 //retourne le nombre de caractères de la première ligne
 	line_size = getline(&line_buf, &line_buf_size, file);
-
+	
+	
+	line_buf[strcspn(line_buf, "\r\n")] = 0;
 	while (line_size>= 0) {
 
-		//printf("LINE %s",line_buf );
+		
 
-		if (strncmp(path, line_buf,strlen(line_buf)-1) == 0) {
+		if (strcmp(path, line_buf) == 0) {
+	
 			line_count++;
 		}
 
@@ -129,7 +134,7 @@ int add_path(char * filename){
 
 	if(check_file_existence(filename) == 0){
 
-		printf("le fichier n'existe pas !\n");
+		printf("The file doesn't exist!\n");
 		return 0;
 	}
 //On récupère le chemin d'accès absolu du fichier
@@ -162,13 +167,13 @@ int add_path(char * filename){
 
 
 	if(find_path(filename) == 1){
-
+		printf("NOOOOOOOOOOOOOOOOOO\n");
 		//printf("Le chemin existe déjà!\n");
 		return 0;
 	}
 
 	else {
-
+		printf("HEY HEY HEY\n");
 		fprintf(file, "%s\n", path);
 
 	}
