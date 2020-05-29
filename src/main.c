@@ -60,7 +60,7 @@ void exit_with_man_page() {
 	"		file if given.\n"
 	"\n"
 	"	tag link <file> <tag> [tag] ...\n"
-	"		Associate tags to a file.\n"
+	"		Associate tags from the taget to a file.\n"
 	"\n"
 	"	tag unlink <filename> [--all] <tag> [tag]\n"
 	"		Disassociate tags from a file. The --all option allows to delete all tags at once.\n"
