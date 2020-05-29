@@ -1,4 +1,0 @@
-Imprime le n°d'i-noeud de S6.pdf sur la sortie standard.
-
-Pour vérifier le n° d'i-noeud par ligne de commande :
-$ls -s S6.pdf

@@ -14,13 +14,12 @@ void init_hierarchy();
 void *get_tag_children(char *tag_name);
 
 /* Efface le fichier contenant la hiérarchie en demandant confirmation à l'utilisateur */
-void clean_hierarchy();
+void reset_hierarchy();
 
 // Renvoie 1 si le tag de nom "tag_name" existe dans la hiérarchie, 0 sinon
 int tag_exists(char *tag_name);
 
 /* Ajoute le tag "tag_name" à la hiérarchie comme enfant de "father" */
-int add_tag(char *father, char *tag_name);
 int create_tag(char *father, char *tags[], int nb_tags);
 
 /* Supprime le tag de nom "tag_name" de la hiérarchie en demandant confirmation à l'utilisateur */

@@ -53,7 +53,7 @@ void init_hierarchy() {
 /* 
 Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur. 
 */
-void clean_hierarchy() {
+void reset_hierarchy() {
 
 	printf("You're going to suppress all tags from all tagged files and completely reset your tagset."
         "This reset operation cannot be undone. Do you want to reset ? Enter Y(es) or N(o)\n");
@@ -184,6 +184,12 @@ int tag_exists(char *tag_name) {
 // --------------------------------------- AJOUTER UN TAG ---------------------------------------
 
 /* Version prend plusieurs tags*/
+/*
+Ajoute un tag dans le système de tags.
+Si "father" est NULL, le tag prend "root" comme père.
+Si tag_name existe déjà dans la liste des tags, 
+ou si father est différent de NULL et que le nom n'est pas trouvé, une erreur est renvoyée
+**/
 int create_tag(char *father, char* tags[], int nb_tags) {
 
     // -- VÉRIFICATION LONGUEURS DES TAGS --
@@ -238,63 +244,6 @@ int create_tag(char *father, char* tags[], int nb_tags) {
 
     return 0;
 }
-
-/*
-Ajoute un tag dans le système de tags.
-Si "father" est NULL, le tag prend "root" comme père.
-Si tag_name existe déjà dans la liste des tags, 
-ou si father est différent de NULL et que le nom n'est pas trouvé, une erreur est renvoyée
-**/
-int add_tag(char *father, char *tag_name) {
-
-	// --- VÉRIFICATION LONGUEUR DU NOM DU TAG ---
-
-	if(strlen(tag_name) > 18) {
-		printf("This tag-name is too long. Try something with 18 letters or less.\n");
-		exit(1);
-	}
-
-	// --- VÉRIFICATION (NON)EXISTENCE FATHER ET TAG --- 
-
-	int fd = open(hierarchy_file, O_RDWR);
-    if (fd < 0) {
-        perror("open");
-        exit(1);
-    }
-
-	int father_exists = FALSE;
-
-	struct tag_t *tag = malloc(TAGSIZE);
-
-	while(read(fd, tag, TAGSIZE) != 0) {
-		if (strcmp(tag->name, tag_name) == 0) {
-			printf("This tag-name already exists.\n");
-			exit(1);
-		}
-		if (father != NULL && strcmp(tag->name, father) == 0) father_exists = TRUE;
-	}
-
-	if (father != NULL && !father_exists) {
-		printf("The specified father does not exist in the tag hierarchy.\n");
-		exit(1);
-	}
-	
-	// --- ÉCRITURE DU TAG DANS LA HIERARCHIE ---
-
-	memset(tag, 0, TAGSIZE);
-	memcpy(tag->name, tag_name, strlen(tag_name) + 1);
-	tag->name[TAGNAME - 1] = '%';
-
-	if (father == NULL) memcpy(tag->father, "root", strlen("root") + 1);
-	else memcpy(tag->father, father, strlen(father) + 1);
-	tag->father[TAGNAME-1] = '-';
-	write(fd, tag, TAGSIZE);
-	close(fd);
-	free(tag);
-
-	return 0;
-}
-
 
 // ----------------------------------------------------------------------------------------------
 // -------------------------------------- SUPPRIMER UN TAG --------------------------------------
