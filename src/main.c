@@ -125,15 +125,20 @@ int main(int argc, char **argv) {
 
 	switch(command) {
 		case 'c' :
-			if (argc < 4) exit_with_syntax_error(CREATE);
-			char *father = (strcmp(argv[2], "-n") != 0 ) ? argv[2] : NULL;
-			create_tag(father, argv + 3, argc - 3);
+			if (argc < 3) exit_with_syntax_error(CREATE);
+			int begin = 2;
+			char *father = NULL;
+			if (strcmp(argv[2], "-f") == 0) {
+				if (argc < 5) exit_with_syntax_error(CREATE);
+				father = argv[3];
+				begin += 2;
+			}
+			create_tag(father, argv + begin, argc - begin);
 			break;
 
 		case 'd' :
 			if (argc != 3) exit_with_syntax_error(DELETE); 
 			char *tag_to_delete = argv[2];
-			struct tag_node *children = get_tag_children(tag_to_delete);
 			for_all_files_delete(argv+2);
 			delete_tag(tag_to_delete);
 			break;
