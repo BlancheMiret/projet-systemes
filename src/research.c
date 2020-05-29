@@ -76,12 +76,12 @@ int research(int argc, char **argv) {
 		c++;
 	}
 
-	
-	
-
 	// 3. Filtrer la liste de documents taggés
 	FILE *path_file = init_iterator();
 	char *path = next_path(path_file);
+
+	printf("Here are the files corresponding to your research : \n");
+
 	while(path != NULL) { // parcours de path
 
 		if (DEBUG) printf("--------------------\n");
