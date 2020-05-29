@@ -53,7 +53,7 @@ void init_hierarchy() {
 /* 
 Supprime toute la liste et hiérarchie de tags existante en demandant confirmation à l'utilisateur. 
 */
-void clean_hierarchy() {
+void reset_hierarchy() {
 
 	printf("You're going to suppress all tags from all tagged files and completely reset your tagset."
         "This reset operation cannot be undone. Do you want to reset ? Enter Y(es) or N(o)\n");
