@@ -30,17 +30,16 @@ struct hierarchy {
 
 char hierarchy_file[1024];
 
-
-// DÉCLARATION FONCTIONS INTERNES 
-void write_tree(struct tag_t *tag, int fd); //
-void *build_tree(); //
-void print_tree(struct tag_t *tag, char * shift); //
-void print_tree_children(struct tag_t *tag, char *shift); //
-void print_tag(struct tag_t *tag); //
+ 
+void write_tree(struct tag_t *tag, int fd);
+void *build_tree(); 
+void print_tree(struct tag_t *tag, char * shift); 
+void print_tree_children(struct tag_t *tag, char *shift); 
+void print_tag(struct tag_t *tag); 
 
 
 /*
-Initialise variable globale nom du fichier
+Initialise variable globale du nom du fichier contenant la hiérarchie
 */
 void init_hierarchy() {
     memset(hierarchy_file, 0, 1024);
@@ -89,6 +88,19 @@ void reset_hierarchy() {
 // -------------------------------- OBTENIR LES ENFANTS D'UN TAG --------------------------------
 
 /*
+Libère la mémoire d'une liste de struct tag_node
+*/
+void free_tag_list(struct tag_node *tag_list) {
+	struct tag_node *tag = tag_list;
+	struct tag_node *temp;
+	while (tag != NULL) {
+		temp = tag;
+		tag = tag->next;
+		free(temp);
+	}
+}
+
+/*
 Affiche une liste chaînée de tag_node
 */
 void print_list(struct tag_node *tag_list) {
@@ -104,7 +116,7 @@ Construit la liste chaînée de struct tag_node avec une tête de lecture
 */
 void write_tag_list(struct tag_t *tag, struct tag_node **list) {
 	while(tag != NULL) {
-		struct tag_node *temp = *list; // temp est la liste
+		struct tag_node *temp = *list;
 		*list = malloc(sizeof(struct tag_node));
 		memset(*list, 0, sizeof(struct tag_node));
 		memcpy((*list)->name, tag->name, TAGNAME);
