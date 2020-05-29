@@ -29,43 +29,107 @@ NOUVEAU MANUEL
 */
 
 void exit_with_man_page() {
-	printf("NAME\n");
-	printf("	tag - the manager of you tagging-file system.\n");
-	printf("\n");
-	printf("SYNOPSIS\n");
-	printf("	tag <command> [<args>]\n");
-	printf("\n");
-	printf("DESCRIPTION\n");
-	printf("	Tag is a tagging-file system manager...\n");
-	printf("\n");
-	printf("TAG COMMANDS\n");
-	printf("	tag create -n|<father> <tag1> [tag2] ...\n");
-	printf("	tag delete <tag>\n");
-	printf("	tag print [filename]\n");
-	printf("	tag link <filename> <tag1> [tag2] ...\n");
-	printf("	tag unlink <filename> [--all] <tag> [tag]\n");
-	printf("	tag search tag1 [-not] [tag2] ...\n");
-	printf("	tag reset\n");
-	printf("\n");
+	printf(""
+	"NAME\n"
+	"	tag - the manager of you tagging-file system.\n"
+	"\n"
+	"SYNOPSIS\n"
+	"	tag [--help] <command> [<args>]\n"
+	"\n"
+	"DESCRIPTION\n"
+	"	Tag is a tagging-file system manager made to organize files. You can create and manage\n"
+	"	a tagset, associate files with the tags you have created and research files by tag combinations.\n"
+	"\n"
+	"OPTIONS\n"
+	"	--help\n"
+	"		Prints the synopsis and a list of the most commonly used commands and their descriptions\n"
+	"\n"
+	"TAG COMMANDS\n"
+	"	tag create [-f <tag>] <tagname> [tagname] ...\n"
+	"		Add tags to the tagset.\n"
+	"		The -f option allows to specify a hierarchy : the tagnames are added to the\n"
+	"		tagset as children of the tag following the -f option. A file tagged by any tag\n"
+	"		is implicitly tagged with its father, grand_father etc. in the tagset hierarchy\n"
+	"\n"
+	"	tag delete <tag>\n"
+	"		Delete a tag and its children from the tagset and, accordingly, from the files \n"
+	"		containing them.\n"
+	"\n"
+	"	tag print [file]\n"
+	"		Print the content of the tagset and its hierarchy, or the tags associated with a\n"
+	"		file if given.\n"
+	"\n"
+	"	tag link <file> <tag> [tag] ...\n"
+	"		Associate tags to a file.\n"
+	"\n"
+	"	tag unlink <filename> [--all] <tag> [tag]\n"
+	"		Disassociate tags from a file. The --all option allows to delete all tags at once.\n"
+	"\n"
+	"	tag search tag [-not] [tag] ...\n"
+	"		Print the absolute paths of the files corresponding to the given combinaison.\n"
+	"		A tag combinaison enumerates valid tagnames preceded by an optional -not,\n"
+	"		dividing tagnames in two groups : included or excluded.\n"
+	"		To pass the combination test, a file must be tagged by all the included tagnames,\n"
+	"		or any of their children, but must not be tagged by any of the excluded tagnames,\n"
+	"		or any of their children.\n" 
+	"\n"
+	"	tag reset\n"
+	"		Reset all the tag-system in deleting all tags from all files and resetting the tagset.\n"
+	"\n"
+	"EXAMPLES\n"
+	"	The following commands create a tagset with a hierarchy\n"
+	"\n"
+	"		tag create color genre movie music\n"
+	"		tag create -f color red blue yellow pink\n"
+	"		tag create -f blue light-blue azur turquoise\n"
+	"		tag create -f genre western drama\n"
+	"\n"
+	"	The following commands tag and un-tag some files\n"
+	"\n"
+	"		tag link file1 movie western red yellow\n"
+	"		tag link file2 music western\n"
+	"		tag link file3 red light-blue yellow\n"
+	"\n"
+	"	The following command research files tagged with a color but without blue\n"
+	"\n"
+	"		tag search color -not blue\n"
+	"	After the previous operations, it should return absolute path of file1\n"
+	"\n"
+	"IDENTIFIER TERMINOLOGY\n"
+	"	<tag>\n"
+	"		Indicates a valid tagname, already existing in the hierarchy.\n"
+	"\n"
+	"	<tagname>\n"
+	"		Indicates a tagname to create and add to the hierarchy.\n"
+	"		Lenght must be inferior to 18 caracters.\n"
+	"\n"
+	"	<file>\n"
+	"		Indicates a filename.\n"
+	"\n"
+	"AUTHORS\n"
+	"	TAG was written by Louis Castelbou, Hiba-Asmaa Chekroun and Blanche Miret.\n"
+	"	Initiated by a classe subject submitted by Inès Klimann.\n"
+	"\n");
 	exit(0);
 }
 
 void exit_with_help_page() {
-    printf("usage : tag [--version] [--help] <command> [--all] [<args>]\n");
-    printf("These are common Tag commands used in various situations:\n");
-    printf("\n");
-    printf("manage the tagset\n");
-    printf("    create      Add tag to your tagset\n");
-    printf("    delete      Supress tag from your tagset, also supressing its children if needed\n");
-    printf("    print       Display the tagset\n");
-    printf("\n");
-    printf("add tags to file\n");
-    printf("    link        Add tags to a file\n");
-    printf("    unlink      Delete tags from a file\n");
-    printf("\n");
-    printf("find files\n");
-    printf("    search      Display the absolute path of files associated with a tag combination");
-    printf("\n");
+	printf(""
+    "usage : tag [--help] <command> [<args>]\n"
+    "These are common Tag commands used in various situations:\n"
+    "\n"
+    "manage the tagset\n"
+    "    create      Add tag to your tagset\n"
+    "    delete      Supress tag from your tagset, also supressing its children if needed\n"
+    "    print       Display the tagset\n"
+    "\n"
+    "add tags to file\n"
+    "    link        Add tags to a file\n"
+    "    unlink      Delete tags from a file\n"
+    "\n"
+    "find files\n"
+    "    search      Display the absolute path of files associated with a tag combination"
+    "\n");
     exit(0);
 }
 
