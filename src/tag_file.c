@@ -434,6 +434,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		}
 
 		memset(buff_tag,'\0',1024);
+		free_tag_list(children_list);
 	}
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
@@ -463,6 +464,7 @@ void * get_file_tag_list(char * path){
 	char buff_tag[1024];
 	memset(buff_tag,'\0',1024);
 	struct tag_node *tag_list = NULL;
+	struct tag_node *temp = NULL;
 
 	val = listxattr(path, NULL, 0);
 
@@ -493,7 +495,7 @@ void * get_file_tag_list(char * path){
 
 		while(tag != NULL) {
 
-			struct tag_node *temp = tag_list; 
+			temp = tag_list; 
 			tag_list = malloc(sizeof(struct tag_node));
 			memset(tag_list, 0, sizeof(struct tag_node));
 			memcpy(tag_list->name, tag, TAGNAME);
@@ -503,6 +505,9 @@ void * get_file_tag_list(char * path){
 		}
 
 	}
+
+	free_tag_list(temp);
+	free_tag_list(tag_list);
 
 	return tag_list;
 
