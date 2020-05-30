@@ -18,12 +18,12 @@
 
 extern char file_paths[1024];
 
-//retourne 1 si new_tag existe dans tags, sinon 0
-//fonction qui concatène des tags 
+
+//fonction qui vérifie si tag est présent dans une suite de tags
 
 /* *
 * @param tags = une suite de tags
-* @param new_tag = un nouveau tag
+* @param tag = un tag
 * @return renvoie 1 new_tag existe dans tags, sinon 0
 * */
 
@@ -129,11 +129,10 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 	memset(buff_tag,'\0',1024);
 
 	//on déclare new_tags qui va contenir tous les nouveaux tags concaténés
-	//ATTENTION : avant de concaténer il faut vérifier si un des tags n'est pas déjà lié au fichier
 	char new_tags[1024];
 	memset(new_tags,'\0',1024);
 
-	char *usertag = "user.tags";
+	char * usertag = "user.tags";
 
 	val = listxattr(path, NULL, 0);
 
@@ -157,9 +156,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 	if(val > 0){
 
-		//buff_tag contient les tags concaténés
-		//exemple: on a user.tags = bleu/bleu_ciel, buff_tag va contenir bleu/bleu_ciel
-
+		//On récupère dans buff_tag les tags concaténés du fichier
 		//On appelle getxattr que dans le cas où user.tags existe déjà
 		val = getxattr(path,usertag, &buff_tag, sizeof(buff_tag));
 		
@@ -168,17 +165,18 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 			exit(EXIT_FAILURE);
 		} 
 
-		//Cas où user.tags ne contient rien
+		//Cas où user.tags existe mais ne contient rien
 		if(val == 0){
-
-			//printf("user.tags ne contient aucun tag\n");
 
 			concatenate_tags(new_tags, tags, tags_size);
 			res = set_tag(path, usertag, new_tags,1);
 
 			if(res){
 
-				printf("The file was tagged.\n");
+				printf("The file was tagged with the following tag(s):\n");				
+				for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
+				
+
 				return 1;
 			} 
 
@@ -187,8 +185,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 		//Cas où on a déjà un ou plusieurs tags dans user.tags, on ajoute les nouveaux tags à la fin
 		if(val > 0){
 
-
-			//Concaténation des tags à ajouter en vérifiant si ils sont liés au fichier
+			//Concaténation des tags à ajouter en vérifiant si ils sont pas déjà liés au fichier
 			if(tags_size == 1){
 
 				if(check_tag_existence(buff_tag, tags[0]) == 0){
@@ -219,7 +216,9 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 			if(res){
 
-				printf("The file was tagged.\n");
+				printf("The file was tagged with the following tag(s):\n");				
+				for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
+
 				return 1;
 			} 
 
@@ -263,11 +262,9 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 		ptr = strtok(NULL, delim);
 	}
 
-	//all_tags = contient tous les tags sauf tags[i]
 	strcat(new_tag_string,"\0");
-	//printf("all_tags  %s\n",all_tags);
 
-	//On attribut les sous-tags sans tags[i]
+	//On attribut les sous-tags sans tag
 	val = set_tag(path, "user.tags", new_tag_string,1);
 
 	if(val == 1) printf("The tag %s has been deleted from %s\n", tag, strrchr(path, '/') + 1);
@@ -318,7 +315,6 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 	for (int i=0; i<tags_size;i++){
 
-
 		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 		
 		if(val == -1 ){
@@ -333,14 +329,13 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		}
 
 		buff_tag[val] = '\0';
-		//printf("VAL  %d\n ",(int) val);
-		//printf("FIRST buff_tag %s\n ", buff_tag);
 
-	
 		if(check_tag_existence(buff_tag,tags[i]) == 0){
+
 			continue;
 
 		}
+
 	    children_list = get_tag_children(tags[i]);
 
 	    if(children_list == NULL){
@@ -348,16 +343,15 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	    	delete_one_tag(path, buff_tag, tags[i]);
 	    }
        
-	    //print_list(children_list);
 
         //Si le tag a des enfants dans la hierarchie
 		if(children_list != NULL){
   
             //On vérifie si un ou plusieurs tags de children_list sont liés au fichier
-            //On ajoute les tags de children_list qui sont liés dans subtags
+            //On ajoute les tags de children_list qui sont liés dans char * subtags [100]
 			while(children_list != NULL) {
 
-				if(check_tag_existence(buff_tag,  children_list->name) == 1){
+				if(check_tag_existence(buff_tag, children_list->name) == 1){
 					
 					subtags[j] = children_list->name;
 					j++;
@@ -367,42 +361,38 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 				children_list = children_list->next;
 			}
 			
+			//Si on trouve pas un ou des enfants du tag lié au fichier, on supprime alors que le tag
 			if(j == 0){
 
 				delete_one_tag(path, buff_tag, tags[i]);
 			} 
 
+			//Si on trouve un ou plusieurs enfants liés au fichier
+
 			if(j == 1 && ask){ 
 				printf("The file %s has also the following subtag inherited from %s", filename, tags[i]);
-				//printf("Le fichier concerné possède également le sous-tag suivant hériant de %s :\n", tags[i]);
 				printf("- %s\n", subtags[0]);
 				printf("Do you want to delete this subtag? [yes/no]\n");
-				//printf("Souhaitez vous supprimer également ce sous-tag? Répondez par 'oui' ou 'non'\n");
 			}
 
 			if(j > 1 && ask){
-
 				printf("The file %s has also the following subtags inherited from %s", filename, tags[i]);
 				for(int i=0; i < j; i++) printf("- %s\n", subtags[i]);
 				printf("Do you want to delete these subtags? [yes/no]\n");
-				//printf("Souhaitez vous supprimer également ces sous-tags? Répondez par 'oui' ou 'non'\n");
 			}
 			
-			//print_list(children_list);
 			if (ask) {
 
 				while(1){
 					scanf("%s", reply);
 					if(strcmp(reply,"yes") == 0 || strcmp(reply,"no") ==0) break;
 					printf("Reply with 'yes' or 'no'\n");
-				}
-			
+				}			
 			}
 			
+			//Suppression du tag ainsi que ses enfants liés au fichier
 
 			if(strcmp(reply,"yes") == 0 || ask == 0){
-
-				//printf("buff_tag  %s\n", buff_tag);
 
 				concatenate_tags(subtags_concat, subtags, j);
 
@@ -411,7 +401,6 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 				char *ptr = strtok(buff_tag, delim);
 				while(ptr != NULL)
 				{
-					//printf("'%s'\n", ptr);
 
 					if(strcmp(ptr,tags[i]) != 0 && check_tag_existence(subtags_concat, ptr) == 0){
 
@@ -425,13 +414,12 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 				//all_tags = contient tous les tags sauf ceux qu'on a supprimé
 				strcat(all_tags,"\0");
-				//printf("all_tags  %s\n",all_tags);
 
 				//On attribut les tags après supression au fichier
 				val = set_tag(path, usertag, all_tags, 1);
 
 				if(val == 0) return 0;
-				//printf("Le tag %s ainsi que ses sous-tags ont été supprimé !\n", tags[i]);
+
 				printf("The tag %s and its subtags have been deleted from %s\n", tags[i],strrchr(path, '/') + 1);
 		
 			}
@@ -447,11 +435,11 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 		memset(buff_tag,'\0',1024);
 	}
-
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
+
 	if(val == 0){
-		//printf("Le fichier %s ne contient plus de tags, il va être supprimé de paths.txt\n", filename);
+
 		printf("The file %s doesn't contain any tags, it will be deleted from paths.txt\n", filename);
 		delete_path(filename);
 
@@ -520,7 +508,7 @@ void * get_file_tag_list(char * path){
 
 }
 
-//fonction qui récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node
+//fonction qui supprime tous les tags d'un fichier
 
 /* *
 * @param path = chemin vers le fichier taggé
@@ -536,7 +524,9 @@ int delete_all_tags(char * path){
 		exit(EXIT_FAILURE);
 	}
 
-	delete_path(path);
+	if(delete_path(path) == 1){
+		printf("All tags have been deleted from %s\n",strrchr(path, '/') + 1);
+	}
 
 	return 1;
 }
@@ -551,7 +541,7 @@ int delete_all_tags(char * path){
 int for_all_files_delete(char * tag[]){
 
 
-	char *line_buf = NULL;
+	char *path = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
 	size_t ln;
@@ -562,22 +552,21 @@ int for_all_files_delete(char * tag[]){
         exit(EXIT_FAILURE);
     }
 	
-
-//retourne le nombre de caractères de la première ligne
-	line_size = getline(&line_buf, &line_buf_size, file);
+	line_size = getline(&path, &line_buf_size, file);
 
 	while (line_size>= 0) {
+
 		ln = line_size-1;
-		if(line_buf[ln] == '\n') line_buf[ln] = '\0';
+		if(path[ln] == '\n') path[ln] = '\0';
 
-		if (strlen(line_buf) != 1) {
+		if (strlen(path) != 1) {
 
-			unlink_tag(line_buf,tag, 1, 0);
+			unlink_tag(path,tag, 1, 0);
 		
 		}
 
 
-		line_size = getline(&line_buf, &line_buf_size, file);
+		line_size = getline(&path, &line_buf_size, file);
 	}
 
 	return 1;
@@ -596,7 +585,7 @@ int for_all_files_delete(char * tag[]){
 int reset_all_files(){
 
 
-	char *line_buf = NULL;
+	char *path = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
 	size_t ln;
@@ -609,17 +598,16 @@ int reset_all_files(){
         exit(EXIT_FAILURE);
     }
 
-
-//retourne le nombre de caractères de la première ligne
-	line_size = getline(&line_buf, &line_buf_size, file);
+	line_size = getline(&path, &line_buf_size, file);
 
 	while (line_size>= 0) {
+
 		ln = line_size-1;
-		if(line_buf[ln] == '\n') line_buf[ln] = '\0';
+		if(path[ln] == '\n') path[ln] = '\0';
 
-		if (strlen(line_buf) != 1) {
+		if (strlen(path) != 1) {
 
-			val = removexattr(line_buf, "user.tags");
+			val = removexattr(path, "user.tags");
 			
 			if (val == -1 ){
 
@@ -627,16 +615,16 @@ int reset_all_files(){
 				exit(EXIT_FAILURE);
 			}
 
-			if(delete_path(line_buf) == 0){
+			if(delete_path(path) == 0){
 
 				printf("The following path wasn't deleted:\n");
-				printf("%s\n",line_buf);
+				printf("%s\n",path);
 				return 0;
 			}
 		}
 
 
-		line_size = getline(&line_buf, &line_buf_size, file);
+		line_size = getline(&path, &line_buf_size, file);
 	}
 
 	return 1;
