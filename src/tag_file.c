@@ -506,9 +506,6 @@ void * get_file_tag_list(char * path){
 
 	}
 
-	free_tag_list(temp);
-	free_tag_list(tag_list);
-
 	return tag_list;
 
 }
