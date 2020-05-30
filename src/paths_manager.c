@@ -90,7 +90,6 @@ int find_path(char * filename){
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
 	ssize_t line_size;
-	int line_count = 0;
 	FILE *file = fopen(file_paths, "r");
 
 	if(file == NULL) {
@@ -106,15 +105,13 @@ int find_path(char * filename){
 
 		if (strcmp(path, line_buf) == 0) {
 	
-			line_count++;
+			return 1;
 		}
 
 		line_size = getline(&line_buf, &line_buf_size, file);
 	}
 
-	if(line_count == 0) return 0;
-
-	return 1;
+	return 0;
 }
 
 
