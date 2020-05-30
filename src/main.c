@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
 				 struct tag_node *tag_list = get_file_tag_list(filename);
 				 if(tag_list == NULL) printf("This file doesn't contain any tags\n");
 				 else print_list(tag_list);
+				 free_tag_list(tag_list);
 			}
 			else exit_with_syntax_error(PRINT); 
 			break;
