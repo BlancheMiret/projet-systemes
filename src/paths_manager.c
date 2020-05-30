@@ -99,9 +99,9 @@ int find_path(char * filename){
 
 	line_size = getline(&line_buf, &line_buf_size, file);
 		
-	line_buf[strcspn(line_buf, "\r\n")] = 0;
-
 	while (line_size>= 0) {
+
+		line_buf[strcspn(line_buf, "\r\n")] = 0;
 
 		if (strcmp(path, line_buf) == 0) {
 	

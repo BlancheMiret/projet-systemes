@@ -4,9 +4,9 @@
 #include <unistd.h>
 
 #include "tag_hierarchy.h"
-#include "research.h"
-#include "tag_file.h"
-#include "paths_manager.h"
+#include "research.c"
+#include "tag_file.c"
+#include "paths_manager.c"
 
 void erreur( char *msg)
 {
