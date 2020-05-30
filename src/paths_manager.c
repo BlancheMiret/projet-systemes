@@ -44,7 +44,7 @@ int check_file_existence(char * filename){
 
 	if(access( filename, F_OK ) == -1) {
 
-		printf("access error: %s\n", strerror(errno));
+		perror("access error: ");
 		exit(EXIT_FAILURE);
 	}  
 
@@ -67,7 +67,7 @@ char * absolute_path(char * filename){
 	char *path = realpath(filename, NULL);
 
 	if(path == NULL){
-		printf("real path error: %s\n", strerror(errno));
+		perror("realpath error: ");
 		exit(EXIT_FAILURE);
 	} 
 
