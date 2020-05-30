@@ -11,7 +11,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask);
 void * get_file_tag_list(char * path);
 
 /* fonction qui supprime tous les tags d'un fichier */
-int delete_all_tags(char * path);
+int delete_all_tags(char * filename);
 
 /* fonction qui supprime de tous les fichiers un tag (et les sous-tags s'il y en a) */
 int for_all_files_delete(char * tag[]);

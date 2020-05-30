@@ -110,6 +110,21 @@ void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
 	}
 }
 
+//fonction renvoie le nom du fichier, dans le cas où il s'agit d'un chemin il cherche le nom du fichier
+
+/* *
+* @param file = nom/chemin du fichier
+* @return renvoie le nom du fichier
+* */
+
+char * find_filename(char * file){
+
+	if(strrchr(file, '/') == NULL) return file;
+	return strrchr(file, '/') + 1;	
+}
+
+
+
 //fonction qui lie des tags à un fichier grâce à xattr
 
 /* *
@@ -124,7 +139,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 	
 	int val;
 	int res;
-	char *path = realpath(filename, NULL);
+	char *path = absolute_path(filename);
 	char buff_tag[1024];
 	memset(buff_tag,'\0',1024);
 
@@ -148,7 +163,9 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 		res = set_tag(path, usertag, new_tags,0);
 
 		if(res){
-			printf("The file was tagged.\n");
+
+			printf("The file %s was tagged with the following tag(s):\n", find_filename(filename));			
+			for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
 			return 1;
 		} 
 
@@ -173,7 +190,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 			if(res){
 
-				printf("The file was tagged with the following tag(s):\n");				
+				printf("The file %s was tagged with the following tag(s):\n", find_filename(filename));			
 				for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
 				
 
@@ -216,8 +233,9 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 			if(res){
 
-				printf("The file was tagged with the following tag(s):\n");				
+				printf("The file %s was tagged with the following tag(s):\n", find_filename(filename));			
 				for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
+
 
 				return 1;
 			} 
@@ -291,7 +309,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	memset(all_tags,'\0',1024);
 	char * subtags[100];
 	char subtags_concat[1024];
-	char *path = realpath(filename, NULL);
+	char *path = absolute_path(filename);
 	char * usertag = "user.tags";
 	char buff_tag[1024];
 	struct tag_node * children_list = NULL;
@@ -308,7 +326,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	//Cas où user.tags n'existe pas
 	if (val == 0) {
 
-		printf("The file %s doesn't contain any tags.\n", filename);
+		printf("The file %s doesn't contain any tags.\n", find_filename(filename));
 		return 0;
 
 	}
@@ -324,7 +342,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 		//Cas où user.tags existe mais ne contient aucun tag
 		if(val == 0){
-			printf("The file %s doesn't contain any tags.\n", filename);
+			printf("The file %s doesn't contain any tags.\n", find_filename(filename));
 			return 0;
 		}
 
@@ -370,13 +388,13 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			//Si on trouve un ou plusieurs enfants liés au fichier
 
 			if(j == 1 && ask){ 
-				printf("The file %s has also the following subtag inherited from %s", filename, tags[i]);
+				printf("The file %s has also the following subtag inherited from %s", find_filename(filename), tags[i]);
 				printf("- %s\n", subtags[0]);
 				printf("Do you want to delete this subtag? [yes/no]\n");
 			}
 
 			if(j > 1 && ask){
-				printf("The file %s has also the following subtags inherited from %s", filename, tags[i]);
+				printf("The file %s has also the following subtags inherited from %s", find_filename(filename), tags[i]);
 				for(int i=0; i < j; i++) printf("- %s\n", subtags[i]);
 				printf("Do you want to delete these subtags? [yes/no]\n");
 			}
@@ -441,7 +459,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 	if(val == 0){
 
-		printf("The file %s doesn't contain any tags, it will be deleted from paths.txt\n", filename);
+		printf("The file %s doesn't contain any tags, it will be deleted from paths.txt\n", find_filename(filename));
 		delete_path(filename);
 
 	}
@@ -513,11 +531,13 @@ void * get_file_tag_list(char * path){
 //fonction qui supprime tous les tags d'un fichier
 
 /* *
-* @param path = chemin vers le fichier taggé
+* @param filename = nom du fichier taggé
 * @return renvoie 1 si tous les tags du fichier ont été supprimé
 * */
 
-int delete_all_tags(char * path){
+int delete_all_tags(char * filename){
+
+	char *path = absolute_path(filename);
 
 	int val = removexattr(path, "user.tags");
 
