@@ -1,13 +1,30 @@
 #ifndef __PATHS_MANAGER_H__
 #define __PATHS_MANAGER_H__
 
-int check_file_existence(char * filename);
-char * absolute_path(char * filename);
-int find_path(char * filename);
-int add_path(char * filename);
-int delete_path(char * filename);
-void * init_iterator();
-void * next_path(FILE * file);
+
+
+/* Initialise variable globale du nom du fichier contenant les chemins des fichiers taggés */
 void init_file_paths();
+
+/* fonction qui vérifie si le fichier existe */
+int check_file_existence(char * filename);
+
+/* fonction qui renvoie le chemin abosolu d'un fichier */
+char * absolute_path(char * filename);
+
+/* fonction qui vérifie si le chemin existe déjà dans paths.txt */
+int find_path(char * filename);
+
+/* fonction qui ajoute le chemin du fichier taggé dans paths.txt */
+int add_path(char * filename);
+
+/* fonction qui supprime un chemin absolu du fichier "paths.txt" */
+int delete_path(char * filename);
+
+/* fonction qui initialise un itérateur afin de parcourir chaque ligne de "paths.txt" */
+void * init_iterator();
+
+/* fonction qui renvoie un chemin de "paths.txt" */
+void * next_path(FILE * file);
 
 #endif
