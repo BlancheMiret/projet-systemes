@@ -232,39 +232,46 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 }
 
 
+//fonction qui supprime un seul tag d'un fichier
 
-int delete_one_tag(char * path, char *buff_tag, char * tag, char * all_tags){
+/* *
+* @param path = chemin vers le fichier taggé
+* @param existing_tags = une suite de tags
+* @param tag = tag qu'on va supprimer
+* @return renvoie 1 si le tag a été supprimé
+* */
 
+int delete_one_tag(char * path, char *existing_tags, char * tag){
 
+	char new_tag_string[1024];
+	memset(new_tag_string,'\0',1024);
 	char delim[]= "/";
 	int val;
 	char *ptr = NULL;
 
-	ptr = strtok(buff_tag, delim);
+	ptr = strtok(existing_tags, delim);
 
 	while(ptr != NULL)
 	{
 
-
 		if(strcmp(ptr,tag) != 0){
-			printf("'%s'\n", ptr);
-			strcat(all_tags,ptr); 
-			strcat(all_tags,"/"); 
+
+			strcat(new_tag_string,ptr); 
+			strcat(new_tag_string,"/"); 
 
 		}
 
 		ptr = strtok(NULL, delim);
 	}
 
-//all_tags = contient tous les tags sauf tags[i]
-	strcat(all_tags,"\0");
-//printf("all_tags  %s\n",all_tags);
+	//all_tags = contient tous les tags sauf tags[i]
+	strcat(new_tag_string,"\0");
+	//printf("all_tags  %s\n",all_tags);
 
-//On attribut les sous-tags sans tags[i]
-	val = set_tag(path, "user.tags", all_tags,1);
-	if(val == 0) return 0;	
+	//On attribut les sous-tags sans tags[i]
+	val = set_tag(path, "user.tags", new_tag_string,1);
 
-	printf("The tag %s has been deleted !\n", tag);
+	if(val == 1) printf("The tag %s has been deleted from %s!\n", tag, strrchr(path, '/') + 1);
 
 	return 1;
 
@@ -284,14 +291,14 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 	int val;
 	char reply[100];
+	char all_tags[1024];
+	memset(all_tags,'\0',1024);
 	char * subtags[100];
 	char subtags_concat[1024];
 	char *path = realpath(filename, NULL);
 	char * usertag = "user.tags";
 	char buff_tag[1024];
 	struct tag_node * children_list = NULL;
-	char *all_tags = malloc(1024*sizeof(char));
-	memset(all_tags,'\0',1024);
 	int j = 0;
 
     
@@ -309,8 +316,12 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		return 0;
 
 	}
+	/**for (int i=0; i<tags_size;i++){
+		printf("tags [%d] : %s\n", i, tags[i]);
+	}**/
 
 	for (int i=0; i<tags_size;i++){
+
 
 		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 		
@@ -330,12 +341,15 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		//printf("FIRST buff_tag %s\n ", buff_tag);
 
 	
+		if(check_tag_existence(buff_tag,tags[i]) == 0){
+			continue;
 
+		}
 	    children_list = get_tag_children(tags[i]);
 
 	    if(children_list == NULL){
 
-	    	delete_one_tag(path, buff_tag, tags[i], all_tags);
+	    	delete_one_tag(path, buff_tag, tags[i]);
 	    }
        
 	    //print_list(children_list);
@@ -359,7 +373,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			
 			if(j == 0){
 
-				delete_one_tag(path, buff_tag, tags[i], all_tags);
+				delete_one_tag(path, buff_tag, tags[i]);
 			} 
 
 			if(j == 1 && ask){ 
@@ -431,16 +445,14 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			if(strcmp(reply,"no")==0){
 
 				//Suppression de tags[i] 
-				delete_one_tag(path, buff_tag, tags[i], all_tags);
+				delete_one_tag(path, buff_tag, tags[i]);
 
 
 			}
 		}
 
-
+		memset(buff_tag,'\0',1024);
 	}
-
-	memset(buff_tag,'\0',1024);
 
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
