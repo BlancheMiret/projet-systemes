@@ -253,7 +253,6 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 
 	while(ptr != NULL)
 	{
-
 		if(strcmp(ptr,tag) != 0){
 
 			strcat(new_tag_string,ptr); 
@@ -271,7 +270,7 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 	//On attribut les sous-tags sans tags[i]
 	val = set_tag(path, "user.tags", new_tag_string,1);
 
-	if(val == 1) printf("The tag %s has been deleted from %s!\n", tag, strrchr(path, '/') + 1);
+	if(val == 1) printf("The tag %s has been deleted from %s\n", tag, strrchr(path, '/') + 1);
 
 	return 1;
 
@@ -316,9 +315,6 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		return 0;
 
 	}
-	/**for (int i=0; i<tags_size;i++){
-		printf("tags [%d] : %s\n", i, tags[i]);
-	}**/
 
 	for (int i=0; i<tags_size;i++){
 
@@ -406,7 +402,6 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 			if(strcmp(reply,"yes") == 0 || ask == 0){
 
-				printf("You replied yes.\n");
 				//printf("buff_tag  %s\n", buff_tag);
 
 				concatenate_tags(subtags_concat, subtags, j);
@@ -437,12 +432,11 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 				if(val == 0) return 0;
 				//printf("Le tag %s ainsi que ses sous-tags ont été supprimé !\n", tags[i]);
-				printf("The tag %s and its subtags have been deleted !\n", tags[i]);
-
+				printf("The tag %s and its subtags have been deleted from %s\n", tags[i],strrchr(path, '/') + 1);
 		
 			}
 
-			if(strcmp(reply,"no")==0){
+			if(strcmp(reply,"no") == 0){
 
 				//Suppression de tags[i] 
 				delete_one_tag(path, buff_tag, tags[i]);
