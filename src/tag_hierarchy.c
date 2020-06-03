@@ -413,6 +413,52 @@ void *build_tree() {
 	return h;
 }
 
+// ----------------------------------------------------------------------------------------------
+// --------------------------------------- TEST AFFICHAGE ---------------------------------------
+
+
+/*
+Construit l'arbre de la hiérarchie des tags et l'affiche intégralement en utilisant print_tree()
+*/
+void print_hierarchy_2() {
+    struct hierarchy *h = build_tree();
+    print_tree_2(h->tree, 0);
+    g_hash_table_destroy(h->point_table); 
+    free(h);
+}
+
+
+void print_shift(int shift) {
+    for (int i = 0; i < shift; ++i) {
+        print("|");
+        if (i == shift - 1) print("-");
+        else print(" ");
+    }
+}
+
+/*
+Prend l'adresse d'une structure tag_t, un décalage d'affichage, 
+affiche de façon récursive toute l'arborescence à partir de cette structure en prenant en compte ses frères.
+*/
+void print_tree_2(struct tag_t *tag, int shift) { 
+    while(tag != NULL) {
+        print_shift(shift);
+        printf("%s\n", tag->name);
+        if(tag->children != NULL) print_tree_2(tag->children, shift + 1);
+        tag = tag->brother;
+    }
+}
+
+
+/*
+Prend l'adresse d'une structure tag_t dans l'arbre de la hiérarchie préalablement construit,
+affiche l'arborescende à partire de cette structure sans prendre en compte ses frères.
+*/
+void print_tree_children_2(struct tag_t *tag, int shift) {
+    print_shift(shift);
+    printf("%s\n", tag->name);
+    if(tag->children != NULL) print_tree_2(tag->children, shift + 1);
+}
 
 // ----------------------------------------------------------------------------------------------
 // ----------------------------------- FONCTIONS D'AFFICHAGES -----------------------------------
