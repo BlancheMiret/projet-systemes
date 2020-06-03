@@ -37,6 +37,8 @@ void print_tree(struct tag_t *tag, char * shift);
 void print_tree_children(struct tag_t *tag, char *shift); 
 void print_tag(struct tag_t *tag); 
 
+void print_tree_children_2(struct tag_t *tag);
+
 
 /*
 Initialise variable globale du nom du fichier contenant la hiérarchie
@@ -207,7 +209,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
     // -- VÉRIFICATION LONGUEURS DES TAGS --
     for(int i = 0; i < nb_tags; i++) {
         if(strlen(tags[i]) > 18) {
-            printf("%s is too long for a tag_name. Try a name with 18 caracters or less.\n", tags[i]);
+            printf("%s is too long for a tag name. Try a name with 18 caracters or less.\n", tags[i]);
             exit(1);
         }
     }
@@ -283,7 +285,7 @@ int delete_tag(char *tag_name) {
 	}
 
 	printf("You're going to delete all this sub-hierarchy from your tagset and from the files tagged with them :\n");
-	print_tree_children(tag_to_delete, "");
+	print_tree_children_2(tag_to_delete);
 	printf("The removal cannot be undone, do you want to proceed ? Enter Y(es) or N(o)\n");
 	char answer;
 
@@ -417,6 +419,17 @@ void *build_tree() {
 // --------------------------------------- TEST AFFICHAGE ---------------------------------------
 
 
+void print_tree_2(struct tag_t *tag, int shift);
+
+
+void print_shift(int shift) {
+    for (int i = 0; i < shift; ++i) {
+        printf("|");
+        if (i == shift - 1) printf("-");
+        else printf(" ");
+    }
+}
+
 /*
 Construit l'arbre de la hiérarchie des tags et l'affiche intégralement en utilisant print_tree()
 */
@@ -427,15 +440,6 @@ void print_hierarchy_2() {
     free(h);
 }
 
-
-void print_shift(int shift) {
-    for (int i = 0; i < shift; ++i) {
-        print("|");
-        if (i == shift - 1) print("-");
-        else print(" ");
-    }
-}
-
 /*
 Prend l'adresse d'une structure tag_t, un décalage d'affichage, 
 affiche de façon récursive toute l'arborescence à partir de cette structure en prenant en compte ses frères.
@@ -443,7 +447,8 @@ affiche de façon récursive toute l'arborescence à partir de cette structure e
 void print_tree_2(struct tag_t *tag, int shift) { 
     while(tag != NULL) {
         print_shift(shift);
-        printf("%s\n", tag->name);
+        if (strcmp(tag->name, "root") == 0) printf("TAGSET\n");
+        else printf("%s\n", tag->name);
         if(tag->children != NULL) print_tree_2(tag->children, shift + 1);
         tag = tag->brother;
     }
@@ -454,10 +459,9 @@ void print_tree_2(struct tag_t *tag, int shift) {
 Prend l'adresse d'une structure tag_t dans l'arbre de la hiérarchie préalablement construit,
 affiche l'arborescende à partire de cette structure sans prendre en compte ses frères.
 */
-void print_tree_children_2(struct tag_t *tag, int shift) {
-    print_shift(shift);
+void print_tree_children_2(struct tag_t *tag) {
     printf("%s\n", tag->name);
-    if(tag->children != NULL) print_tree_2(tag->children, shift + 1);
+    if(tag->children != NULL) print_tree_2(tag->children, 1);
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -468,7 +472,7 @@ Construit l'arbre de la hiérarchie des tags et l'affiche intégralement en util
 */
 void print_hierarchy() {
 	struct hierarchy *h = build_tree();
-	print_tree(h->tree, "");
+	print_tree_2(h->tree, 0);
 	g_hash_table_destroy(h->point_table); 
 	free(h);
 }
