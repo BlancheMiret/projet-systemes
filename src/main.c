@@ -126,7 +126,7 @@ void exit_with_file_error(enum error e, char *filename) {
 	switch(e) {
 		case PRINT : printf("usage : tag print [file]\n"); break;
 		case LINK : printf("usage : tag link <file> <tag> [tag] ...\n"); break;
-		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag]\n"); break;
+		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag] ... tag unlink <file> [--all]\n"); break;
 		default : ;
 	}
 	exit(EXIT_FAILURE);
@@ -140,7 +140,7 @@ void exit_with_syntax_error(enum error e) {
 		case DELETE : printf("usage : tag delete <tag>\n"); break;
 		case PRINT : printf("usage : tag print [file]\n"); break;
 		case LINK : printf("usage : tag link <file> <tag> [tag] ...\n"); break;
-		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag]\n"); break;
+		case UNLINK : printf("usage : tag unlink <file> <tag> [tag] ... or tag unlink <file> [--all] \n"); break;
 		case SEARCH : printf("usage : tag search [-s] tag [-not] [tag] ...\n"); break;
 		case RESET : printf("usage : tag reset\n"); break;
 	}
@@ -202,10 +202,12 @@ void exit_with_man_page() {
 	"		file if given.\n"
 	"\n"
 	"	tag link <file> <tag> [tag] ...\n"
-	"		Associate tags from the taget to a file.\n"
+	"		Associate tags from the tagset to a file.\n"
 	"\n"
-	"	tag unlink <filename> [--all] <tag> [tag]\n"
-	"		Disassociate tags from a file. The --all option allows to delete all tags at once.\n"
+	"	tag unlink <filename> <tag> [tag] ... \n"
+	"		Disassociate tags from a file.\n"
+	"	tag unlink <filename> --all\n"
+	"		The --all option allows to delete all tags at once.\n"
 	"\n"
 	"	tag search [-s] tag [-not] [tag] ...\n"
 	"		Print the absolute paths of the files corresponding to the given combinaison.\n"
@@ -217,7 +219,7 @@ void exit_with_man_page() {
 	"		With the -s option, print only the names of the file, not the absolute path.\n"
 	"\n"
 	"	tag reset\n"
-	"		Reset all the tag-system in deleting all tags from all files and resetting the tagset.\n"
+	"		Reset the tag-system : delete all tags from all files and reset the tagset.\n"
 	"\n"
 	"EXAMPLES\n"
 	"	The following commands create a tagset with a hierarchy\n"
@@ -244,14 +246,14 @@ void exit_with_man_page() {
 	"\n"
 	"	<tagname>\n"
 	"		Indicates a tagname to create and add to the hierarchy.\n"
-	"		Lenght must be inferior to 18 caracters.\n"
+	"		Length must be inferior to 18 caracters.\n"
 	"\n"
 	"	<file>\n"
 	"		Indicates a filename.\n"
 	"\n"
 	"AUTHORS\n"
 	"	TAG was written by Louis Castelbou, Hiba-Asmaa Chekroun and Blanche Miret.\n"
-	"	Initiated by a classe subject submitted by Inès Klimann.\n"
+	"	Initiated by a class subject submitted by Inès Klimann.\n"
 	"\n");
 	exit(0);
 }
