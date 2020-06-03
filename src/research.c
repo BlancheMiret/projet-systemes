@@ -60,7 +60,13 @@ void research(int ABS, char **terms, int nb_terms) {
 	// 0. Compter nombre de termes "utiles" ( -> #listes )
 	int c = 0;
 	for (int i = 0; i < nb_terms; i++) {
-		if(strcmp(terms[i], "-not") != 0) c ++;
+		if(strcmp(terms[i], "-not") != 0) {
+			if (!tag_exists(terms[i])) {
+				printf("%s does not exist in your tagset yet. Create it first with tag create\n", terms[i]);
+				exit(0);
+			}
+			c ++;
+		}
 	}
 	
 	// 1. construire tableau
