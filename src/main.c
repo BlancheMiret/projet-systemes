@@ -126,7 +126,7 @@ void exit_with_file_error(enum error e, char *filename) {
 	switch(e) {
 		case PRINT : printf("usage : tag print [file]\n"); break;
 		case LINK : printf("usage : tag link <file> <tag> [tag] ...\n"); break;
-		case UNLINK : printf("usage : tag unlink <file> [--all] <tag> [tag] ... tag unlink <file> [--all]\n"); break;
+		case UNLINK : printf("usage : tag unlink <file> <tag> [tag] ... or tag unlink <file> [--all]\n"); break;
 		default : ;
 	}
 	exit(EXIT_FAILURE);
