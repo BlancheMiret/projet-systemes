@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 			if (access(filename, F_OK) < 0) exit_with_file_error(LINK, filename);
 			for (int i = 3; i < argc; i++) {
 				if (!tag_exists(argv[i])) {
-					printf("%s does not exist in your tag hierarchy yet. Create it first with tag create\n", argv[i]);
+					printf("%s does not exist in your tagset yet. Create it first with tag create\n", argv[i]);
 					exit(1);
 				}
 			}
@@ -242,7 +242,7 @@ void exit_with_man_page() {
 	"\n"
 	"IDENTIFIER TERMINOLOGY\n"
 	"	<tag>\n"
-	"		Indicates a valid tagname, already existing in the hierarchy.\n"
+	"		Indicates a valid tagname, already existing in the tagset.\n"
 	"\n"
 	"	<tagname>\n"
 	"		Indicates a tagname to create and add to the hierarchy.\n"

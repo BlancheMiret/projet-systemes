@@ -226,7 +226,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
     while(read(fd, tag, TAGSIZE) != 0) {
         for (int i = 0; i < nb_tags; i++) {
             if(strcmp(tag->name, tags[i]) == 0) {
-                printf("%s already exists in your hierarchy. Two tags cannot have the same name.\n", tags[i]);
+                printf("%s already exists in your tagset. Two tags cannot have the same name.\n", tags[i]);
                 exit(1);
             }
         }
@@ -234,8 +234,7 @@ int create_tag(char *father, char* tags[], int nb_tags) {
     }
 
     if (father != NULL && !father_exists) {
-    	printf("%s\n", father);
-        printf("The specified father does not exist in the tag hierarchy. See --help\n");
+        printf("%s does not exist in your tagset yet.\nusage : tag create [-f <tag>] <tagname> [tagname] ...\n", father);
         exit(1);
     }
 
@@ -283,7 +282,7 @@ int delete_tag(char *tag_name) {
 		exit(1); 
 	}
 
-	printf("You're going to delete all this tag hierarchy from your tagset and from the files tagged with them :\n");
+	printf("You're going to delete all this sub-hierarchy from your tagset and from the files tagged with them :\n");
 	print_tree_children(tag_to_delete, "");
 	printf("The removal cannot be undone, do you want to proceed ? Enter Y(es) or N(o)\n");
 	char answer;
@@ -300,7 +299,7 @@ int delete_tag(char *tag_name) {
 			printf("Delete operation canceled.\n");
 			exit(0);
 		default :
-			printf("Plesae enter Y or y to validate the delete operaton, N or n to cancel it.\n");
+			printf("Please enter Y or y to validate the delete operaton, N or n to cancel it.\n");
 			while(answer != '\n') scanf("%c", &answer);
 			goto wait_answer;
 	}
