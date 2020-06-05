@@ -19,6 +19,58 @@
 extern char file_paths[1024];
 
 
+//fonction qui vérifie si un fichier est taggé
+
+
+int check_file(char * path){
+
+	int buflen, keylen, vallen;
+	char *buf, *key, *val;
+
+	buflen = listxattr(path, NULL, 0);
+	if (buflen == -1) {
+		perror("listxattr");
+		exit(EXIT_FAILURE);
+	}
+
+	if (buflen == 0) {
+
+		return 0;
+	}
+
+
+	buf = malloc(buflen);
+	if (buf == NULL) {
+		perror("malloc error: ");
+		exit(EXIT_FAILURE);
+	}
+
+	buflen = listxattr(path, buf, buflen);
+
+	if (buflen == -1) {
+		perror("listxattr error: ");
+		exit(EXIT_FAILURE);
+	}
+
+
+	if(strcmp(buf, "user.tags") == 0){
+
+		buflen = getxattr(path, "user.tags", &buff_tag, sizeof(buff_tag));
+		
+		if(buflen == -1 ){
+			perror("getxattr error: ");
+			exit(EXIT_FAILURE);
+		}
+
+		if(buflen > 0) return 1; 
+	}
+
+	return 0;
+
+}
+
+
+
 //fonction qui vérifie si tag est présent dans une suite de tags
 
 /* *
