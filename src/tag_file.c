@@ -24,8 +24,10 @@ extern char file_paths[1024];
 
 int check_file(char * path){
 
-	int buflen, keylen, vallen;
-	char *buf, *key, *val;
+	int buflen;
+	char *buf;
+	char buff_tag[1024];
+	memset(buff_tag,'\0',1024);
 
 	buflen = listxattr(path, NULL, 0);
 	if (buflen == -1) {
