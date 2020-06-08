@@ -1,6 +1,10 @@
 #ifndef __TAG_FILE_H__
 #define __TAG_FILE_H__
 
+
+/* fonction qui vérifie si un fichier est taggé */
+int check_file(char * path);
+
 /* fonction qui lie des tags à un fichier grâce à xattr */
 int link_tag(char *filename, char * tags[], size_t tags_size);
 
