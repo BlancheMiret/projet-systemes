@@ -21,6 +21,10 @@ extern char file_paths[1024];
 
 //fonction qui vérifie si un fichier est taggé
 
+/* *
+* @param path = chemin d'un fichier
+* @return renvoie 1 le fichier est taggé, sinon 0
+* */
 
 int check_file(char * path){
 
