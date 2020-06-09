@@ -9,10 +9,15 @@ touch ~/.tag/tag_hierarchy
 touch ~/.tag/paths.txt
 make
 mv tag ~/.tag
-gcc update-mv.c -o mvt
-gcc update-rm.c -o rmta
-mv mvt ~/.tag
-mv rmta ~/.tag
+gcc update-mv2.c -o upmv
+gcc update-mv3.c -o upmv2
+gcc update-rm.c -o uprm
+cp mvt ~/.tag/
+cp mvt.sh ~/.tag
+chmod u=wrx mvt.sh
+mv upmv ~/.tag
+mv uprm ~/.tag
+mv upmv2 ~/.tag
 echo 'export PATH=$PATH:~/.tag' >> ~/.bashrc
 echo 'relance le terminal...'
 source ~/.bashrc
