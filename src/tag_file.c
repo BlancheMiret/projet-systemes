@@ -21,6 +21,10 @@ extern char file_paths[1024];
 
 //fonction qui vérifie si un fichier est taggé
 
+/* *
+* @param path = chemin d'un fichier
+* @return renvoie 1 le fichier est taggé, sinon 0
+* */
 
 int check_file(char * path){
 
@@ -191,11 +195,12 @@ char * find_filename(char * file){
 int link_tag(char *filename, char * tags[], size_t tags_size){
 
 	
-	int val;
-	int res;
+	int val, res, count;
 	char *path = absolute_path(filename);
 	char buff_tag[1024];
 	memset(buff_tag,'\0',1024);
+	char new_buff_tag[1024];
+	memset(new_buff_tag,'\0',1024);
 
 	//on déclare new_tags qui va contenir tous les nouveaux tags concaténés
 	char new_tags[1024];
@@ -259,6 +264,12 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 			//Concaténation des tags à ajouter en vérifiant si ils sont pas déjà liés au fichier
 			if(tags_size == 1){
 
+				if(check_tag_existence(buff_tag, tags[0]) == 1){
+
+					printf("This file is already tagged with %s\n", tags[0]);
+					return 1;
+				}
+
 				if(check_tag_existence(buff_tag, tags[0]) == 0){
 
 					strcat(new_tags,tags[0]);
@@ -270,7 +281,12 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 			if(tags_size > 1){
 
 				for(int i=0; i<tags_size; i++){
+					if(check_tag_existence(buff_tag, tags[i]) == 1){
 
+						printf("This file is already tagged with %s\n", tags[i]);						
+						count++;
+					} 
+					
 					if(check_tag_existence(buff_tag, tags[i]) == 0){
 						strcat(new_tags,tags[i]); 
 						strcat(new_tags,"/");
@@ -280,17 +296,25 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 			}
 
 			//On ajouter les nouveaux tags à la fin de buff_tags
-			strcat(buff_tag,new_tags);
-			strcat(buff_tag,"\0"); 
+			memcpy(new_buff_tag, buff_tag, 1024);
+			strcat(new_buff_tag,new_tags);
+			strcat(new_buff_tag,"\0"); 
 
-			res = set_tag(path, usertag, buff_tag,1);
+			res = set_tag(path, usertag, new_buff_tag,1);
 
-			if(res){
+			if(res && (count != tags_size)){
 
-				printf("The file %s was tagged with the following tag(s):\n", find_filename(filename));			
-				for(int i=0; i<tags_size; i++) printf("- %s\n", tags[i]);
+				printf("The file %s was tagged with the following tag(s):\n", find_filename(filename));
 
 
+				for(int i=0; i<tags_size; i++){
+
+					if(check_tag_existence(buff_tag, tags[i]) == 0){
+						printf("- %s\n", tags[i]);
+					} 
+				
+				}
+							
 				return 1;
 			} 
 
