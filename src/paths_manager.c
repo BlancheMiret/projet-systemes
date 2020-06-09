@@ -104,13 +104,17 @@ int find_path(char * filename){
 		line_buf[strcspn(line_buf, "\r\n")] = 0;
 
 		if (strcmp(path, line_buf) == 0) {
-	
+			free(path);
+			fclose(file);
+			free(line_buf);
 			return 1;
 		}
 
 		line_size = getline(&line_buf, &line_buf_size, file);
 	}
-
+	free(path);
+	fclose(file);
+	free(line_buf);
 	return 0;
 }
 
@@ -124,15 +128,12 @@ int find_path(char * filename){
 
 int add_path(char * filename){
 
-
 	if(check_file_existence(filename) == 0){
 
 		printf("The file doesn't exist!\n");
 		return 0;
 	}
-
 	char *path = absolute_path(filename);
-
 	if(path == NULL){
 		printf("cannot find file with name [%s]\n", filename);
 	}
@@ -148,13 +149,14 @@ int add_path(char * filename){
 	}
 
 	if(find_path(filename) == 1){
-		
+		free(path);
 		return 0;
 	}
 
 	else {
 		
 		fprintf(file, "%s\n", path);
+		free(path);
 
 	}
 
@@ -220,7 +222,7 @@ int delete_path(char * filename){
 		line_size = getline(&line_buf, &line_buf_size, file);
 	}
 
-
+	free(path);
 
 	fclose(file);
 	fclose(file2);
