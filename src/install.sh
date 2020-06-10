@@ -12,11 +12,16 @@ mv tag ~/.tag
 gcc update-mv2.c -o upmv
 gcc update-mv3.c -o upmv2
 gcc update-rm.c -o uprm
+gcc update-rm2.c -o uprm2
 cp mvt ~/.tag/
 cp mvt.sh ~/.tag
-chmod u=wrx mvt.sh
+cp rmta ~/.tag/
+cp rmta.sh ~/.tag/
+chmod u=wrx ~/.tag/mvt.sh
+chmod u=wrx ~/.tag/rmta.sh
 mv upmv ~/.tag
 mv uprm ~/.tag
+mv uprm2 ~/.tag
 mv upmv2 ~/.tag
 echo 'export PATH=$PATH:~/.tag' >> ~/.bashrc
 echo 'relance le terminal...'
