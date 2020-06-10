@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
         char *tmp = realpath(argv[t+1], NULL);
         if (tmp == NULL)
         {
-            char *tmp = absolute_path(argv[t+2]);
+            char *tmp2 = absolute_path(argv[t+2]);
             push(&tremplace, argv[t+1]);
-            push(&tdelete, tmp);
-            free(tmp);
+            push(&tdelete, tmp2);
+            free(tmp2);
         }
         else
         {

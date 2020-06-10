@@ -223,7 +223,7 @@ int delete_path(char * filename){
 	}
 
 	free(path);
-
+	free(line_buf);
 	fclose(file);
 	fclose(file2);
 	remove(file_paths);
