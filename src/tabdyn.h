@@ -1,3 +1,4 @@
+#include "paths_manager.c"
 
 typedef struct tabdyn
 {

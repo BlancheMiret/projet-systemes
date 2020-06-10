@@ -280,3 +280,47 @@ void * next_path(FILE * file){
 	return path;
 
 }
+
+
+/**
+ * @brief Enleve un fichier de paths.txt sans vérifier s'il existe
+ * 
+ * @param filename : le chemin absolu du fichier à enlever
+ * @return int : 1
+ */
+int delete_path2(char * filename){
+    
+    printf("deletepath\n");
+	char *path = filename;
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+	ssize_t line_size;
+	char *temp_file = "temp.txt";
+	FILE *file = fopen(file_paths, "r");
+
+	if(file == NULL) {
+        perror("fopen error: ");
+        exit(EXIT_FAILURE);
+    }
+	FILE *file2 = fopen(temp_file, "a+");
+
+	if(file2 == NULL) {
+        perror("fopen error: ");
+        exit(EXIT_FAILURE);
+    }
+
+	line_size = getline(&line_buf, &line_buf_size, file);
+
+	while (line_size>= 0) {
+
+		if (strncmp(path, line_buf,strlen(line_buf)-1) != 0)
+			fprintf(file2, "%s", line_buf);
+		line_size = getline(&line_buf, &line_buf_size, file);
+	}
+    free(line_buf);
+	fclose(file);
+	fclose(file2);
+	remove(file_paths);
+	rename(temp_file, file_paths);
+	return 1;
+}

@@ -1,5 +1,2 @@
-valgrind --leak-check=full upmv mvt $*
-echo a
-cat ~/.tag/stockdelete.txt
-echo b
-valgrind --leak-check=full upmv2
+valgrind --leak-check=full --show-leak-kinds=all upmv mvt $*
+valgrind --leak-check=full --show-leak-kinds=all upmv2

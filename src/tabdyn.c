@@ -1,4 +1,3 @@
-#include "paths_manager.c"
 #include "tabdyn.h"
 
 /**

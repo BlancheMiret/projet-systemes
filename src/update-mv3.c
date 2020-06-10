@@ -1,12 +1,4 @@
-#include "paths_manager.c"
-#include <dirent.h>
-#include <sys/wait.h>
-
-void erreur(char *msg)
-{
-    perror(msg);
-    exit(EXIT_FAILURE);
-}
+#include "update_paths.c"
 
 int find_path2(char * path){
 
@@ -37,7 +29,7 @@ int find_path2(char * path){
 	return 0;
 }
 
-
+/*
 int delete_path2(char * filename){
     
     printf("deletepath\n");
@@ -77,41 +69,30 @@ int delete_path2(char * filename){
 	return 1;
   
 }
-
+*/
 
 int main(int argc, char const *argv[])
 {
     init_file_paths();
     printf("debut\n");
-    char filedelete[150] = "";
-    char fileremp[150] = "";
-    char filedest[150] = "";
-    strcat(filedelete, getenv("HOME"));
-    strcat(fileremp, getenv("HOME"));
-    strcat(filedest, getenv("HOME"));
-    strcat(filedelete, "/.tag/stockdelete.txt");
-    strcat(fileremp, "/.tag/remplace.txt");
-    strcat(filedest, "/.tag/dest.txt");
-    printf("delete : %s\n", filedelete);
-    printf("remplace : %s\n", fileremp);
-    printf("dest : %s\n", filedest);
+    
+    char *filedelete = buildfiledelete();
+    char *fileremp = buildfileremplace();
+    char *filedest = buildfiledest();
+    
     FILE *delete = fopen(filedelete, "r");
     FILE *remplace = fopen(fileremp, "r");
     FILE *dest = fopen(filedest, "r");
     if (delete == NULL || remplace == NULL || dest == NULL)
         erreur("ERREUR open\n");
-    printf("ok\n");
-    printf("______________________DELETE___________________\n");
     char *line_buff = NULL;
     size_t line_buf_size = 0;
 	ssize_t line_size;
     line_size = getline(&line_buff, &line_buf_size, delete);
-    printf("line : %d\n", line_size);
+
     while (line_size >= 0)
     {
-        printf("line : %d\n", line_size);
         //line_buff[strcmp(line_buff, "\r\n")] = '\0';
-        printf("line supprimée : %s\n", line_buff);
         char *tmp = realpath(line_buff, NULL);
         if (tmp == NULL)
             delete_path2(line_buff);
@@ -124,74 +105,17 @@ int main(int argc, char const *argv[])
     struct stat sb;
     char *pwd = getcwd(NULL, 200);
 
-    printf("line buff : %s\n", line_buff);
     line_buff[strcspn(line_buff, "\n")] = '\0';
-    char *pathdest = realpath(line_buff, NULL);
+
+    char *pathdest = getdestination();
     if (pathdest == NULL)
         exit(EXIT_SUCCESS);
     
-
-    printf("pathdest : %s\n", pathdest);
-    if (stat(pathdest, &sb) == -1)
-        erreur("ERREUR stat\n");
-    
-    if (S_ISDIR(sb.st_mode))
-    {
-        printf("c'est repertoire\n");
-        chdir(pathdest);
-
-        DIR *dir = opendir(line_buff);
-        struct dirent *entry;
-        while ((entry=readdir(dir)))
-        {
-            char buff_tag[1024];
-            printf("    entry->dname : %s\n", entry->d_name);
-            ssize_t istag = getxattr(entry->d_name, "user.tags", buff_tag, sizeof(buff_tag));
-            printf("istag : %ld\n", istag);
-            if (istag >= 0)
-            {
-                printf("fichier taggé\n");
-                if (find_path(entry->d_name) == 0)
-                    add_path(entry->d_name);
-            }
-            else
-            {
-                printf("fichier pas taggé\n");
-                if (find_path(entry->d_name) == 1)
-                    delete_path(entry->d_name);
-            }   
-        }
-        free(dir);   
-    }
-    else
-    {
-        DIR *dir = opendir(".");
-         struct dirent *entry;
-        while ((entry=readdir(dir)))
-        {
-            char buff_tag[1024];
-            printf("    entry->dname : %s\n", entry->d_name);
-            ssize_t istag = getxattr(entry->d_name, "user.tags", buff_tag, sizeof(buff_tag));
-            printf("istag : %ld\n", istag);
-            if (istag >= 0)
-            {
-                printf("fichier taggé\n");
-                if (find_path(entry->d_name) == 0)
-                    add_path(entry->d_name);
-            }
-            else
-            {
-                printf("fichier pas taggé\n");
-                if (find_path(entry->d_name) == 1)
-                    delete_path(entry->d_name);
-            }   
-        }
-        free(dir);  
-    }
-    
+    add_delete_in_dir(pathdest);
     free(pathdest);
     free(pwd);
 
+    
     printf("________________________88REMPLACE______________________\n");
     line_size = getline(&line_buff, &line_buf_size, remplace);
     while (line_size >= 0)
@@ -208,10 +132,9 @@ int main(int argc, char const *argv[])
     fclose(dest);
     printf("remove\n");
     free(line_buff);
-    /*remove(filedelete);
-    remove(filedest);
-    remove(fileremp);*/
-    
+    free(filedelete);
+    free(filedest);
+    free(fileremp);
     return 0;
 }
 
