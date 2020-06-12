@@ -7,6 +7,8 @@ typedef struct tabdyn
     char **tab;
 }tabdyn;
 
+void erreur(char *msg);
+
 tabdyn create_table();
 
 void push(tabdyn *t, char *path);

@@ -32,5 +32,8 @@ mv upcp ~/.tag
 mv upcp2 ~/.tag
 echo 'export PATH=$PATH:~/.tag' >> ~/.bashrc
 echo 'relance le terminal...'
+echo "alias mv='mvt.sh'" >> ~/.bashrc
+echo "alias cp='cpt.sh'" >> ~/.bashrc
+echo "alias rm='rmta.sh'" >> ~/.bashrc
 source ~/.bashrc
 echo 'fin installation...'

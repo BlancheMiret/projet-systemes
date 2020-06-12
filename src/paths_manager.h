@@ -27,4 +27,6 @@ void * init_iterator();
 /* fonction qui renvoie un chemin de "paths.txt" */
 void * next_path(FILE * file);
 
+int delete_path2(char *pathfile);
+
 #endif
