@@ -11,7 +11,6 @@ make
 mv tag ~/.tag
 gcc update-mv2.c -o upmv
 gcc update-mv3.c -o upmv2
-gcc update-rm.c -o uprm
 gcc update-rm2.c -o uprm2
 gcc update-cp.c -o upcp
 gcc update-cp2.c -o upcp2
