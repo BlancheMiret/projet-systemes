@@ -19,10 +19,8 @@ int main(int argc, char *argv[])
     init_file_paths();
     char *pwd = getcwd(NULL, 200);
     int debut = -1;
-    int backup = -1;
     int t = -1;
     tabdyn tremplace = create_table();
-    tabdyn tdelete = create_table();
     
     for (int i = 2; i < argc; i++)
     {
@@ -41,19 +39,14 @@ int main(int argc, char *argv[])
     {
         char *tmp = realpath(argv[t+1], NULL);
         if (tmp == NULL)
-        {
-            char *tmp2 = absolute_path(argv[t+2]);
             push(&tremplace, argv[t+1]);
-            push(&tdelete, tmp2);
-            free(tmp2);
-        }
         else
         {
             for (int i = t+2; i < argc; i++)
             {
                 char *arg1 = absolute_path(argv[i]);
                 char *arg2 = absolute_path(argv[t+1]);
-                lister_supp(arg1, arg2, &tdelete, &tremplace);
+                lister_supp(arg1, arg2, &tremplace);
                 free(arg1);
                 free(arg2);
             }
@@ -64,20 +57,14 @@ int main(int argc, char *argv[])
     {   
         char *tmp = realpath(argv[argc-1], NULL);
         if (tmp == NULL)
-        {
-            char *tmp2 = absolute_path(argv[debut]);
             push(&tremplace, argv[argc-1]);
-            push(&tdelete, tmp2);
-            free(tmp2);
-            affiche(tdelete);
-        }
         else
         {
             for (int i = debut; i < argc-1; i++)
             {
                 char *arg1 = absolute_path(argv[i]);
                 char *arg2 = absolute_path(argv[argc-1]); 
-                lister_supp(arg1, arg2, &tdelete, &tremplace);
+                lister_supp(arg1, arg2, &tremplace);
                 free(arg1);
                 free(arg2);
             }
@@ -87,17 +74,13 @@ int main(int argc, char *argv[])
     exe : chdir(pwd);
     execmv(argv);
     
-    char *filedelete = buildfiledelete();
     char *fileremp = buildfileremplace();
     char *filedest = buildfiledest();
-    FILE *delete = fopen(filedelete, "w");
     FILE *remplace = fopen(fileremp, "w");
     FILE *dest = fopen(filedest, "w");
-    if (delete == NULL || remplace == NULL || dest == NULL)
+    if (remplace == NULL || dest == NULL)
         erreur("ERREUR fopen\n");
     
-    for (int i = 0; i < tdelete.size; i++)
-        fprintf(delete, "%s\n",tdelete.tab[i]);
     for (int i = 0; i < tremplace.size; i++)
         fprintf(remplace, "%s\n",tremplace.tab[i]);
     if (t != -1)
@@ -118,15 +101,12 @@ int main(int argc, char *argv[])
             fprintf(dest, "%s\n", argv[argc-1]);
         free(arg);
     }
-    fclose(delete);
     fclose(remplace);
     fclose(dest);
 
-    deletetable(tdelete);
     deletetable(tremplace);
     free(pwd);
     free(filedest);
     free (fileremp);
-    free(filedelete);
     return 0;
 }

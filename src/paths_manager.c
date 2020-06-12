@@ -290,7 +290,6 @@ void * next_path(FILE * file){
  */
 int delete_path2(char * filename){
     
-    printf("deletepath\n");
 	char *path = filename;
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;

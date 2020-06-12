@@ -5,15 +5,15 @@ int main(int argc, char const *argv[])
     init_file_paths();
     
     char *fileremp = buildfileremplace();
-    char *filedest = buildfiledest();
     
     FILE *remplace = fopen(fileremp, "r");
-    FILE *dest = fopen(filedest, "r");
-    if (remplace == NULL || dest == NULL)
+    if (remplace == NULL)
         erreur("ERREUR fopen\n");
     char *line_buff = NULL;
     size_t line_buf_size = 0;
 	ssize_t line_size;
+
+    deletefrompaths();
 
     char *pathdest = getdestination();
     if (pathdest == NULL)
@@ -33,9 +33,7 @@ int main(int argc, char const *argv[])
         free(remp);
     }
     fclose(remplace);
-    fclose(dest);
     free(line_buff);
-    free(filedest);
     free(fileremp);
     return 0;
 }

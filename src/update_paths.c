@@ -34,6 +34,27 @@ char* traitement(char *path, char *dest)
     return remplace;
 }
 
+/**
+ * @brief Retourne le repertoire de destination
+ * 
+ * @param dest : chemin vers la destination
+ * @return char* : repertoire qui contient la destination
+ */
+char *getdest(char *dest)
+{
+   int debut = -1;
+    for (int j = 0; j < strlen(dest); j++)
+    {
+        if (dest[j] == '/')
+            debut = j;
+    }
+    char *tmp = calloc(debut+2, 1);
+    if (tmp == NULL)
+        erreur("ERREUR calloc getdest\n");
+    strncpy(tmp, dest, debut+1);
+    return tmp;
+}
+
 
 /**
  * @brief Traite un élément (fichier ou repertoire) pour trouver son nouveau chemin et celui de ses sous-éléments si il en a
@@ -43,16 +64,13 @@ char* traitement(char *path, char *dest)
  * @param remove : tableau dynamique où sont stockés les chemins à supprimer
  * @param add : tableau dynamique où sont stockés les nouveaux chemins 
  */
-void lister_supp(char *path, char *dest,tabdyn *remove, tabdyn *add)
+void lister_supp(char *path, char *dest, tabdyn *add)
 {
     int is = 0;
     char *remplace = traitement(path, dest);
     char *abspath = absolute_path(path);
     if (find_path(abspath))
-    {
-        push(remove, abspath);
         push(add, remplace);
-    }
     else
         is = 1;
     
@@ -73,7 +91,7 @@ void lister_supp(char *path, char *dest,tabdyn *remove, tabdyn *add)
         while ((entry=readdir(dirp)))
         {
             if (strcmp(entry->d_name, ".")!= 0 && strcmp(entry->d_name, "..") != 0)
-                lister_supp(entry->d_name, remplace, remove, add);
+                lister_supp(entry->d_name, remplace, add);
         }
         free(pwd);
         closedir(dirp);
@@ -127,85 +145,6 @@ char *buildfileremplace()
     return fileremplace;
 }
 
-/**
- * @brief Supprime de paths.txt les fichiers contenus dans stockdelete.txt si les conditions sont réunies
- * 
- */
-void deletefromstock()
-{
-    char *filedelete = buildfiledelete();
-    FILE *delete = fopen(filedelete, "r");
-    if (delete == NULL)
-        erreur("ERREUR fopen stockdelete.txt\n");
-    
-    char ligne[500] = "";
-    while (fgets(ligne, 500, delete) != NULL)
-    {
-        char *tmp = realpath(ligne, NULL);
-        if (tmp == NULL)
-            delete_path2(tmp);
-        free(tmp);
-    }
-    fclose(delete);
-    free(filedelete);
-    /*char *line_buff = NULL;
-    size_t line_buff_size = 0;
-    size_t line_size;
-    line_size = getline(&line_buff, &line_buff_size, delete);
-
-    while (line_size >= 0)
-    {
-        //line_buff[strcmp(line_buff, "\r\n")] = '\0';
-        char *tmp = realpath(line_buff, NULL);
-        if (tmp == NULL)
-            delete_path2(line_buff);
-        line_size = getline(&line_buff, &line_size, delete);
-        free(tmp);
-    }
-    fclose(delete);
-    free(delete);
-    free(line_buff);*/
-}
-
-/**
- * @brief Ajoute dans paths.txt les fichiers de remplace.txt si les conditions sont remplies
- * 
- */
-void addfromremplace()
-{
-    char *fileremplace = buildfileremplace();
-    FILE *remplace = fopen(fileremplace, "r");
-    if (remplace == NULL)
-        erreur("ERREUR fopen remplace.txt\n");
-    char line[500] = "";
-    while (fgets(line, 500 ,remplace) != NULL)
-    {
-        line[strcspn(line, "\n")] = '\0';
-        char *remp = realpath(line, NULL);
-        if (remp != NULL && find_path(remp) == 0)
-            add_path(line);
-        free(remp);
-    }
-    fclose(remplace);
-    free(fileremplace);
-    /*char *line_buff = NULL;
-    size_t line_buff_size = 0;
-    size_t line_size;
-    line_size = getline(&line_buff, &line_buff_size, remplace);
-    while (line_size >= 0)
-    {
-        line_buff[strcspn(line_buff, "\n")] = '\0';
-        printf("line : %s\n", line_buff);
-        char *remp =realpath(line_buff, NULL);
-        if (remp != NULL && find_path(remp) == 0)
-            add_path(line_buff);
-        line_size = getline(&line_buff, &line_size, remplace);
-        free(remp);
-    }
-    fclose(remplace);
-    free(fileremplace);
-    free(line_buff);*/
-}
 
 /**
  * @brief Retourne le chemin de la destination stockée dans dest.txt
@@ -233,6 +172,11 @@ char *getdestination()
     return pathdest;
 }
 
+/**
+ * @brief Regarde dans le repertoire path les fichiers qui sont taggés ou non
+ * 
+ * @param path : repertoire
+ */
 void choose_dir(char *path)
 {
     chdir(path);
@@ -270,5 +214,38 @@ void add_delete_in_dir(char *pathdest)
    if (S_ISDIR(sb.st_mode))
        choose_dir(pathdest);      
    else
-        choose_dir(".");
+   {
+        char *tmp = getdest(pathdest);
+        choose_dir(tmp);
+        free(tmp);
+   }
+}
+
+/**
+ * @brief Supprime de paths.txt les chemins qui ne sont plus accessibles
+ * 
+ */
+void deletefrompaths()
+{
+    init_file_paths();
+    FILE *delete = fopen(file_paths, "r");
+    if (delete == NULL)
+        erreur("ERREUR fopen\n");
+    
+    char *line_buff = NULL;
+    size_t line_buf_size = 0;
+	ssize_t line_size;
+    line_size = getline(&line_buff, &line_buf_size, delete);
+
+    while (line_size >= 0)
+    {
+        line_buff[strcspn(line_buff, "\n")] = '\0';
+        char *tmp = realpath(line_buff, NULL);
+        if (tmp == NULL)
+            delete_path2(line_buff);
+        line_size = getline(&line_buff, &line_size, delete);
+        free(tmp);
+    }
+    fclose(delete);
+    free(line_buff);
 }
