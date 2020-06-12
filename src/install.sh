@@ -22,11 +22,10 @@ cp cpta ~/.tag/
 cp cpt.sh ~/.tag
 chmod u=wrx ~/.tag/mvt.sh
 chmod u=wrx ~/.tag/rmta.sh
-chmod u=wrx ~/.tag/mvta.sh
+chmod u=wrx ~/.tag/mvt.sh
 chmod u=wrx ~/.tag/cpt.sh
 chmod u=wrx ~/.tag/cpta
 mv upmv ~/.tag
-mv uprm ~/.tag
 mv uprm2 ~/.tag
 mv upmv2 ~/.tag
 mv upcp ~/.tag
