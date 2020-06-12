@@ -10,18 +10,18 @@ tag create -f policier thriller
 tag create -f thriller psychologique
 echo "Hierarchy created :"
 tag print
-#tagging files
+# Tagging files
 touch test1
 touch test2
 touch test3
 touch test4
 touch test5
 echo "tagging files..."
-tag link test1 thriller roman ballade
+tag link test1 thriller roman policier ballade
 tag link test2 film science-fiction "space opera"
-tag link test3 historique
-tag link test4 autofiction 
-tag link test5 thriller psychologique historique
+tag link test3 historique jazz
+tag link test4 autofiction roman
+tag link test5 film thriller psychologique
 echo "test1 tags :"
 tag print test1
 echo "test2 tags :"
@@ -32,4 +32,9 @@ echo "test4 tags :"
 tag print test4
 echo "test5 tags :"
 tag print test5
-echo "searching..."
+# Searching tags
+echo "searching tags..."
+echo "Files with thriller but not policier"
+tag search psychologique -not policier
+echo "Files with roman thriller but not policier"
+tag search thriller roman -not policier
