@@ -34,7 +34,7 @@ echo "test5 tags :"
 tag print test5
 # Searching tags
 echo "searching tags..."
-echo "Files with thriller but not policier"
+echo "Files with psychologique thriller but not film"
 tag search psychologique -not policier
-echo "Files with roman thriller but not policier"
-tag search thriller roman -not policier
+echo "Files with film thriller"
+tag search thriller film thriller
