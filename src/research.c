@@ -13,9 +13,13 @@ struct tag_l {
 };
 
 
-/*
-Renvoie une struct tag_l contenant tag_name et ses enfants
-Et positionne son champ must_be
+/**
+* @brief : construit une liste contenant un tag et ses enfants
+*
+* @param tag_name : nom d'un tag 
+* @param must_be : indicateur de recherche à positionner pour la liste à créer
+*
+* @return : struct tag_l contenant tag_name et ses enfants
 */
 struct tag_l build_list(char *tag_name, int must_be) {
 	struct tag_l tag_list;
@@ -30,8 +34,13 @@ struct tag_l build_list(char *tag_name, int must_be) {
 }
 
 
-/*
-Renvoie 1 si tag_name appartient à la liste tag_list, 0 sinon
+/**
+* @brief : détermine si un tag appartient à une liste de tag
+*
+* @param tag_name : nom d'un tag
+* @param tag_list : list de tags
+*
+* @return : 1 si tag_name appartient à la liste tag_list, 0 sinon
 */
 int belong_to_list(char *tag_name, struct tag_l tag_list) {
 	struct tag_node *tag = tag_list.list;
@@ -43,8 +52,11 @@ int belong_to_list(char *tag_name, struct tag_l tag_list) {
 }
 
 
-/*
-Affiche le nom d'un fichier ou son chemin complet selon l'agument ABS
+/**
+* @brief : affiche le nom d'un fichier ou son chemin complet selon l'agument ABS
+* 
+* @param path : chemin absolu d'un fichier
+* @param ABS : 0 ou 1, détermine si le chemin affiché doit être absolu ou non
 */
 void print_filename(char *path, int ABS) {
 	if(ABS) printf("%s\n", path);
@@ -52,8 +64,12 @@ void print_filename(char *path, int ABS) {
 }
 
 
-/*
-Affiche les chemins des fichiers correspondant à la combinaison de tags passée en paramètres
+/**
+* @brief : affiche les chemins des fichiers correspondant à la combinaison de tags passée en paramètres
+*
+* @param ABS : 0 ou 1, détermine si les chemins affichés doivent être absolus ou non
+* @param terms : tableau de chaîne de caractères, soit des noms de tags soit des indicateurs "-not"
+* @param nb_terms : nombre d'éléments dans terms
 */
 void research(int ABS, char **terms, int nb_terms) {
 
