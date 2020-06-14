@@ -8,7 +8,7 @@ void execmv(char **argv)
         erreur("ERREUR pid\n");
     else if(pid > 0)
     {
-        execvp("mvt", argv+1);
+        execvp("mv", argv+1);
         exit(EXIT_FAILURE);
     }
     pid = wait(NULL);

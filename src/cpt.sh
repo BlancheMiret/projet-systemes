@@ -1,2 +1,2 @@
-upcp cpta --preserve=xattr $*
+upcp cp --preserve=xattr $*
 upcp2

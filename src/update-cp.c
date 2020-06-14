@@ -7,7 +7,7 @@ void execcp(char **argv)
         erreur("ERREUR pid\n");
     else if(pid > 0)
     {
-        execvp("cpta", argv+1);
+        execvp("cp", argv+1);
         exit(EXIT_FAILURE);
     }
     pid = wait(NULL);

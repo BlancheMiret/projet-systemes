@@ -1,2 +1,2 @@
-rmta $*
+rm $*
 uprm2

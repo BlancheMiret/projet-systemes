@@ -1,2 +1,2 @@
-upmv mvt $*
+upmv mv $*
 upmv2
