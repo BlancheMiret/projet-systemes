@@ -45,10 +45,7 @@ void print_tree_children_2(struct tag_t *tag);
 */
 void init_hierarchy() {
     memset(hierarchy_file, 0, 1024);
-    const char *HOME = getenv("HOME");
-    if (HOME == NULL) exit(1);
-    strcat(hierarchy_file,HOME);
-    strcat(hierarchy_file, "/.tag/tag_hierarchy");
+	strcat(hierarchy_file, "/.tag/tag_hierarchy");
 }
 
 /** 

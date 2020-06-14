@@ -101,46 +101,43 @@ void lister_supp(char *path, char *dest, tabdyn *add)
 }
 
 /**
- * @brief Construit le chemin ~/.tag/stockdelete.txt
+ * @brief Construit le chemin /.tag/stockdelete.txt
  * 
- * @return char* : ~/.tag/stockdelete.txt
+ * @return char* : /.tag/stockdelete.txt
  */
 char *buildfiledelete()
 {
     char *filedelete = calloc(200, 1);
     if (filedelete == NULL)
         erreur("ERREUR calloc filedelete\n");
-    strcat(filedelete, getenv("HOME"));
-    strcat(filedelete, "/.tag/stockdelete.txt");
+    strcat(filedelete, "/.tag/delete.txt");
     return filedelete;
 }
 
 /**
- * @brief Construit le chemin ~/.tag/dest.txt
+ * @brief Construit le chemin /.tag/dest.txt
  * 
- * @return char* : ~/.tag/dest.txt
+ * @return char* : /.tag/dest.txt
  */
 char *buildfiledest()
 {
     char *filedest = calloc(200, 1);
     if (filedest == NULL)
         erreur("ERREUR calloc filedelete\n");
-    strcat(filedest, getenv("HOME"));
     strcat(filedest, "/.tag/dest.txt");
     return filedest;
 }
 
 /**
- * @brief Construit le chemin ~/.tag/remplace.txt
+ * @brief Construit le chemin /.tag/remplace.txt
  * 
- * @return char* : ~/.tag/remplace.txt
+ * @return char* : /.tag/remplace.txt
  */
 char *buildfileremplace()
 {
     char *fileremplace = calloc(200, 1);
     if (fileremplace == NULL)
         erreur("ERREUR calloc filedelete\n");
-    strcat(fileremplace, getenv("HOME"));
     strcat(fileremplace, "/.tag/remplace.txt");
     return fileremplace;
 }

@@ -24,10 +24,7 @@ char file_paths[1024];
 
 void init_file_paths() {
     memset(file_paths, 0, 1024);
-    const char *HOME = getenv("HOME");
-    if (HOME == NULL) exit(1);
-    strcat(file_paths,HOME);
-    strcat(file_paths, "/.tag/paths.txt");
+   strcat(file_paths, "/.tag/paths.txt");
 }
 
 
@@ -311,7 +308,6 @@ int delete_path2(char * filename){
 	line_size = getline(&line_buf, &line_buf_size, file);
 
 	while (line_size>= 0) {
-
 		if (strncmp(path, line_buf,strlen(line_buf)-1) != 0)
 			fprintf(file2, "%s", line_buf);
 		line_size = getline(&line_buf, &line_buf_size, file);
