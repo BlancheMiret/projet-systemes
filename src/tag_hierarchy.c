@@ -33,11 +33,10 @@ char hierarchy_file[1024];
  
 void write_tree(struct tag_t *tag, int fd);
 void *build_tree(); 
+void print_shift(int shift);
 void print_tree(struct tag_t *tag, char * shift); 
 void print_tree_children(struct tag_t *tag, char *shift); 
 void print_tag(struct tag_t *tag); 
-
-void print_tree_children_2(struct tag_t *tag);
 
 
 /**
@@ -431,10 +430,8 @@ void *build_tree() {
 }
 
 // ----------------------------------------------------------------------------------------------
-// --------------------------------------- TEST AFFICHAGE ---------------------------------------
+// ----------------------------------- FONCTIONS D'AFFICHAGES -----------------------------------
 
-
-void print_tree_2(struct tag_t *tag, int shift);
 
 /**
 * @brief Affiche un décalage d'affichage.
@@ -450,12 +447,13 @@ void print_shift(int shift) {
 /**
 * @brief Affiche le tagset enregistré.
 */
-void print_hierarchy_2() {
+void print_hierarchy() {
     struct hierarchy *h = build_tree();
-    print_tree_2(h->tree, 0);
+    print_tree(h->tree, 0);
     g_hash_table_destroy(h->point_table); 
     free(h);
 }
+
 
 /**
 * @brief Affiche l'arbre de hiérarchie à partir d'un tag.
@@ -463,12 +461,12 @@ void print_hierarchy_2() {
 * @param tag Nom d'un tag.
 * @param shift Indicateur de décalage d'affichage pour tag.
 */
-void print_tree_2(struct tag_t *tag, int shift) { 
+void print_tree(struct tag_t *tag, int shift) { 
     while(tag != NULL) {
         print_shift(shift);
         if (strcmp(tag->name, "root") == 0) printf("TAGSET\n");
         else printf("%s\n", tag->name);
-        if(tag->children != NULL) print_tree_2(tag->children, shift + 1);
+        if(tag->children != NULL) print_tree(tag->children, shift + 1);
         tag = tag->brother;
     }
 }
@@ -479,67 +477,16 @@ void print_tree_2(struct tag_t *tag, int shift) {
 *
 * @param tag Nom d'un tag.
 */
-void print_tree_children_2(struct tag_t *tag) {
+void print_tree_children(struct tag_t *tag) {
     printf("%s\n", tag->name);
-    if(tag->children != NULL) print_tree_2(tag->children, 1);
-}
-
-
-// ----------------------------------------------------------------------------------------------
-// ----------------------------------- FONCTIONS D'AFFICHAGES -----------------------------------
-
-/**
-* @brief : affiche le tagset enregistré
-*/
-void print_hierarchy() {
-	struct hierarchy *h = build_tree();
-	print_tree_2(h->tree, 0);
-	g_hash_table_destroy(h->point_table); 
-	free(h);
+    if(tag->children != NULL) print_tree(tag->children, 1);
 }
 
 
 /**
-* @brief : affiche l'arbre de hiérarchie à partir d'un tag
+* @brief Affiche un tag.
 *
-* @param tag : nom d'un tag
-* @param shift : chaîne de caractères représentant le décalage d'affichage pour tag
-*/
-void print_tree(struct tag_t *tag, char * shift) { 
-	while(tag != NULL) {
-		printf("%s%s\n", shift, tag->name);
-		if(tag->children != NULL) {
-			char *new_shift = shift;
-			asprintf(&new_shift, "  %s", shift);
-			print_tree(tag->children, new_shift);
-			free(new_shift);
-		}
-		tag = tag->brother;
-	}
-}
-
-
-/**
-* @brief : affiche l'arbre des enfants d'un tag
-*
-* @param tag : nom d'un tag
-* @param shift : chaîne de caractères représentant le décalage d'affichage pour tag
-*/
-void print_tree_children(struct tag_t *tag, char *shift) {
-	printf("%s%s\n", shift, tag->name);
-	if(tag->children != NULL) {
-		char *new_shift = shift;
-		asprintf(&new_shift, "  %s", shift);
-		print_tree(tag->children, new_shift);
-		free(new_shift);
-	}
-}
-
-
-/**
-* @brief : affiche un tag
-*
-* @param tag : adresse d'une structure tag_t
+* @param tag Adresse d'une structure tag_t.
 */
 void print_tag(struct tag_t *tag) {
 	printf("--PRINTING TAG--\n");
