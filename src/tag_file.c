@@ -19,13 +19,14 @@
 extern char file_paths[1024];
 
 
-//fonction qui vérifie si un fichier est taggé
 
-/* *
+
+/**
+* @brief vérifie si un fichier est taggé
+* 
 * @param path = chemin d'un fichier
 * @return renvoie 1 le fichier est taggé, sinon 0
-* */
-
+*/
 int check_file(char * path){
 
 	int buflen;
@@ -77,14 +78,14 @@ int check_file(char * path){
 
 
 
-//fonction qui vérifie si tag est présent dans une suite de tags
 
-/* *
+/**
+* @brief vérifie si tag est présent dans une suite de tags
+* 
 * @param tags = une suite de tags
 * @param tag = un tag
 * @return renvoie 1 new_tag existe dans tags, sinon 0
-* */
-
+*/
 int check_tag_existence(char * tags, char * tag){
 
 	char * pch;
@@ -97,15 +98,14 @@ int check_tag_existence(char * tags, char * tag){
 }
 
 
-//fonction qui concatène des tags 
-
-/* *
+/**
+* @brief ajoute des attributs étendus (tags) au fichier
+*
 * @param path = chemin vers le fichier qui va être taggé
 * @param usertag = nom d'un attribut 
 * @param flags = variable qui détermine si on crée l'attribut (XATTR_CREATE) ou si remplace on le remplace (XATTR_REPLACE)
 * @return renvoie 1 si les tags ont bien été ajouté, sinon 0
-* */
-
+*/
 int set_tag(char * path, char * usertag, char * all_tags, int flags){
 
     if(flags == 0){
@@ -139,14 +139,14 @@ int set_tag(char * path, char * usertag, char * all_tags, int flags){
 	return 1;
 }
 
-//fonction qui concatène des tags 
 
-/* *
+/**
+* @brief concatène des tags 
+*
 * @param tag_string = va contenir une suite de tags, séparés avec "/"
 * @param tags[] = tableau qui contient tous les tags à concaténer
 * @param tags_size = nombre de tags
-* */
-
+*/
 void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
     
 	if(tags_size == 1){
@@ -168,13 +168,14 @@ void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
 	}
 }
 
-//fonction renvoie le nom du fichier, dans le cas où il s'agit d'un chemin il cherche le nom du fichier
+
 
 /* *
+* @brief Renvoie le nom du fichier, dans le cas où il s'agit d'un chemin il cherche le nom du fichier
+*
 * @param file = nom/chemin du fichier
 * @return renvoie le nom du fichier
-* */
-
+*/
 char * find_filename(char * file){
 
 	if(strrchr(file, '/') == NULL) return file;
@@ -183,15 +184,14 @@ char * find_filename(char * file){
 
 
 
-//fonction qui lie des tags à un fichier grâce à xattr
-
-/* *
+/**
+* @brief Lie des tags à un fichier grâce à xattr
+*
 * @param filename = nom du fichier
 * @param tags[] = tableau qui contient tous les tags à ajouter
 * @param subtags_size = nombre de tags
 * @return renvoie 1 si les tags ont bien été ajouté, sinon 0
-* */
-
+*/
 int link_tag(char *filename, char * tags[], size_t tags_size){
 
 	
@@ -327,15 +327,14 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 }
 
 
-//fonction qui supprime un seul tag d'un fichier
-
-/* *
+/**
+* @brief Supprime un seul tag d'un fichier
+* 
 * @param path = chemin vers le fichier taggé
 * @param existing_tags = une suite de tags
 * @param tag = tag qu'on va supprimer
 * @return renvoie 1 si le tag a été supprimé
-* */
-
+*/
 int delete_one_tag(char * path, char *existing_tags, char * tag){
 
 	char new_tag_string[1024];
@@ -370,15 +369,15 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 }
 
 
-//fonction qui supprime un tag du fichier
 
-/* *
+/**
+* @brief Supprime un tag du fichier
+*
 * @param filename = nom du fichier
 * @param tags[] = tags qu'on va supprimer
 * @param tags_size = taille de tags
 * @return renvoie 0 si le ou les tags ont bien été supprimé, sinon 1
-* */
-
+*/
 int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 	int val;
@@ -547,13 +546,12 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 }
 
 
-//fonction qui récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node
-
-/* *
+/**
+* @brief Récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node
+*
 * @param path = chemin vers le fichier taggé
 * @return renvoie la liste des tags, si le fichier ne contient aucun tag renvoie NULL
-* */
-
+*/
 void * get_file_tag_list(char * path){
 
 	int val;
@@ -606,13 +604,14 @@ void * get_file_tag_list(char * path){
 
 }
 
-//fonction qui supprime tous les tags d'un fichier
 
-/* *
-* @param filename = nom du fichier taggé
+
+/**
+* @brief Supprime tous les tags d'un fichier
+* 
+* @param filename : nom du fichier taggé
 * @return renvoie 1 si tous les tags du fichier ont été supprimé
-* */
-
+*/
 int delete_all_tags(char * filename){
 
 	char *path = absolute_path(filename);
@@ -632,12 +631,12 @@ int delete_all_tags(char * filename){
 }
 
 
-//fonction qui supprime de tous les fichiers un tag (et les sous-tags s'il y en a)
-
-/* *
-* @param tag[] = contient le nom du tag
+/**
+* @brief Supprime de tous les fichiers un tag (et les sous-tags s'il y en a)
+*
+* @param tag[] Contient le nom du tag
 * @return renvoie 1 si le tag a bien été supprimé des fichiers
-* */
+*/
 int for_all_files_delete(char * tag[]){
 
 
@@ -676,12 +675,12 @@ int for_all_files_delete(char * tag[]){
 
 }
 
-//fonction qui supprime tous les tags des fichiers, et supprime les chemins des fichiers de paths.txt
 
-/* *
+/**
+* @brief Supprime tous les tags des fichiers, et supprime les chemins des fichiers de paths.txt
+*
 * @return renvoie 1 si tout a été supprimé
-* */
-
+*/
 int reset_all_files(){
 
 
