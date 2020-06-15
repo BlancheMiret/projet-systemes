@@ -297,7 +297,7 @@ int delete_tag(char *tag_name) {
 
 	if (tag_to_delete == NULL) {
 		perror("The tag you want to delete does not exist in your tagset.\n");
-		exit(1); 
+		exit(EXIT_FAILURE); 
 	}
 
 	printf("You're going to delete all this sub-hierarchy from your tagset and from the files tagged with them :\n");
