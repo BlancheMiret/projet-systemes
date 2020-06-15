@@ -14,14 +14,13 @@
 #include "paths_manager.h"
 
 
-
-//file_paths = fichier où on va stocker les chemins des fichiers taggés
-
 char file_paths[1024];
 
-
-// Initialise variable globale du nom du fichier contenant les chemins des fichiers taggés
-
+/**
+* @brief Initialise variable globale du nom du fichier contenant les chemins des fichiers taggés
+*
+* @return renvoie 1 si le fichier existe, sinon 0
+*/
 void init_file_paths() {
     memset(file_paths, 0, 1024);
    strcat(file_paths, "/.tag/paths.txt");
@@ -29,14 +28,12 @@ void init_file_paths() {
 
 
 
-
-//fonction qui vérifie si le fichier existe
-
-/* *
-* @param filename = nom du fichier 
+/**
+* @brief Vérifie si le fichier existe
+*
+* @param filename Nom du fichier 
 * @return renvoie 1 si le fichier existe, sinon 0
-* */
-
+*/
 int check_file_existence(char * filename){
 
 	if(access( filename, F_OK ) == -1) {
@@ -53,11 +50,12 @@ int check_file_existence(char * filename){
 
 //fonction qui renvoie le chemin abosolu d'un fichier
 
-/* *
-* @param filename = nom du fichier 
+/**
+* @brief
+*
+* @param filename Nom du fichier 
 * @return renvoie le chemin absolu du fichier si il existe
-* */
-
+*/
 char * absolute_path(char * filename){
 
 	check_file_existence(filename);
@@ -75,12 +73,13 @@ char * absolute_path(char * filename){
 
 //fonction qui vérifie si le chemin existe déjà dans paths.txt
 
-/* *
-* @param file_paths = nom du fichier qui contient les chemins des fichiers taggés
-* @param filename = nom du fichier qu'on veut tagger
+/**
+* @brief
+*
+* @param file_paths Nom du fichier qui contient les chemins des fichiers taggés
+* @param filename Nom du fichier qu'on veut tagger
 * @return renvoie 1 si le chemin existe sinon 0
-* */
-
+*/
 int find_path(char * filename){
 
 	char *path = absolute_path(filename);
@@ -116,13 +115,12 @@ int find_path(char * filename){
 }
 
 
-//fonction qui ajoute le chemin du fichier taggé dans paths.txt 
-
-/* *
-* @param filename = nom du fichier qu'on veut tagger
+/**
+* @brief Ajoute le chemin du fichier taggé dans paths.txt 
+*
+* @param filename Nom du fichier qu'on veut tagger
 * @return renvoie 1 si le chemin a été ajouté dans le fichier paths.txt sinon 0
-* */
-
+*/
 int add_path(char * filename){
 
 	if(check_file_existence(filename) == 0){
@@ -164,13 +162,12 @@ int add_path(char * filename){
 }
 
 
-//fonction qui supprime un chemin absolu du fichier "paths.txt"
-
-/* *
-* @param filename = nom du fichier
+/**
+* @brief Supprime un chemin absolu du fichier "paths.txt"
+*
+* @param filename Nom du fichier
 * @return renvoie 1 si le chemin a bien été supprimé, sinon 0
-* */
-
+*/
 int delete_path(char * filename){
 
   
@@ -234,12 +231,11 @@ int delete_path(char * filename){
 
 // ---------------------------  fonctions utilisées dans la partie recherche   ---------------------------
 
-//fonction qui initialise un itérateur afin de parcourir chaque ligne de "paths.txt"
-
-/* *
+/**
+* @brief Initialise un itérateur afin de parcourir chaque ligne de "paths.txt"
+*
 * @return renvoie le fichier ouvert
-* */
-
+*/
 void * init_iterator(){
 
 	FILE *file = fopen(file_paths, "r"); 
@@ -253,14 +249,12 @@ void * init_iterator(){
 }
 
 
-
-//fonction qui renvoie un chemin de "paths.txt"
-
-/* *
-* @param file = fichier contenant les chemins des fichiers taggés
+/**
+* @brief Renvoie un chemin de "paths.txt"
+*
+* @param file Fichier contenant les chemins des fichiers taggés
 * @return renvoie une ligne (chemin) du fichier
-* */
-
+*/
 void * next_path(FILE * file){
 
 	char *path = NULL;
@@ -282,8 +276,8 @@ void * next_path(FILE * file){
 /**
  * @brief Enleve un fichier de paths.txt sans vérifier s'il existe
  * 
- * @param filename : le chemin absolu du fichier à enlever
- * @return int : 1
+ * @param filename Le chemin absolu du fichier à enlever
+ * @return int 1
  */
 int delete_path2(char * filename){
     
