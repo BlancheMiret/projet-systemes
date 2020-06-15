@@ -459,7 +459,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			//Si on trouve pas un ou des enfants du tag lié au fichier, on supprime alors que le tag
 			if(j == 0){
 
-				val = delete_one_tag(path, buff_tag, tags[i]);
+				delete_one_tag(path, buff_tag, tags[i]);
 				continue;
 			} 
 
