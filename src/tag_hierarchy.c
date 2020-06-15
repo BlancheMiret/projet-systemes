@@ -296,7 +296,7 @@ int delete_tag(char *tag_name) {
 	struct tag_t *tag_to_delete = g_hash_table_lookup(point_table, tag_name);
 
 	if (tag_to_delete == NULL) {
-		perror("The tag you want to delete does not exist in your tagset.\n");
+		printf("The tag you want to delete does not exist in your tagset.\n");
 		exit(EXIT_FAILURE); 
 	}
 
