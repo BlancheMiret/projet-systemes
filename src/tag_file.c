@@ -22,7 +22,7 @@ extern char file_paths[1024];
 
 
 /**
-* @brief vérifie si un fichier est taggé
+* @brief Vérifie si un fichier est taggé
 * 
 * @param path Chemin d'un fichier
 * @return renvoie 1 le fichier est taggé, sinon 0
