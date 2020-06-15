@@ -56,10 +56,8 @@ tag reset
 ```
 
 tag reset
-```
 
 rm -Rf /.tag
-```
 
 Pour chaque utilisateur qui a installé le système de tag : unalias rm cp mv
 ```
