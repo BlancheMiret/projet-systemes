@@ -22,10 +22,10 @@ extern char file_paths[1024];
 
 
 /**
-* @brief Vérifie si un fichier est taggé
+* @brief Vérifie si un fichier est taggé.
 * 
-* @param path Chemin d'un fichier
-* @return renvoie 1 le fichier est taggé, sinon 0
+* @param path Chemin d'un fichier.
+* @return Renvoie 1 le fichier est taggé, sinon 0.
 */
 int check_file(char * path){
 
@@ -80,11 +80,11 @@ int check_file(char * path){
 
 
 /**
-* @brief vérifie si tag est présent dans une suite de tags
+* @brief Vérifie si tag est présent dans une suite de tags.
 * 
-* @param tags Une suite de tags
-* @param tag Un tag
-* @return renvoie 1 new_tag existe dans tags, sinon 0
+* @param tags Une suite de tags.
+* @param tag Un tag.
+* @return Renvoie 1 new_tag existe dans tags, sinon 0.
 */
 int check_tag_existence(char * tags, char * tag){
 
@@ -99,12 +99,12 @@ int check_tag_existence(char * tags, char * tag){
 
 
 /**
-* @brief ajoute des attributs étendus (tags) au fichier
+* @brief Ajoute des attributs étendus (tags) au fichier.
 *
-* @param path Chemin vers le fichier qui va être taggé
-* @param usertag Nom d'un attribut 
-* @param flags Variable qui détermine si on crée l'attribut (XATTR_CREATE) ou si remplace on le remplace (XATTR_REPLACE)
-* @return renvoie 1 si les tags ont bien été ajouté, sinon 0
+* @param path Chemin vers le fichier qui va être taggé.
+* @param usertag Nom d'un attribut.
+* @param flags Variable qui détermine si on crée l'attribut (XATTR_CREATE) ou si remplace on le remplace (XATTR_REPLACE).
+* @return Renvoie 1 si les tags ont bien été ajouté, sinon 0.
 */
 int set_tag(char * path, char * usertag, char * all_tags, int flags){
 
@@ -141,11 +141,11 @@ int set_tag(char * path, char * usertag, char * all_tags, int flags){
 
 
 /**
-* @brief concatène des tags 
+* @brief Concatène des tags.
 *
-* @param tag_string Va contenir une suite de tags, séparés avec "/"
-* @param tags[] Tableau qui contient tous les tags à concaténer
-* @param tags_size Nombre de tags
+* @param tag_string Va contenir une suite de tags, séparés avec "/".
+* @param tags[] Tableau qui contient tous les tags à concaténer.
+* @param tags_size Nombre de tags.
 */
 void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
     
@@ -171,10 +171,10 @@ void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
 
 
 /* *
-* @brief Renvoie le nom du fichier, dans le cas où il s'agit d'un chemin il cherche le nom du fichier
+* @brief Renvoie le nom du fichier, dans le cas où il s'agit d'un chemin il cherche le nom du fichier.
 *
-* @param file = nom/chemin du fichier
-* @return renvoie le nom du fichier
+* @param file Nom/chemin du fichier.
+* @return Renvoie le nom du fichier.
 */
 char * find_filename(char * file){
 
@@ -185,12 +185,12 @@ char * find_filename(char * file){
 
 
 /**
-* @brief Lie des tags à un fichier grâce à xattr
+* @brief Lie des tags à un fichier grâce à xattr.
 *
-* @param filename Nom du fichier
-* @param tags[] Tableau qui contient tous les tags à ajouter
-* @param subtags_size Nombre de tags
-* @return renvoie 1 si les tags ont bien été ajouté, sinon 0
+* @param filename Nom du fichier.
+* @param tags[] Tableau qui contient tous les tags à ajouter.
+* @param subtags_size Nombre de tags.
+* @return Renvoie 1 si les tags ont bien été ajouté, sinon 0.
 */
 int link_tag(char *filename, char * tags[], size_t tags_size){
 
@@ -328,12 +328,12 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 
 
 /**
-* @brief Supprime un seul tag d'un fichier
+* @brief Supprime un seul tag d'un fichier.
 * 
-* @param path Chemin vers le fichier taggé
-* @param existing_tags Une suite de tags
-* @param tag Tag qu'on va supprimer
-* @return renvoie 1 si le tag a été supprimé
+* @param path Chemin vers le fichier taggé.
+* @param existing_tags Une suite de tags.
+* @param tag Tag qu'on va supprimer.
+* @return Renvoie 1 si le tag a été supprimé.
 */
 int delete_one_tag(char * path, char *existing_tags, char * tag){
 
@@ -371,12 +371,12 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 
 
 /**
-* @brief Supprime un tag du fichier
+* @brief Supprime un tag du fichier.
 *
-* @param filename Nom du fichier
-* @param tags[] Tags qu'on va supprimer
-* @param tags_size Taille de tags
-* @return renvoie 0 si le ou les tags ont bien été supprimé, sinon 1
+* @param filename Nom du fichier.
+* @param tags[] Tags qu'on va supprimer.
+* @param tags_size Taille de tags.
+* @return Renvoie 0 si le ou les tags ont bien été supprimé, sinon 1.
 */
 int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
@@ -547,10 +547,10 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 
 /**
-* @brief Récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node
+* @brief Récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node.
 *
-* @param path Chemin vers le fichier taggé
-* @return renvoie la liste des tags, si le fichier ne contient aucun tag renvoie NULL
+* @param path Chemin vers le fichier taggé.
+* @return Renvoie la liste des tags, si le fichier ne contient aucun tag renvoie NULL.
 */
 void * get_file_tag_list(char * path){
 
@@ -607,10 +607,10 @@ void * get_file_tag_list(char * path){
 
 
 /**
-* @brief Supprime tous les tags d'un fichier
+* @brief Supprime tous les tags d'un fichier.
 * 
-* @param filename Nom du fichier taggé
-* @return renvoie 1 si tous les tags du fichier ont été supprimé
+* @param filename Nom du fichier taggé.
+* @return Renvoie 1 si tous les tags du fichier ont été supprimé.
 */
 int delete_all_tags(char * filename){
 
@@ -632,10 +632,10 @@ int delete_all_tags(char * filename){
 
 
 /**
-* @brief Supprime de tous les fichiers un tag (et les sous-tags s'il y en a)
+* @brief Supprime de tous les fichiers un tag (et les sous-tags s'il y en a).
 *
-* @param tag[] Contient le nom du tag
-* @return renvoie 1 si le tag a bien été supprimé des fichiers
+* @param tag[] Contient le nom du tag.
+* @return Renvoie 1 si le tag a bien été supprimé des fichiers.
 */
 int for_all_files_delete(char * tag[]){
 
@@ -677,9 +677,9 @@ int for_all_files_delete(char * tag[]){
 
 
 /**
-* @brief Supprime tous les tags des fichiers, et supprime les chemins des fichiers de paths.txt
+* @brief Supprime tous les tags des fichiers, et supprime les chemins des fichiers de paths.txt.
 *
-* @return renvoie 1 si tout a été supprimé
+* @return Renvoie 1 si tout a été supprimé.
 */
 int reset_all_files(){
 
