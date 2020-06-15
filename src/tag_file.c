@@ -24,7 +24,7 @@ extern char file_paths[1024];
 /**
 * @brief vérifie si un fichier est taggé
 * 
-* @param path = chemin d'un fichier
+* @param path Chemin d'un fichier
 * @return renvoie 1 le fichier est taggé, sinon 0
 */
 int check_file(char * path){
@@ -82,8 +82,8 @@ int check_file(char * path){
 /**
 * @brief vérifie si tag est présent dans une suite de tags
 * 
-* @param tags = une suite de tags
-* @param tag = un tag
+* @param tags Une suite de tags
+* @param tag Un tag
 * @return renvoie 1 new_tag existe dans tags, sinon 0
 */
 int check_tag_existence(char * tags, char * tag){
@@ -101,9 +101,9 @@ int check_tag_existence(char * tags, char * tag){
 /**
 * @brief ajoute des attributs étendus (tags) au fichier
 *
-* @param path = chemin vers le fichier qui va être taggé
-* @param usertag = nom d'un attribut 
-* @param flags = variable qui détermine si on crée l'attribut (XATTR_CREATE) ou si remplace on le remplace (XATTR_REPLACE)
+* @param path Chemin vers le fichier qui va être taggé
+* @param usertag Nom d'un attribut 
+* @param flags Variable qui détermine si on crée l'attribut (XATTR_CREATE) ou si remplace on le remplace (XATTR_REPLACE)
 * @return renvoie 1 si les tags ont bien été ajouté, sinon 0
 */
 int set_tag(char * path, char * usertag, char * all_tags, int flags){
@@ -143,9 +143,9 @@ int set_tag(char * path, char * usertag, char * all_tags, int flags){
 /**
 * @brief concatène des tags 
 *
-* @param tag_string = va contenir une suite de tags, séparés avec "/"
-* @param tags[] = tableau qui contient tous les tags à concaténer
-* @param tags_size = nombre de tags
+* @param tag_string Va contenir une suite de tags, séparés avec "/"
+* @param tags[] Tableau qui contient tous les tags à concaténer
+* @param tags_size Nombre de tags
 */
 void concatenate_tags(char * tag_string, char * tags[], size_t tags_size){
     
@@ -187,9 +187,9 @@ char * find_filename(char * file){
 /**
 * @brief Lie des tags à un fichier grâce à xattr
 *
-* @param filename = nom du fichier
-* @param tags[] = tableau qui contient tous les tags à ajouter
-* @param subtags_size = nombre de tags
+* @param filename Nom du fichier
+* @param tags[] Tableau qui contient tous les tags à ajouter
+* @param subtags_size Nombre de tags
 * @return renvoie 1 si les tags ont bien été ajouté, sinon 0
 */
 int link_tag(char *filename, char * tags[], size_t tags_size){
@@ -330,9 +330,9 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 /**
 * @brief Supprime un seul tag d'un fichier
 * 
-* @param path = chemin vers le fichier taggé
-* @param existing_tags = une suite de tags
-* @param tag = tag qu'on va supprimer
+* @param path Chemin vers le fichier taggé
+* @param existing_tags Une suite de tags
+* @param tag Tag qu'on va supprimer
 * @return renvoie 1 si le tag a été supprimé
 */
 int delete_one_tag(char * path, char *existing_tags, char * tag){
@@ -373,9 +373,9 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 /**
 * @brief Supprime un tag du fichier
 *
-* @param filename = nom du fichier
-* @param tags[] = tags qu'on va supprimer
-* @param tags_size = taille de tags
+* @param filename Nom du fichier
+* @param tags[] Tags qu'on va supprimer
+* @param tags_size Taille de tags
 * @return renvoie 0 si le ou les tags ont bien été supprimé, sinon 1
 */
 int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
@@ -549,7 +549,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 /**
 * @brief Récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node
 *
-* @param path = chemin vers le fichier taggé
+* @param path Chemin vers le fichier taggé
 * @return renvoie la liste des tags, si le fichier ne contient aucun tag renvoie NULL
 */
 void * get_file_tag_list(char * path){
@@ -609,7 +609,7 @@ void * get_file_tag_list(char * path){
 /**
 * @brief Supprime tous les tags d'un fichier
 * 
-* @param filename : nom du fichier taggé
+* @param filename Nom du fichier taggé
 * @return renvoie 1 si tous les tags du fichier ont été supprimé
 */
 int delete_all_tags(char * filename){
