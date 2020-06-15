@@ -34,8 +34,8 @@ char hierarchy_file[1024];
 void write_tree(struct tag_t *tag, int fd);
 void *build_tree(); 
 void print_shift(int shift);
-void print_tree(struct tag_t *tag, char * shift); 
-void print_tree_children(struct tag_t *tag, char *shift); 
+void print_tree(struct tag_t *tag, int shift); 
+void print_tree_children(struct tag_t *tag);
 void print_tag(struct tag_t *tag); 
 
 
@@ -298,7 +298,7 @@ int delete_tag(char *tag_name) {
 	}
 
 	printf("You're going to delete all this sub-hierarchy from your tagset and from the files tagged with them :\n");
-	print_tree_children_2(tag_to_delete);
+	print_tree_children(tag_to_delete);
 	printf("The removal cannot be undone, do you want to proceed ? Enter Y(es) or N(o)\n");
 	char answer;
 
