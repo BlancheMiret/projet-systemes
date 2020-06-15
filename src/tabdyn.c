@@ -3,7 +3,7 @@
 /**
  * @brief Affiche un message d'erreur sur la sortie d'erreur standard et quitte
  * 
- * @param msg : message d'erreur
+ * @param msg message d'erreur
  */
 void erreur(char *msg)
 {
@@ -14,7 +14,7 @@ void erreur(char *msg)
 /**
  * @brief Création d'un tableau dynamique
  * 
- * @return tabdyn : tableau dynamique
+ * @return tabdyn tableau dynamique
  */
 tabdyn create_table()
 {
@@ -30,8 +30,8 @@ tabdyn create_table()
 /**
  * @brief Ajoute une chaîne de charactères au tableau dynamique passé en paramètre
  * 
- * @param t : pointeur sur un tableau dynamique
- * @param path : chaîne de charactères à stocker
+ * @param t pointeur sur un tableau dynamique
+ * @param path chaîne de charactères à stocker
  */
 void push(tabdyn *t, char *path)
 {
@@ -55,7 +55,7 @@ void push(tabdyn *t, char *path)
 /**
  * @brief Supprime un tableau dynamique
  * 
- * @param t : tableau dynamique à supprimer
+ * @param t tableau dynamique à supprimer
  */
 void deletetable(tabdyn t)
 {
@@ -67,7 +67,7 @@ void deletetable(tabdyn t)
 /**
  * @brief Affiche les éléments du tableau dynamique passé en paramètre
  * 
- * @param t : tableau dynamique
+ * @param t tableau dynamique
  */
 void affiche(tabdyn t)
 {

@@ -52,6 +52,16 @@ tag search tag [[-not] tag] ...
 tag reset
 ```
 
+**Déinstaller le système de tag** en effectuant les commandes suivantes : 
+```
+
+tag reset
+
+rm -Rf /.tag
+
+Pour chaque utilisateur qui a installé le système de tag : unalias rm cp mv
+```
+
 
 #### Auteurs :
 
