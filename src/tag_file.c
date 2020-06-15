@@ -409,7 +409,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	}
 
 	for (int i=0; i<tags_size;i++){
-
+         printf("TAGS[i]   %s\n",tags[i]);
 		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 		
 		if(val == -1 ){
@@ -426,7 +426,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 		buff_tag[val] = '\0';
 
 		if(check_tag_existence(buff_tag,tags[i]) == 0){
-
+			printf("The tag %s doesn't exist", tags[i]);
 			continue;
 
 		}
@@ -459,7 +459,8 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			//Si on trouve pas un ou des enfants du tag lié au fichier, on supprime alors que le tag
 			if(j == 0){
 
-				delete_one_tag(path, buff_tag, tags[i]);
+				val = delete_one_tag(path, buff_tag, tags[i]);
+				continue;
 			} 
 
 			//Si on trouve un ou plusieurs enfants liés au fichier
