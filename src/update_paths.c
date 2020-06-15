@@ -3,9 +3,9 @@
 /**
  * @brief Renvoie le chemin du fichier path dans sa nouvelle destination dest
  * 
- * @param path fichier à deplacer
- * @param dest destination
- * @return char* le nouveau chemin de path
+ * @param path Fichier à deplacer
+ * @param dest Destination
+ * @return char* Le nouveau chemin de path
  */
 char* traitement(char *path, char *dest)
 {
@@ -37,8 +37,8 @@ char* traitement(char *path, char *dest)
 /**
  * @brief Retourne le repertoire de destination
  * 
- * @param dest chemin vers la destination
- * @return char* repertoire qui contient la destination
+ * @param dest Chemin vers la destination
+ * @return char* Repertoire qui contient la destination
  */
 char *getdest(char *dest)
 {
@@ -59,10 +59,10 @@ char *getdest(char *dest)
 /**
  * @brief Traite un élément (fichier ou repertoire) pour trouver son nouveau chemin et celui de ses sous-éléments si il en a
  * 
- * @param path fichier à deplacer (fichier simple ou repertoire)
- * @param dest destination
- * @param remove tableau dynamique où sont stockés les chemins à supprimer
- * @param add tableau dynamique où sont stockés les nouveaux chemins 
+ * @param path Fichier à deplacer (fichier simple ou repertoire)
+ * @param dest Destination
+ * @param remove Tableau dynamique où sont stockés les chemins à supprimer
+ * @param add Tableau dynamique où sont stockés les nouveaux chemins 
  */
 void lister_supp(char *path, char *dest, tabdyn *add)
 {
@@ -146,7 +146,7 @@ char *buildfileremplace()
 /**
  * @brief Retourne le chemin de la destination stockée dans dest.txt
  * 
- * @return char* destination
+ * @return char* Destination
  */
 char *getdestination()
 {
@@ -172,7 +172,7 @@ char *getdestination()
 /**
  * @brief Regarde dans le repertoire path les fichiers qui sont taggés ou non
  * 
- * @param path repertoire
+ * @param path Repertoire
  */
 void choose_dir(char *path)
 {
@@ -200,7 +200,7 @@ void choose_dir(char *path)
 /**
  * @brief Ajoute ou supprime de paths.txt les fichiers de pathdest si c'est un repertoire ou ceux du repertoire courant sinon
  * 
- * @param pathdest destination 
+ * @param pathdest Destination 
  */
 void add_delete_in_dir(char *pathdest)
 {
