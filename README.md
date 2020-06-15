@@ -1,11 +1,14 @@
-## Système de gestion de fichiers avec tags
+# Système de gestion de fichiers avec tags
 ___
 
 Projet de L3 dans le cadre du cours sur les systèmes d'exploitation.
 
 Création d'une couche par-dessus le système de gestion de fichiers permettant de gérer les fichiers grâce à des tags.Un tag est une chaîne de caractères alphanumériques qui permet de donner un renseignement sur un fichier.
 
-**Fonctionnalités implémentées**:
+## Installation
+Le système s'installe en exécutant le script `install.sh`.
+
+## Fonctionnalités implémentées
 
 **Créer** un ou plusieurs tags, en spécifiant éventuellement leur père avec l’option -f :
 ```
@@ -32,14 +35,14 @@ tag link <file> <tag> [tag] ...
 tag unlink <file> <tag> [tag] ...
 ```
 
-**Afficher** les tags associés à un fichier :
-```
-tag print <file>
-```
-
 **Supprimer** tous les tags d’un fichier :
 ```
 tag unlink <file> --all
+```
+
+**Afficher** les tags associés à un fichier :
+```
+tag print <file>
 ```
 
 **Rechercher** les fichiers correspondant à une combinaison de tags
@@ -52,20 +55,27 @@ tag search tag [[-not] tag] ...
 tag reset
 ```
 
-**Déinstaller le système de tag** en effectuant les commandes suivantes : 
-```
+## Désinstaller le système
 
+Pour désinstaller le système, effectuer les commandes suivantes :
+```
 tag reset
 
 rm -Rf /.tag
-
-Pour chaque utilisateur qui a installé le système de tag : unalias rm cp mv
-
-Dans les terminaux ouverts où la déinstallation ne s'est pas faite : source ~/.bashrc 
 ```
 
+Pour chaque utilisateur qui a installé le système de tag :
+```
+unalias rm cp mv
+```
 
-#### Auteurs :
+Dans les terminaux ouverts où la déinstallation ne s'est pas faite
+
+```
+source ~/.bashrc
+```
+
+## Auteurs :
 
 - CASTELBOU Louis
 - CHEKROUN Asmaa
