@@ -25,7 +25,7 @@ tag create
 echo "-- tag delete"
 tag delete
 echo "-- tag link f1"
-tag link
+tag link f1
 
 echo "******** Syntax error *******"
 echo "-- tag lsqjfl"
@@ -40,8 +40,8 @@ tag unlink blablabla
 echo "******* Inexisting tag ******"
 echo "-- tag create -f user Louis Blanche Asmaa" 
 tag create -f user Louis Blanche Asmaa
-echo "-- tag link f1 western user"
-tag link f1 western user
+echo "-- tag link f1 western user" #A REVOIR
+tag link f1 western user 
 echo "-- tag search wester rouge user"
 tag search wester rouge user
 echo "-- tag delete user"
@@ -70,5 +70,5 @@ echo "--tag search couleur couleur"
 tag search couleur couleur
 
 # Reset
-rm f1 f2 f3 f4 f5
 tag reset
+rm f1 f2 f3 f4 f5
