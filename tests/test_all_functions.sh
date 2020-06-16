@@ -81,4 +81,4 @@ tag print
 echo
 echo "-- tag reset"
 tag reset
-rm test1 test2 test3 test4 test5
+rm test1 test2 test3 test4 test5 test6
