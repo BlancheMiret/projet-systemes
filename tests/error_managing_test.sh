@@ -47,7 +47,7 @@ tag search wester rouge user
 echo "-- tag delete user"
 tag delete user
 echo "-- tag unlink f5 couleur jaune" # Comportement : en enlève aucun ? 
-tag unlink f5 couleur
+tag unlink f5 couleur jaune
 echo "-- tag unlink f1 vert rouge couleur user" # Comportement : en enlève aucun ? 
 tag unlink f1 vert rouge couleur user
 
