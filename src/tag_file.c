@@ -409,7 +409,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	}
 
 	for (int i=0; i<tags_size;i++){
-         printf("TAGS[i]   %s\n",tags[i]);
+
 		val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 		
 		if(val == -1 ){
@@ -417,19 +417,18 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			exit(EXIT_FAILURE);
 		} 
 
-		//Cas où user.tags existe mais ne contient aucun tag
-		if(val == 0){
-			printf("The file %s doesn't contain any tags.\n", find_filename(filename));
-			return 0;
-		}
-
-		buff_tag[val] = '\0';
-
 		if(check_tag_existence(buff_tag,tags[i]) == 0){
-			printf("The tag %s doesn't exist", tags[i]);
+			printf("The file %s doesn't contain the tag %s.\n", find_filename(filename),tags[i]);
 			continue;
 
 		}
+		//Cas où user.tags existe mais ne contient aucun tag
+		if(val == 0){
+			printf("The file %s doesn't contain tags anymore.\n", find_filename(filename));
+			return 1;
+		}
+
+		buff_tag[val] = '\0';
 
 	    children_list = get_tag_children(tags[i]);
 
