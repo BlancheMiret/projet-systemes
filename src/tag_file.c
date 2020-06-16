@@ -283,7 +283,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 				for(int i=0; i<tags_size; i++){
 					if(check_tag_existence(buff_tag, tags[i]) == 1){
 
-						printf("This file %s is already tagged with %s\n", find_filename(filename),tags[i]);						
+						printf("The file %s is already tagged with %s\n", find_filename(filename),tags[i]);						
 						count++;
 					} 
 					
