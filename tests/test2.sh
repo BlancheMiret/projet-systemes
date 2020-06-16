@@ -44,3 +44,7 @@ echo "Files with autofiction but not roman:"
 tag search autofiction -not roman
 echo "Files with autofiction:"
 tag search autofiction
+
+# Reset
+tag reset
+rm test1 test2 test3 test4 test5
