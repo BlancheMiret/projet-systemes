@@ -41,6 +41,9 @@ int main(int argc, char **argv) {
 	}
 
 	char* filename;
+	int tags_nb = argc - 3;
+    char * tags[tags_nb];
+
 
 	switch(command) {
 		case 'c' :
@@ -58,7 +61,7 @@ int main(int argc, char **argv) {
 		case 'd' :
 			if (argc != 3) exit_with_syntax_error(DELETE); 
 			char *tag_to_delete = argv[2];
-			for_all_files_delete(argv+2);
+			if (tag_exists(tag_to_delete)) for_all_files_delete(argv+2);
 			delete_tag(tag_to_delete);
 			break;
 
@@ -78,14 +81,23 @@ int main(int argc, char **argv) {
 		case 'l' :
 			if (argc < 4) exit_with_syntax_error(LINK); 
 			filename = argv[2];
+			int size = 0;
 			if (access(filename, F_OK) < 0) exit_with_file_error(LINK, filename);
 			for (int i = 3; i < argc; i++) {
 				if (!tag_exists(argv[i])) {
 					printf("%s does not exist in your tagset yet. Create it first with tag create\n", argv[i]);
-					exit(1);
+					continue;
 				}
+				tags[size] = malloc(1 + strlen(argv[i])); 
+				strcpy(tags[size],argv[i]);
+				size++;
 			}
-			link_tag(argv[2], argv + 3, argc - 3);
+			if (size > 0) {
+
+				link_tag(argv[2],tags, size);
+				for(int i=0; i<size;i++) free(tags[i]);
+			}
+
 			break;
 
 		case 'u' :
@@ -96,7 +108,7 @@ int main(int argc, char **argv) {
 				if (argc == 4) delete_all_tags(filename);
 				else exit_with_syntax_error(UNLINK);
 			}
-			else unlink_tag(filename, argv + 3, argc - 3,1);
+			else unlink_tag(filename, argv + 3, argc - 3, 1, 1);
 			break;
 
 		case 's' :
