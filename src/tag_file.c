@@ -195,7 +195,8 @@ char * find_filename(char * file){
 int link_tag(char *filename, char * tags[], size_t tags_size){
 
 	
-	int val, res, count;
+	int val, res;
+	int count = 0;
 	char *path = absolute_path(filename);
 	char buff_tag[1024];
 	memset(buff_tag,'\0',1024);
@@ -207,6 +208,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 	memset(new_tags,'\0',1024);
 
 	char * usertag = "user.tags";
+
 
 	val = listxattr(path, NULL, 0);
 
@@ -378,7 +380,7 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 * @param tags_size Taille de tags.
 * @return Renvoie 0 si le ou les tags ont bien été supprimé, sinon 1.
 */
-int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
+int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask, int print){
 
 	int val;
 	char reply[100];
@@ -401,7 +403,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 	}
 
 	//Cas où user.tags n'existe pas
-	if (val == 0) {
+	if (val == 0 && print == 1) {
 
 		printf("The file %s doesn't contain any tags.\n", find_filename(filename));
 		return 0;
@@ -417,13 +419,13 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			exit(EXIT_FAILURE);
 		} 
 
-		if(check_tag_existence(buff_tag,tags[i]) == 0){
+		if(check_tag_existence(buff_tag,tags[i]) == 0 && print == 1){
 			printf("The file %s doesn't contain the tag %s.\n", find_filename(filename),tags[i]);
 			continue;
 
 		}
 		//Cas où user.tags existe mais ne contient aucun tag
-		if(val == 0){
+		if(val == 0 && print == 1){
 			printf("The file %s doesn't contain tags anymore.\n", find_filename(filename));
 			return 1;
 		}
@@ -464,19 +466,19 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 			//Si on trouve un ou plusieurs enfants liés au fichier
 
-			if(j == 1 && ask){ 
+			if(j == 1 && ask && print){ 
 				printf("The file %s has also the following subtag inherited from %s", find_filename(filename), tags[i]);
 				printf("- %s\n", subtags[0]);
 				printf("Do you want to delete this subtag? [yes/no]\n");
 			}
 
-			if(j > 1 && ask){
+			if(j > 1 && ask && print){
 				printf("The file %s has also the following subtags inherited from %s", find_filename(filename), tags[i]);
 				for(int i=0; i < j; i++) printf("- %s\n", subtags[i]);
 				printf("Do you want to delete these subtags? [yes/no]\n");
 			}
 			
-			if (ask) {
+			if (ask && print) {
 
 				while(1){
 					scanf("%s", reply);
@@ -487,7 +489,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 			
 			//Suppression du tag ainsi que ses enfants liés au fichier
 
-			if(strcmp(reply,"yes") == 0 || ask == 0){
+			if(strcmp(reply,"yes") == 0 || ask == 0 || print == 0){
 
 				concatenate_tags(subtags_concat, subtags, j);
 
@@ -515,7 +517,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
 
 				if(val == 0) return 0;
 
-				printf("The tag %s and its subtags have been deleted from %s\n", tags[i],strrchr(path, '/') + 1);
+				if(print) printf("The tag %s and its subtags have been deleted from %s\n", tags[i],strrchr(path, '/') + 1);
 		
 			}
 
@@ -534,9 +536,9 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask){
     
 	val = getxattr(filename,usertag, &buff_tag, sizeof(buff_tag));
 
-	if(val == 0){
+	if(val == 0 && print){
 
-		printf("The file %s doesn't contain any tags, it will be deleted from paths.txt\n", find_filename(filename));
+		printf("The file %s doesn't contain tags anymore.\n", find_filename(filename));
 		delete_path(filename);
 
 	}
@@ -660,7 +662,7 @@ int for_all_files_delete(char * tag[]){
 
 		if (strlen(path) != 1) {
 
-			unlink_tag(path,tag, 1, 0);
+			unlink_tag(path,tag, 1, 0, 0);
 		
 		}
 

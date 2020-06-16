@@ -9,7 +9,7 @@ int check_file(char * path);
 int link_tag(char *filename, char * tags[], size_t tags_size);
 
 /* fonction qui supprime un tag du fichier */
-int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask);
+int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask, int print);
 
 /* fonction qui récupère tous les tags d'un fichier et les stocke dans une liste de type struct tag_node */
 void * get_file_tag_list(char * path);
