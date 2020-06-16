@@ -46,12 +46,18 @@ echo
 echo " -------- Deleting tags from files -------- "
 echo "-- tag unlink test4 roman"
 tag unlink test4 roman
+echo "-- tag print test4"
+tag print test4
 echo
 echo "-- tag unlink test1 ballade thriller"
 tag unlink test1 ballade thriller
+echo "-- tag print test1"
+tag print test1
 echo
 echo "-- tag unlink test6 --all"
 tag unlink test6 --all
+echo "-- tag print test6"
+tag print test6
 echo
 echo " -------- Searching tags -------- "
 echo "-- tag search psychologique -not policier -not thriller"
