@@ -337,7 +337,7 @@ int link_tag(char *filename, char * tags[], size_t tags_size){
 * @param tag Tag qu'on va supprimer.
 * @return Renvoie 1 si le tag a été supprimé.
 */
-int delete_one_tag(char * path, char *existing_tags, char * tag){
+int delete_one_tag(char * path, char *existing_tags, char * tag, int print){
 
 	char new_tag_string[1024];
 	memset(new_tag_string,'\0',1024);
@@ -364,7 +364,7 @@ int delete_one_tag(char * path, char *existing_tags, char * tag){
 	//On attribut les sous-tags sans tag
 	val = set_tag(path, "user.tags", new_tag_string,1);
 
-	if(val == 1) printf("The tag %s has been deleted from %s\n", tag, strrchr(path, '/') + 1);
+	if(val == 1 && print == 1) printf("The tag %s has been deleted from %s.\n", tag, find_filename(path));
 
 	return 1;
 
@@ -436,7 +436,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask, int pr
 
 	    if(children_list == NULL){
 
-	    	delete_one_tag(path, buff_tag, tags[i]);
+	    	delete_one_tag(path, buff_tag, tags[i], print);
 	    }
        
 
@@ -460,7 +460,7 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask, int pr
 			//Si on trouve pas un ou des enfants du tag lié au fichier, on supprime alors que le tag
 			if(j == 0){
 
-				delete_one_tag(path, buff_tag, tags[i]);
+				delete_one_tag(path, buff_tag, tags[i], print);
 				continue;
 			} 
 
@@ -517,14 +517,14 @@ int unlink_tag(char * filename, char * tags[], size_t tags_size, int ask, int pr
 
 				if(val == 0) return 0;
 
-				if(print) printf("The tag %s and its subtags have been deleted from %s\n", tags[i],strrchr(path, '/') + 1);
+				if(print) printf("The tag %s and its subtags have been deleted from %s.\n", tags[i],strrchr(path, '/') + 1);
 		
 			}
 
 			if(strcmp(reply,"no") == 0){
 
 				//Suppression de tags[i] 
-				delete_one_tag(path, buff_tag, tags[i]);
+				delete_one_tag(path, buff_tag, tags[i], print);
 
 
 			}
@@ -626,7 +626,7 @@ int delete_all_tags(char * filename){
 	}
 
 	if(delete_path(path) == 1){
-		printf("All tags have been deleted from %s\n",strrchr(path, '/') + 1);
+		printf("All tags have been deleted from %s.\n",strrchr(path, '/') + 1);
 	}
 
 	return 1;
