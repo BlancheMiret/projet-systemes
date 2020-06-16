@@ -75,6 +75,9 @@ echo
 echo "-- tag search autofiction"
 tag search autofiction
 echo
+echo "-- tag search film"
+tag search film
+echo
 echo " -------- Deleting tags from hierarchy -------- "
 echo "-- tag delete musique"
 tag delete musique
