@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 				filename = argv[2];
 				if (access(filename, F_OK) < 0) exit_with_file_error(UNLINK, filename);
 				 struct tag_node *tag_list = get_file_tag_list(filename);
-				 if(tag_list == NULL) printf("This file doesn't contain any tags\n");
+				 if(tag_list == NULL) printf("This file doesn't contain any tags.\n");
 				 else print_list(tag_list);
 				 free_tag_list(tag_list);
 			}
