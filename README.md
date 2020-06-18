@@ -57,23 +57,7 @@ tag reset
 
 ## Désinstaller le système
 
-Pour désinstaller le système, effectuer les commandes suivantes :
-```
-tag reset
-
-rm -Rf /.tag
-```
-
-Pour chaque utilisateur qui a installé le système de tag :
-```
-unalias rm cp mv
-```
-
-Dans les terminaux ouverts où la déinstallation ne s'est pas faite
-
-```
-source ~/.bashrc
-```
+Pour désinstaller le système, exécuter le script `uninstall.sh`.
 
 ## Auteurs :
 
