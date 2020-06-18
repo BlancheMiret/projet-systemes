@@ -80,14 +80,14 @@ tag search film
 echo
 echo " -------- Deleting tags from hierarchy -------- "
 echo "-- tag delete musique"
-tag delete musique
+yes | tag delete musique
 echo "-- tag delete policier"
-tag delete policier
+yes | tag delete policier
 echo 
 echo "-- tag print"
 tag print
 # Reset
 echo
 echo "-- tag reset"
-tag reset
+yes | tag reset
 rm test1 test2 test3 test4 test5 test6

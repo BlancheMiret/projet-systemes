@@ -97,5 +97,5 @@ echo
 
 # Reset
 echo "----- End of test : Reset all -----"
-tag reset
+yes | tag reset
 rm f1 f2 f3 f4 f5
