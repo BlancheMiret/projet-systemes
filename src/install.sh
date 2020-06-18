@@ -38,5 +38,5 @@ echo 'relance le terminal...'
 echo "alias mv='mvt.sh'" >> ~/.bashrc
 echo "alias cp='cpt.sh'" >> ~/.bashrc
 echo "alias rm='rmta.sh'" >> ~/.bashrc
-source ~/.bashrc
+exec bash
 echo 'fin installation...'
