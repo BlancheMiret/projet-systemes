@@ -147,7 +147,7 @@ void research(int ABS, char **terms, int nb_terms) {
 		free_tag_list(tag_list);
 	}
 
-	if(nb_file == 0) printf("No file correspond to your research.\n");
+	if(nb_file == 0) printf("No file corresponds to your research.\n");
 
 	for(int i = 0; i < c; i++) {
 		free_tag_list(tab[i].list);
