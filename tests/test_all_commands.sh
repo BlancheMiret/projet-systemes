@@ -43,6 +43,9 @@ echo
 echo "-- tag print test5"
 tag print test5
 echo 
+echo "-- tag print test6"
+tag print test6
+echo 
 echo " -------- Deleting tags from files -------- "
 echo "-- tag unlink test4 roman"
 tag unlink test4 roman
