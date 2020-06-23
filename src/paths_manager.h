@@ -18,7 +18,7 @@ int find_path(char * filename);
 /* fonction qui ajoute le chemin du fichier taggé dans paths.txt */
 int add_path(char * filename);
 
-/* fonction qui supprime un chemin absolu du fichier "paths.txt" */
+/* fonction qui  supprime le chemin absolu de "filename" qui se trouve dans paths.txt */
 int delete_path(char * filename);
 
 /* fonction qui initialise un itérateur afin de parcourir chaque ligne de "paths.txt" */
@@ -27,6 +27,7 @@ void * init_iterator();
 /* fonction qui renvoie un chemin de "paths.txt" */
 void * next_path(FILE * file);
 
+/* fonction qui supprime le chemin absolu de "filename" qui se trouve dans paths.txt (sans vérifier s'il existe) */
 int delete_path2(char *pathfile);
 
 #endif

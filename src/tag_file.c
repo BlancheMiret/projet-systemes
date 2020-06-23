@@ -19,66 +19,6 @@
 extern char file_paths[1024];
 
 
-
-
-/**
-* @brief Vérifie si un fichier est taggé.
-* 
-* @param path Chemin d'un fichier.
-* @return Renvoie 1 le fichier est taggé, sinon 0.
-*/
-int check_file(char * path){
-
-	int buflen;
-	char *buf;
-	char buff_tag[1024];
-	memset(buff_tag,'\0',1024);
-
-	buflen = listxattr(path, NULL, 0);
-	if (buflen == -1) {
-		perror("listxattr");
-		exit(EXIT_FAILURE);
-	}
-
-	if (buflen == 0) {
-
-		return 0;
-	}
-
-
-	buf = malloc(buflen);
-	if (buf == NULL) {
-		perror("malloc error: ");
-		exit(EXIT_FAILURE);
-	}
-
-	buflen = listxattr(path, buf, buflen);
-
-	if (buflen == -1) {
-		perror("listxattr error: ");
-		exit(EXIT_FAILURE);
-	}
-
-
-	if(strcmp(buf, "user.tags") == 0){
-
-		buflen = getxattr(path, "user.tags", &buff_tag, sizeof(buff_tag));
-		
-		if(buflen == -1 ){
-			perror("getxattr error: ");
-			exit(EXIT_FAILURE);
-		}
-
-		if(buflen > 0) return 1; 
-	}
-
-	return 0;
-
-}
-
-
-
-
 /**
 * @brief Vérifie si tag est présent dans une suite de tags.
 * 

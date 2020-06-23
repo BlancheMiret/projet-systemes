@@ -155,8 +155,8 @@ int add_path(char * filename){
 }
 
 
-/**
-* @brief Supprime un chemin absolu du fichier "paths.txt".
+/** 
+* @brief Supprime le chemin absolu de "filename" qui se trouve dans "paths.txt".
 *
 * @param filename Nom du fichier.
 * @return Renvoie 1 si le chemin a bien été supprimé, sinon 0.
@@ -267,7 +267,7 @@ void * next_path(FILE * file){
 
 
 /**
- * @brief Enleve un fichier de paths.txt sans vérifier s'il existe.
+ * @brief Supprime le chemin absolu de "filename" qui se trouve dans "paths.txt" (sans vérifier s'il existe).
  * 
  * @param filename Le chemin absolu du fichier à enlever.
  * @return int 1.
