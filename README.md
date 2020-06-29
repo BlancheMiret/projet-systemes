@@ -62,5 +62,5 @@ Pour désinstaller le système, exécuter le script `uninstall.sh`.
 ## Auteurs :
 
 - CASTELBOU Louis
-- CHEKROUN Asmaa
+- CHEKROUN Hiba-Asmaa
 - MIRET Blanche
